@@ -106,9 +106,6 @@ function Footer() {
 
         </div>
 
-        <div className="mt-12 border-t border-white/10 pt-6 text-center text-xs text-white/40">
-          © 2026 The IELTS Dictionary
-        </div>
 
       </div>
     </footer>

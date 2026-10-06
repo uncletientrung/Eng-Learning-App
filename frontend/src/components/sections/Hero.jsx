@@ -1,5 +1,6 @@
 import { ArrowRight } from 'lucide-react'
 import Navbar from '../layout/Navbar'
+import HeroMascot from './HeroMascot'
 
 function Hero() {
   return (
@@ -74,20 +75,21 @@ function Hero() {
 
                 <span
                   className="
-                    absolute -right-1 -top-7
+                    absolute -right-0 -top-1
                     rounded-sm bg-white
                     px-1.5 py-0.5
                     text-[8px]
                     font-black
                     uppercase
                     tracking-[0.1em]
-                    bg-brand
-                    md:-top-9
+                    bg-white
+                    md:-top-2.5
                     md:px-2
                     md:text-[10px]
+                    text-brand
                   "
                 >
-                  theieltsdictionary
+                  trực tuyến
                 </span>
 
                 <span
@@ -146,6 +148,32 @@ function Hero() {
           </a>
         </div>
       </main>
+
+      {/* LINH THÚ / SVG GÓC PHẢI */}
+      <div
+        className="
+          pointer-events-none
+          absolute
+          bottom-[-180px]
+          right-[-150px]
+          z-10
+
+          w-[500px]
+          h-[500px]
+
+          md:bottom-[-250px]
+          md:right-[-180px]
+          md:w-[700px]
+          md:h-[700px]
+
+          lg:bottom-[-350px]
+          lg:right-[-250px]
+          lg:w-[900px]
+          lg:h-[900px]
+        "
+      >
+        <HeroMascot />
+      </div>
     </section>
   )
 }

@@ -51,7 +51,7 @@ export const skills = [
     image: '/assets/vocabulary-card.webp',
     icon: BookMarked,
     path: '/vocabulary',
-    badge: '1000+ TỪ',
+    badge: 'FREE',
   },
   {
     title: 'Grammar',
@@ -60,6 +60,6 @@ export const skills = [
     image: '/assets/grammar-card.webp',
     icon: GraduationCap,
     path: '/grammar',
-    badge: '100+ CHỦ ĐỀ',
+    badge: 'FREE',
   },
 ]
