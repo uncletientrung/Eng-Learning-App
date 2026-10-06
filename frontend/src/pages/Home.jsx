@@ -5,6 +5,7 @@ import SkillCards from '../components/sections/SkillCards'
 import JourneySection from '../components/sections/JourneySection'
 import ConsultationSection from '../components/sections/ConsultationSection'
 
+
 function Home() {
   return (
     <div className="min-h-screen w-full overflow-x-clip bg-white">
