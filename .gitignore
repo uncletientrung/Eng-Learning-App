@@ -1,0 +1,80 @@
+# =========================
+# React / Node.js
+# =========================
+
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# Environment files
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+
+# =========================
+# .NET
+# =========================
+
+**/bin/
+**/obj/
+
+
+# =========================
+# Visual Studio
+# =========================
+
+.vs/
+.vscode/
+
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+
+# =========================
+# Environment / Secrets
+# =========================
+
+.env
+.env.*
+!.env.example
+
+# ASP.NET User Secrets
+**/secrets.json
+
+
+# =========================
+# Logs
+# =========================
+
+*.log
+
+
+# =========================
+# SQL Server local database
+# =========================
+
+*.mdf
+*.ldf
+*.ndf
+
+
+# =========================
+# OS files
+# =========================
+
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+
+# =========================
+# Temporary files
+# =========================
+
+*.tmp
+*.temp
+*.bak
+*.swp
