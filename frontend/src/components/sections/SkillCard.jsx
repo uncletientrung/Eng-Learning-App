@@ -1,9 +1,9 @@
-function SkillCard({ skill }) {
+function SkillCard({ skill, EventOnClick }) {
   const Icon = skill.icon
 
   return (
-    <a
-      href={skill.path}
+    <div
+      onClick={() => EventOnClick(skill)}
       className="
         group relative block h-[320px]
         overflow-hidden rounded-[6px]
@@ -14,6 +14,7 @@ function SkillCard({ skill }) {
         hover:-translate-y-1.5
         hover:shadow-[12px_12px_0_rgba(0,0,0,1)]
         md:h-[400px]
+        cursor-pointer
       "
     >
       {/* Background image */}
@@ -86,7 +87,7 @@ function SkillCard({ skill }) {
           </span>
         </div>
       </div>
-    </a>
+    </div>
   )
 }
 

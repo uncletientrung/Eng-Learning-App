@@ -16,6 +16,7 @@ export const skills = [
     icon: Headphones,
     path: '/listening',
     badge: '100+ ĐỀ',
+    action: 'navigate',
   },
   {
     title: 'Reading',
@@ -25,6 +26,7 @@ export const skills = [
     icon: BookOpen,
     path: '/reading',
     badge: '100+ BÀI',
+    action: 'navigate',
   },
   {
     title: 'Writing',
@@ -34,6 +36,7 @@ export const skills = [
     icon: PenLine,
     path: '/writing',
     badge: '100+ BÀI',
+    action: 'open-reading-modal',
   },
   {
     title: 'Speaking',
@@ -43,6 +46,7 @@ export const skills = [
     icon: Mic,
     path: '/speaking',
     badge: '100+ ĐỀ',
+    action: 'navigate',
   },
   {
     title: 'Vocabulary',
@@ -52,6 +56,7 @@ export const skills = [
     icon: BookMarked,
     path: '/vocabulary',
     badge: 'FREE',
+    action: 'navigate',
   },
   {
     title: 'Grammar',
@@ -61,5 +66,6 @@ export const skills = [
     icon: GraduationCap,
     path: '/grammar',
     badge: 'FREE',
+    action: 'navigate',
   },
 ]
