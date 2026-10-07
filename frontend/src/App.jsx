@@ -1,14 +1,19 @@
-// import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from 'react-router-dom'
 
-// import Button1 from "./components/ui/Button1";
-// import LinkButton from "./components/ui/LinkButton";
-import Home from "./pages/Home";
+import Home from './pages/Home'
+import WritingLibrary from './pages/Writing/WritingLibrary'
 
 function App() {
-  return <Home />
-  
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
 
-    
+      <Route
+        path="/writing"
+        element={<WritingLibrary />}
+      />
+    </Routes>
+  )
 }
 
-export default App;
+export default App
