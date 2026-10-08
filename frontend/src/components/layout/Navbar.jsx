@@ -6,28 +6,68 @@ import {
   History,
   Crown,
 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
-function Navbar() {
+function Navbar({ transparentOnTop = false }) {
+  const [isScrolled, setIsScrolled] = useState(false)
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0)
+    }
+
+    // kiểm tra ngay khi component mount
+    handleScroll()
+    window.addEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
+  const isTransparent =  transparentOnTop && !isScrolled
+   
   return (
-    <nav className="fixed left-0 top-0 z-[100] w-full bg-transparent py-6">
+    <nav
+      className={`
+        fixed left-0 top-0 z-[100] w-full
+        py-6
+        transition-all duration-300
+        ${
+          isTransparent
+            ? 'bg-transparent'
+            : 'bg-white/80 backdrop-blur-md shadow-sm'
+        }
+      `}
+    >
       <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between relative">
 
         {/* Logo */}
         <a
-          className="flex items-center gap-3 font-extrabold text-2xl tracking-tighter shrink-0 transition-colors text-white"
-          href="index.html"
+          className={`
+            flex items-center gap-3
+            font-extrabold text-2xl
+            tracking-tighter shrink-0
+            transition-colors
+            ${isTransparent ? 'text-white' : 'text-slate-900'}
+          `}
+          href="/"
         >
           <div className="relative w-[72px] h-[48px] rounded-xl overflow-hidden shadow-sm border border-slate-100">
             <img
               alt="The IELTS Dictionary Logo"
-              className="h-full w-full  object-cover"
+              className="h-full w-full object-cover"
               src="/assets/logo-finall.png"
             />
           </div>
 
           <span className="hidden sm:block">
             The IELTS{' '}
-            <span className="transition-colors text-white">
+            <span
+              className={
+                isTransparent
+                  ? 'text-white'
+                  : 'text-slate-900'
+              }
+            >
               Dictionary
             </span>
           </span>
@@ -46,10 +86,7 @@ function Navbar() {
               aria-label="Ngôn ngữ"
               className="relative h-10 rounded-full px-2.5 flex items-center justify-center gap-1 transition-all bg-white/30 hover:bg-white/50 text-slate-800"
             >
-              <Globe
-                size={18}
-                aria-hidden="true"
-              />
+              <Globe size={18} aria-hidden="true" />
 
               <span className="text-[10px] font-black uppercase tracking-wider leading-none">
                 VI
@@ -60,7 +97,7 @@ function Navbar() {
           {/* Community */}
           <a
             className="relative h-10 px-3.5 rounded-full flex items-center gap-1.5 text-xs font-black transition-all bg-white/30 hover:bg-white/50 text-slate-800"
-            href="index.htmlpractice/community"
+            href="/practice/community"
             title="Cộng đồng"
           >
             <MessageSquare
@@ -80,10 +117,7 @@ function Navbar() {
               className="relative w-10 h-10 rounded-full flex items-center justify-center transition-all bg-white/30 hover:bg-white/50 text-slate-800"
               aria-label="Thông báo"
             >
-              <Bell
-                size={20}
-                aria-hidden="true"
-              />
+              <Bell size={20} aria-hidden="true" />
 
               <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-rose-500 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-lg shadow-rose-500/30 animate-pulse">
                 1
@@ -104,7 +138,7 @@ function Navbar() {
               {/* Desktop user */}
               <a
                 className="hidden lg:flex items-center gap-2.5 px-3 py-1.5 cursor-pointer"
-                href="index.htmldashboard"
+                href="/dashboard"
               >
                 <div className="relative flex-shrink-0">
                   <div className="w-8 h-8 rounded-full bg-herb-100 flex items-center justify-center text-herb-600 font-bold overflow-hidden shadow-inner border border-herb-50">
@@ -149,33 +183,21 @@ function Navbar() {
 
               {/* User menu */}
               <div className="hidden lg:flex items-center pr-2">
-
-                {/* Divider */}
                 <div className="w-[1px] h-6 bg-slate-500/20 mx-1 shrink-0" />
 
-                {/* Vocabulary */}
                 <a
                   className="flex items-center gap-1.5 whitespace-nowrap px-2.5 py-1.5 rounded-xl text-[12px] font-bold text-slate-800 hover:text-amber-700 hover:bg-white/50 transition-colors"
-                  href="index.htmldashboard?tab=notebook"
+                  href="/dashboard?tab=notebook"
                 >
-                  <BookOpen
-                    size={14}
-                    aria-hidden="true"
-                  />
-
+                  <BookOpen size={14} aria-hidden="true" />
                   Sổ từ vựng
                 </a>
 
-                {/* History */}
                 <a
                   className="flex items-center gap-1.5 whitespace-nowrap px-2.5 py-1.5 rounded-xl text-[12px] font-bold text-slate-800 hover:text-blue-700 hover:bg-white/50 transition-colors"
-                  href="index.htmldashboard?tab=history"
+                  href="/dashboard?tab=history"
                 >
-                  <History
-                    size={14}
-                    aria-hidden="true"
-                  />
-
+                  <History size={14} aria-hidden="true" />
                   Lịch sử
                 </a>
               </div>
@@ -185,7 +207,7 @@ function Navbar() {
           {/* Premium */}
           <a
             className="tid-pro-frame hidden lg:flex self-stretch shrink-0 items-center gap-2 rounded-full border border-amber-300/80 bg-gradient-to-r from-[#fff7e0] via-[#fffdf4] to-[#fff7e0] px-5 backdrop-blur-sm transition-transform duration-300 hover:-translate-y-[1px]"
-            href="index.htmlpremium"
+            href="/premium"
             style={{
               fontFamily:
                 'var(--font-nunito), var(--font-inter), sans-serif',

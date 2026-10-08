@@ -1,24 +1,19 @@
 import { ArrowLeft } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import WritingFilters from './WritingFilters'
+import LinkButton from '../../ui/LinkButton'
 
-function WritingHeader({ activeFilter, onFilterChange }) {
+function WritingHeader() {
   return (
-    <div className="mb-10">
-
-      <Link
+    <div className="mb-2">
+      <LinkButton
         to="/"
-        className="
-          mb-6 inline-flex items-center
-          font-medium text-slate-500
-          transition-colors
-          hover:text-indigo-600
-        "
+        backgroundColor = "bg-white"
+        textColor = 'text-black'
+        className="px-10 py-2"
       >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-
+        <ArrowLeft size={16} />
         Trở về
-      </Link>
+      </LinkButton>
+
 
       <div
         className="
@@ -33,6 +28,7 @@ function WritingHeader({ activeFilter, onFilterChange }) {
             className="
               text-4xl font-extrabold
               tracking-tight text-slate-900
+              mt-3
             "
           >
             Thư Viện{' '}
@@ -46,11 +42,6 @@ function WritingHeader({ activeFilter, onFilterChange }) {
             được mô phỏng bám sát định dạng thực tế.
           </p>
         </div>
-
-        <WritingFilters
-          activeFilter={activeFilter}
-          onFilterChange={onFilterChange}
-        />
       </div>
     </div>
   )

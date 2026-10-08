@@ -5,6 +5,7 @@ function LinkButton({
   children,
   backgroundColor = 'bg-[#f67232]',
   textColor = 'text-white',
+  className = '',
 }) {
   return (
     <Link
@@ -15,14 +16,14 @@ function LinkButton({
         justify-center
         rounded-full
         border-2 border-[#1a1a1a]
-        px-5 py-[13px]
         text-base
         font-bold
-        shadow-[4px_4px_0_#1a1a1a]
+        shadow-[2px_2px_0_#1a1a1a]
         transition-transform
         hover:-translate-y-[1px]
         ${backgroundColor}
         ${textColor}
+        ${className}
       `}
     >
       {children}

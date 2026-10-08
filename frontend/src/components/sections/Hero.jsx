@@ -1,5 +1,4 @@
 import { ArrowRight } from 'lucide-react'
-import Navbar from '../layout/Navbar'
 import HeroMascot from './HeroMascot'
 
 function Hero() {
@@ -27,8 +26,6 @@ function Hero() {
           backgroundSize: '32px 32px',
         }}
       />
-
-      <Navbar />
 
       <main
         className="

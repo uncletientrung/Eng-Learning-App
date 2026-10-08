@@ -1,8 +1,4 @@
-function WritingPagination({
-  currentPage,
-  totalPages,
-  onPageChange,
-}) {
+function WritingPagination({currentPage, totalPages,onPageChange,}) {
   return (
     <div className="mt-12 flex items-center justify-center space-x-2">
 

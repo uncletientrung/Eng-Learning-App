@@ -1,75 +1,74 @@
 import { useMemo, useState } from 'react'
 
 import WritingHeader from '../../components/sections/writing/WritingHeader'
+import WritingChartFilters from '../../components/sections/writing/WritingChartFilters'
 import WritingTestList from '../../components/sections/writing/WritingTestList'
 import WritingPagination from '../../components/sections/writing/WritingPagination'
+import MainLayout from '../../components/layout/MainLayout'
 
 import { writingTests } from '../../data/writingTests'
 
 function WritingLibrary() {
-  const [activeFilter, setActiveFilter] = useState('ALL')
+  const [activeChartFilter, setActiveChartFilter] =useState('ALL')
   const [currentPage, setCurrentPage] = useState(1)
 
   const filteredTests = useMemo(() => {
-    if (activeFilter === 'ALL') {
-      return writingTests
-    }
-
-    if (activeFilter === 'TASK_1') {
-      return writingTests.filter(
-        (test) => test.taskType === 'Task 1'
+    let result = writingTests
+    // Filter loại biểu đồ
+    if (activeChartFilter !== 'ALL') {
+      result = result.filter(
+        (test) =>
+          test.chartType === activeChartFilter
       )
     }
 
-    if (activeFilter === 'TASK_2') {
-      return writingTests.filter(
-        (test) => test.taskType === 'Task 2'
-      )
-    }
+    return result
+  }, [activeChartFilter])
 
-    if (activeFilter === 'BUILDER') {
-      return []
-    }
 
-    return writingTests
-  }, [activeFilter])
-
-  const handleFilterChange = (filter) => {
-    setActiveFilter(filter)
+  const handleChartFilterChange = (filter) => {
+    setActiveChartFilter(filter)
     setCurrentPage(1)
   }
 
   const handleTestClick = (test) => {
-    console.log('Selected writing test:', test)
+    console.log(
+      'Selected writing test:',
+      test
+    )
   }
 
   return (
-    <main
-      className="
-        z-10 mx-auto
-        w-full max-w-7xl
-        flex-grow
-        px-6 pb-20 pt-32
-        lg:px-8
-      "
-    >
-      <WritingHeader
-        activeFilter={activeFilter}
-        onFilterChange={handleFilterChange}
-      />
+      <MainLayout>
+        <main
+          className="
+            z-10 mx-auto
+            w-full max-w-7xl
+            flex-grow
+            px-6 pb-25 pt-25
+            lg:px-8
+          "
+        >
+          <WritingHeader />
 
-      <WritingTestList
-        tests={filteredTests}
-        onTestClick={handleTestClick}
-      />
+          <WritingChartFilters
+            activeChartFilter={activeChartFilter}
+            onChartFilterChange={handleChartFilterChange}
+          />
 
-      <WritingPagination
-        currentPage={currentPage}
-        totalPages={3}
-        onPageChange={setCurrentPage}
-      />
-    </main>
-  )
+          <WritingTestList
+            tests={filteredTests}
+            onTestClick={handleTestClick}
+          />
+
+          <WritingPagination
+            currentPage={currentPage}
+            totalPages={3}
+            onPageChange={setCurrentPage}
+          />
+        </main>
+      </MainLayout>
+    )
 }
 
 export default WritingLibrary
