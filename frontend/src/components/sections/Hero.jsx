@@ -1,7 +1,7 @@
 import { ArrowRight } from 'lucide-react'
 import HeroMascot from './HeroMascot'
 
-function Hero() {
+function Hero( { isMascotSmiling } ) {
   return (
     <section className="relative flex min-h-[101vh] w-full flex-col overflow-hidden bg-brand">
 
@@ -10,6 +10,7 @@ function Hero() {
         className="
           pointer-events-none
           absolute inset-0 z-0
+          cursor-pointer
         "
         style={{
           backgroundImage: `
@@ -149,7 +150,6 @@ function Hero() {
       {/* LINH THÚ / SVG GÓC PHẢI */}
       <div
         className="
-          pointer-events-none
           absolute
           bottom-[-180px]
           right-[-150px]
@@ -167,9 +167,10 @@ function Hero() {
           lg:right-[-250px]
           lg:w-[900px]
           lg:h-[900px]
+          
         "
       >
-        <HeroMascot />
+        <HeroMascot isMascotSmiling={isMascotSmiling} />
       </div>
     </section>
   )

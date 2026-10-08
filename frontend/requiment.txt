@@ -1,0 +1,4 @@
+Các cái cài đặt:
+react
+tailwindcss
+npm install gsap lenis barba.js jquery                       // Cài để sử dụng animation

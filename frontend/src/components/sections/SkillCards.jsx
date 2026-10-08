@@ -2,7 +2,7 @@ import SkillCard from './SkillCard'
 import { skills } from '../../data/skills'
 import { useNavigate } from 'react-router-dom'
 
-function SkillCards({ onOpenReadingModal }) {
+function SkillCards({ onOpenReadingModal, onMascotSmile }) {
   const navigate = useNavigate()
 
   const handleSkillClick = (skill) => {
@@ -24,6 +24,8 @@ function SkillCards({ onOpenReadingModal }) {
               key={skill.title}
               skill={skill}
               EventOnClick={handleSkillClick}
+              onMouseEnter={() => onMascotSmile(true)}
+              onMouseLeave={() => onMascotSmile(false)}
             />
           ))}
         </div>

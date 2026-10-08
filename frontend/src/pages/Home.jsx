@@ -11,13 +11,17 @@ import { useState } from 'react'
 
 function Home() {
   const [isReadingModalOpen, setIsReadingModalOpen] = useState(false)
+  const [isMascotSmiling, setIsMascotSmiling] = useState(false)
 
   return (
     <MainLayout transparentNavbar={true}>
-      <Hero />
+      <Hero
+        isMascotSmiling={isMascotSmiling}
+      />
 
       <SkillCards
         onOpenReadingModal={() => setIsReadingModalOpen(true)}
+        onMascotSmile={setIsMascotSmiling}
       />
 
       <JourneySection />

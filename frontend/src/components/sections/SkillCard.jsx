@@ -1,9 +1,11 @@
-function SkillCard({ skill, EventOnClick }) {
+function SkillCard({ skill, EventOnClick, onMouseEnter,onMouseLeave}) {
   const Icon = skill.icon
 
   return (
     <div
       onClick={() => EventOnClick(skill)}
+      onMouseEnter={() => onMouseEnter(true)}
+      onMouseLeave={() => onMouseLeave(false)}
       className="
         group relative block h-[320px]
         overflow-hidden rounded-[6px]
