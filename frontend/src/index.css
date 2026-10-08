@@ -6,6 +6,14 @@
   font-style: normal;
   font-display: swap;
 }
+@font-face {
+  font-family: "Playfair Display";
+  src: url("/fonts/PlayfairDisplay-Italic-VariableFont_wght.ttf")
+    format("truetype");
+  font-weight: 400 900;
+  font-style: italic;
+  font-display: swap;
+}
 
 @theme {
   --font-sans: "Quicksand", ui-sans-serif, system-ui, sans-serif;

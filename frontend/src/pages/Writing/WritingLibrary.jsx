@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import WritingHeader from '../../components/sections/writing/WritingHeader'
 import WritingChartFilters from '../../components/sections/writing/WritingChartFilters'
@@ -11,6 +12,7 @@ import { writingTests } from '../../data/writingTests'
 function WritingLibrary() {
   const [activeChartFilter, setActiveChartFilter] =useState('ALL')
   const [currentPage, setCurrentPage] = useState(1)
+  const navigate = useNavigate()
 
   const filteredTests = useMemo(() => {
     let result = writingTests
@@ -32,10 +34,7 @@ function WritingLibrary() {
   }
 
   const handleTestClick = (test) => {
-    console.log(
-      'Selected writing test:',
-      test
-    )
+    navigate(`/writing/${test.id}`)
   }
 
   return (
