@@ -23,16 +23,10 @@ function WritingHeader() {
           md:justify-between
         "
       >
-        <div>
-          <h1
-            className="
-              text-4xl font-extrabold
-              tracking-tight text-slate-900
-              mt-3
-            "
-          >
-            Thư Viện{' '}
-            <span className="text-indigo-600">
+        <div className='mt-5'>
+          <h1 className="text-3xl font-black tracking-tight text-[#111] sm:text-4xl">
+            Thư viện{' '}
+            <span className="underline decoration-[#ffc926] decoration-4 underline-offset-4">
               Writing-tests
             </span>
           </h1>
