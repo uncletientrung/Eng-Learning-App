@@ -63,8 +63,16 @@ function SpeakingLibrary() {
     setCurrentPage(1)
   }
 
+  const partRoutes = {
+    INTRODUCTION_INTERVIEW: 'p1',
+    TOPIC: 'p2',
+    TOPIC_DISCUSS: 'p3',
+    }
+
   const handleTestClick = (test) => {
-    navigate(`/speaking/${test.id}`)
+    const part = partRoutes[test.part]
+    if (!part) return
+    navigate(`/speaking/${part}/${test.id}`)
   }
 
   return (
