@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import { lazy, Suspense } from 'react'
 
 import Home from './pages/Home'
 import WritingLibrary from './pages/Writing/WritingLibrary'
@@ -8,6 +9,8 @@ import SpeakingPart1 from './pages/Speaking/SpeakingPart1'
 import SpeakingPart2 from './pages/Speaking/SpeakingPart2'
 import SpeakingPart3 from './pages/Speaking/SpeakingPart3'
 import VocabularyLibrary from './pages/Vocabulary/VocabularyLibrary'
+
+const VocabularyDashboard = lazy(() => import('./pages/Vocabulary/VocabularyDashboard'))
 
 function App() {
   return (
@@ -32,6 +35,7 @@ function App() {
 
       {/* Vocab */}
       <Route path="/vocabulary" element={<VocabularyLibrary />} />      
+      <Route path="/vocabulary/dashboard" element={<Suspense fallback={<div className="min-h-screen bg-[#0e1014]" role="status" aria-label="Đang tải dashboard" />}><VocabularyDashboard /></Suspense>} />
     </Routes>
   )
 }

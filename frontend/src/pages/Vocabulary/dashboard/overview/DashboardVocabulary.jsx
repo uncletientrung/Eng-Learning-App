@@ -1,0 +1,113 @@
+export default function DashboardVocabulary() {
+return (
+<section className="td-pop relative isolate rounded-[30px] overflow-hidden bg-[#9b5de5] text-white min-h-[340px] px-6 pt-6 flex flex-col gap-2" style={{"gridArea": "skills"}}>
+<span aria-hidden="true" className="pointer-events-none absolute -z-10 rounded-full" style={{"width": "200px", "height": "200px", "background": "rgba(255, 255, 255, 0.14)", "right": "-70px", "top": "-70px"}} />
+<span aria-hidden="true" className="absolute pointer-events-none rounded-full td-float " style={{"width": "16px", "height": "16px", "background": "transparent", "border": "2.85714px solid rgb(255, 192, 46)", "opacity": "0.9", "animationDelay": "0ms", "right": "30px", "top": "30px"}} />
+<span aria-hidden="true" className="absolute pointer-events-none rounded-full td-float " style={{"width": "7px", "height": "7px", "background": "rgb(255, 255, 255)", "opacity": "0.9", "animationDelay": "-600ms", "right": "64px", "top": "62px"}} />
+<h2 className="relative m-0 text-[clamp(26px,2.2vw,32px)] leading-none font-bold tracking-[-0.03em]">{"Từ vựng của bạn."}</h2>
+<p className="m-0 text-[14.5px] font-semibold leading-normal text-[#f1e7fc]">{"Chưa có từ nào — chọn một bộ từ để bắt đầu"}</p>
+<div className="flex-1 relative min-h-[266px] -mx-2 mt-1" title="Nhớ chắc: ôn lại sau ≥ 21 ngày · Hơi nhớ: 2–20 ngày · Hmmmm: ≤ 1 ngày · Chưa nhớ: chưa thuộc lần nào">
+<div className="absolute w-[47%] h-32 rounded-[22px] bg-d-card text-d-ink shadow-[0_20px_34px_-16px_rgba(60,20,110,.5)] p-3.5 flex flex-col gap-2.5 transition-transform duration-[250ms] hover:!rotate-0 hover:-translate-y-2" style={{"left": "4%", "top": "0px", "rotate": "-3deg"}}>
+<div className="flex items-center justify-between gap-1">
+<span className="relative inline-flex shrink-0 items-center justify-center " style={{"width": "40px", "height": "40px"}}>
+<svg viewBox="0 0 100 100" width="40" height="40" className="absolute inset-0" aria-hidden="true">
+<path d="M99.00 50.00L98.79 51.28L98.17 52.52L97.21 53.72L95.98 54.83L94.62 55.87L93.23 56.85L91.93 57.77L90.85 58.68L90.06 59.62L89.60 60.61L89.50 61.70L89.72 62.91L90.20 64.24L90.86 65.68L91.57 67.22L92.24 68.81L92.74 70.39L92.98 71.90L92.89 73.29L92.44 74.50L91.61 75.50L90.45 76.27L89.02 76.82L87.41 77.18L85.70 77.39L84.01 77.54L82.43 77.70L81.04 77.95L79.88 78.36L78.99 78.99L78.36 79.88L77.95 81.04L77.70 82.43L77.54 84.01L77.39 85.70L77.18 87.41L76.82 89.02L76.27 90.45L75.50 91.61L74.50 92.44L73.29 92.89L71.90 92.98L70.39 92.74L68.81 92.24L67.22 91.57L65.68 90.86L64.24 90.20L62.91 89.72L61.70 89.50L60.61 89.60L59.62 90.06L58.68 90.85L57.77 91.93L56.85 93.23L55.87 94.62L54.83 95.98L53.72 97.21L52.52 98.17L51.28 98.79L50.00 99.00L48.72 98.79L47.48 98.17L46.28 97.21L45.17 95.98L44.13 94.62L43.15 93.23L42.23 91.93L41.32 90.85L40.38 90.06L39.39 89.60L38.30 89.50L37.09 89.72L35.76 90.20L34.32 90.86L32.78 91.57L31.19 92.24L29.61 92.74L28.10 92.98L26.71 92.89L25.50 92.44L24.50 91.61L23.73 90.45L23.18 89.02L22.82 87.41L22.61 85.70L22.46 84.01L22.30 82.43L22.05 81.04L21.64 79.88L21.01 78.99L20.12 78.36L18.96 77.95L17.57 77.70L15.99 77.54L14.30 77.39L12.59 77.18L10.98 76.82L9.55 76.27L8.39 75.50L7.56 74.50L7.11 73.29L7.02 71.90L7.26 70.39L7.76 68.81L8.43 67.22L9.14 65.68L9.80 64.24L10.28 62.91L10.50 61.70L10.40 60.61L9.94 59.62L9.15 58.68L8.07 57.77L6.77 56.85L5.38 55.87L4.02 54.83L2.79 53.72L1.83 52.52L1.21 51.28L1.00 50.00L1.21 48.72L1.83 47.48L2.79 46.28L4.02 45.17L5.38 44.13L6.77 43.15L8.07 42.23L9.15 41.32L9.94 40.38L10.40 39.39L10.50 38.30L10.28 37.09L9.80 35.76L9.14 34.32L8.43 32.78L7.76 31.19L7.26 29.61L7.02 28.10L7.11 26.71L7.56 25.50L8.39 24.50L9.55 23.73L10.98 23.18L12.59 22.82L14.30 22.61L15.99 22.46L17.57 22.30L18.96 22.05L20.12 21.64L21.01 21.01L21.64 20.12L22.05 18.96L22.30 17.57L22.46 15.99L22.61 14.30L22.82 12.59L23.18 10.98L23.73 9.55L24.50 8.39L25.50 7.56L26.71 7.11L28.10 7.02L29.61 7.26L31.19 7.76L32.78 8.43L34.32 9.14L35.76 9.80L37.09 10.28L38.30 10.50L39.39 10.40L40.38 9.94L41.32 9.15L42.23 8.07L43.15 6.77L44.13 5.38L45.17 4.02L46.28 2.79L47.48 1.83L48.72 1.21L50.00 1.00L51.28 1.21L52.52 1.83L53.72 2.79L54.83 4.02L55.87 5.38L56.85 6.77L57.77 8.07L58.68 9.15L59.62 9.94L60.61 10.40L61.70 10.50L62.91 10.28L64.24 9.80L65.68 9.14L67.22 8.43L68.81 7.76L70.39 7.26L71.90 7.02L73.29 7.11L74.50 7.56L75.50 8.39L76.27 9.55L76.82 10.98L77.18 12.59L77.39 14.30L77.54 15.99L77.70 17.57L77.95 18.96L78.36 20.12L78.99 21.01L79.88 21.64L81.04 22.05L82.43 22.30L84.01 22.46L85.70 22.61L87.41 22.82L89.02 23.18L90.45 23.73L91.61 24.50L92.44 25.50L92.89 26.71L92.98 28.10L92.74 29.61L92.24 31.19L91.57 32.78L90.86 34.32L90.20 35.76L89.72 37.09L89.50 38.30L89.60 39.39L90.06 40.38L90.85 41.32L91.93 42.23L93.23 43.15L94.62 44.13L95.98 45.17L97.21 46.28L98.17 47.48L98.79 48.72L99.00 50.00Z" fill="#20b486" />
+</svg>
+<span className="relative flex items-center justify-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-check w-[18px] h-[18px] text-white" aria-hidden="true">
+<circle cx="12" cy="12" r="10" />
+<path d="m9 12 2 2 4-4" />
+</svg>
+</span>
+</span>
+<span className="font-bold tracking-[-0.03em] leading-none" style={{"fontSize": "30px"}}>{"0"}</span>
+</div>
+<span className="text-[16px] font-extrabold truncate">{"Nhớ chắc"}</span>
+<div className="h-2 rounded bg-d-surf2 overflow-hidden">
+<div className="h-full rounded transition-[width] duration-[1200ms] [transition-timing-function:cubic-bezier(.2,.8,.2,1)]" style={{"width": "0%", "background": "rgb(32, 180, 134)"}} />
+</div>
+</div>
+<div className="absolute w-[47%] h-32 rounded-[22px] bg-d-card text-d-ink shadow-[0_20px_34px_-16px_rgba(60,20,110,.5)] p-3.5 flex flex-col gap-2.5 transition-transform duration-[250ms] hover:!rotate-0 hover:-translate-y-2" style={{"left": "51%", "top": "8px", "rotate": "2deg"}}>
+<div className="flex items-center justify-between gap-1">
+<span className="relative inline-flex shrink-0 items-center justify-center " style={{"width": "40px", "height": "40px"}}>
+<svg viewBox="0 0 100 100" width="40" height="40" className="absolute inset-0" aria-hidden="true">
+<path d="M99.00 50.00L98.79 51.28L98.17 52.52L97.21 53.72L95.98 54.83L94.62 55.87L93.23 56.85L91.93 57.77L90.85 58.68L90.06 59.62L89.60 60.61L89.50 61.70L89.72 62.91L90.20 64.24L90.86 65.68L91.57 67.22L92.24 68.81L92.74 70.39L92.98 71.90L92.89 73.29L92.44 74.50L91.61 75.50L90.45 76.27L89.02 76.82L87.41 77.18L85.70 77.39L84.01 77.54L82.43 77.70L81.04 77.95L79.88 78.36L78.99 78.99L78.36 79.88L77.95 81.04L77.70 82.43L77.54 84.01L77.39 85.70L77.18 87.41L76.82 89.02L76.27 90.45L75.50 91.61L74.50 92.44L73.29 92.89L71.90 92.98L70.39 92.74L68.81 92.24L67.22 91.57L65.68 90.86L64.24 90.20L62.91 89.72L61.70 89.50L60.61 89.60L59.62 90.06L58.68 90.85L57.77 91.93L56.85 93.23L55.87 94.62L54.83 95.98L53.72 97.21L52.52 98.17L51.28 98.79L50.00 99.00L48.72 98.79L47.48 98.17L46.28 97.21L45.17 95.98L44.13 94.62L43.15 93.23L42.23 91.93L41.32 90.85L40.38 90.06L39.39 89.60L38.30 89.50L37.09 89.72L35.76 90.20L34.32 90.86L32.78 91.57L31.19 92.24L29.61 92.74L28.10 92.98L26.71 92.89L25.50 92.44L24.50 91.61L23.73 90.45L23.18 89.02L22.82 87.41L22.61 85.70L22.46 84.01L22.30 82.43L22.05 81.04L21.64 79.88L21.01 78.99L20.12 78.36L18.96 77.95L17.57 77.70L15.99 77.54L14.30 77.39L12.59 77.18L10.98 76.82L9.55 76.27L8.39 75.50L7.56 74.50L7.11 73.29L7.02 71.90L7.26 70.39L7.76 68.81L8.43 67.22L9.14 65.68L9.80 64.24L10.28 62.91L10.50 61.70L10.40 60.61L9.94 59.62L9.15 58.68L8.07 57.77L6.77 56.85L5.38 55.87L4.02 54.83L2.79 53.72L1.83 52.52L1.21 51.28L1.00 50.00L1.21 48.72L1.83 47.48L2.79 46.28L4.02 45.17L5.38 44.13L6.77 43.15L8.07 42.23L9.15 41.32L9.94 40.38L10.40 39.39L10.50 38.30L10.28 37.09L9.80 35.76L9.14 34.32L8.43 32.78L7.76 31.19L7.26 29.61L7.02 28.10L7.11 26.71L7.56 25.50L8.39 24.50L9.55 23.73L10.98 23.18L12.59 22.82L14.30 22.61L15.99 22.46L17.57 22.30L18.96 22.05L20.12 21.64L21.01 21.01L21.64 20.12L22.05 18.96L22.30 17.57L22.46 15.99L22.61 14.30L22.82 12.59L23.18 10.98L23.73 9.55L24.50 8.39L25.50 7.56L26.71 7.11L28.10 7.02L29.61 7.26L31.19 7.76L32.78 8.43L34.32 9.14L35.76 9.80L37.09 10.28L38.30 10.50L39.39 10.40L40.38 9.94L41.32 9.15L42.23 8.07L43.15 6.77L44.13 5.38L45.17 4.02L46.28 2.79L47.48 1.83L48.72 1.21L50.00 1.00L51.28 1.21L52.52 1.83L53.72 2.79L54.83 4.02L55.87 5.38L56.85 6.77L57.77 8.07L58.68 9.15L59.62 9.94L60.61 10.40L61.70 10.50L62.91 10.28L64.24 9.80L65.68 9.14L67.22 8.43L68.81 7.76L70.39 7.26L71.90 7.02L73.29 7.11L74.50 7.56L75.50 8.39L76.27 9.55L76.82 10.98L77.18 12.59L77.39 14.30L77.54 15.99L77.70 17.57L77.95 18.96L78.36 20.12L78.99 21.01L79.88 21.64L81.04 22.05L82.43 22.30L84.01 22.46L85.70 22.61L87.41 22.82L89.02 23.18L90.45 23.73L91.61 24.50L92.44 25.50L92.89 26.71L92.98 28.10L92.74 29.61L92.24 31.19L91.57 32.78L90.86 34.32L90.20 35.76L89.72 37.09L89.50 38.30L89.60 39.39L90.06 40.38L90.85 41.32L91.93 42.23L93.23 43.15L94.62 44.13L95.98 45.17L97.21 46.28L98.17 47.48L98.79 48.72L99.00 50.00Z" fill="#ffc02e" />
+</svg>
+<span className="relative flex items-center justify-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-lightbulb w-[18px] h-[18px] text-white" aria-hidden="true">
+<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+<path d="M9 18h6" />
+<path d="M10 22h4" />
+</svg>
+</span>
+</span>
+<span className="font-bold tracking-[-0.03em] leading-none" style={{"fontSize": "30px"}}>{"0"}</span>
+</div>
+<span className="text-[16px] font-extrabold truncate">{"Hơi nhớ"}</span>
+<div className="h-2 rounded bg-d-surf2 overflow-hidden">
+<div className="h-full rounded transition-[width] duration-[1200ms] [transition-timing-function:cubic-bezier(.2,.8,.2,1)]" style={{"width": "0%", "background": "rgb(255, 192, 46)"}} />
+</div>
+</div>
+<div className="absolute w-[47%] h-32 rounded-[22px] bg-d-card text-d-ink shadow-[0_20px_34px_-16px_rgba(60,20,110,.5)] p-3.5 flex flex-col gap-2.5 transition-transform duration-[250ms] hover:!rotate-0 hover:-translate-y-2" style={{"left": "2%", "top": "124px", "rotate": "2deg"}}>
+<div className="flex items-center justify-between gap-1">
+<span className="relative inline-flex shrink-0 items-center justify-center " style={{"width": "40px", "height": "40px"}}>
+<svg viewBox="0 0 100 100" width="40" height="40" className="absolute inset-0" aria-hidden="true">
+<path d="M99.00 50.00L98.79 51.28L98.17 52.52L97.21 53.72L95.98 54.83L94.62 55.87L93.23 56.85L91.93 57.77L90.85 58.68L90.06 59.62L89.60 60.61L89.50 61.70L89.72 62.91L90.20 64.24L90.86 65.68L91.57 67.22L92.24 68.81L92.74 70.39L92.98 71.90L92.89 73.29L92.44 74.50L91.61 75.50L90.45 76.27L89.02 76.82L87.41 77.18L85.70 77.39L84.01 77.54L82.43 77.70L81.04 77.95L79.88 78.36L78.99 78.99L78.36 79.88L77.95 81.04L77.70 82.43L77.54 84.01L77.39 85.70L77.18 87.41L76.82 89.02L76.27 90.45L75.50 91.61L74.50 92.44L73.29 92.89L71.90 92.98L70.39 92.74L68.81 92.24L67.22 91.57L65.68 90.86L64.24 90.20L62.91 89.72L61.70 89.50L60.61 89.60L59.62 90.06L58.68 90.85L57.77 91.93L56.85 93.23L55.87 94.62L54.83 95.98L53.72 97.21L52.52 98.17L51.28 98.79L50.00 99.00L48.72 98.79L47.48 98.17L46.28 97.21L45.17 95.98L44.13 94.62L43.15 93.23L42.23 91.93L41.32 90.85L40.38 90.06L39.39 89.60L38.30 89.50L37.09 89.72L35.76 90.20L34.32 90.86L32.78 91.57L31.19 92.24L29.61 92.74L28.10 92.98L26.71 92.89L25.50 92.44L24.50 91.61L23.73 90.45L23.18 89.02L22.82 87.41L22.61 85.70L22.46 84.01L22.30 82.43L22.05 81.04L21.64 79.88L21.01 78.99L20.12 78.36L18.96 77.95L17.57 77.70L15.99 77.54L14.30 77.39L12.59 77.18L10.98 76.82L9.55 76.27L8.39 75.50L7.56 74.50L7.11 73.29L7.02 71.90L7.26 70.39L7.76 68.81L8.43 67.22L9.14 65.68L9.80 64.24L10.28 62.91L10.50 61.70L10.40 60.61L9.94 59.62L9.15 58.68L8.07 57.77L6.77 56.85L5.38 55.87L4.02 54.83L2.79 53.72L1.83 52.52L1.21 51.28L1.00 50.00L1.21 48.72L1.83 47.48L2.79 46.28L4.02 45.17L5.38 44.13L6.77 43.15L8.07 42.23L9.15 41.32L9.94 40.38L10.40 39.39L10.50 38.30L10.28 37.09L9.80 35.76L9.14 34.32L8.43 32.78L7.76 31.19L7.26 29.61L7.02 28.10L7.11 26.71L7.56 25.50L8.39 24.50L9.55 23.73L10.98 23.18L12.59 22.82L14.30 22.61L15.99 22.46L17.57 22.30L18.96 22.05L20.12 21.64L21.01 21.01L21.64 20.12L22.05 18.96L22.30 17.57L22.46 15.99L22.61 14.30L22.82 12.59L23.18 10.98L23.73 9.55L24.50 8.39L25.50 7.56L26.71 7.11L28.10 7.02L29.61 7.26L31.19 7.76L32.78 8.43L34.32 9.14L35.76 9.80L37.09 10.28L38.30 10.50L39.39 10.40L40.38 9.94L41.32 9.15L42.23 8.07L43.15 6.77L44.13 5.38L45.17 4.02L46.28 2.79L47.48 1.83L48.72 1.21L50.00 1.00L51.28 1.21L52.52 1.83L53.72 2.79L54.83 4.02L55.87 5.38L56.85 6.77L57.77 8.07L58.68 9.15L59.62 9.94L60.61 10.40L61.70 10.50L62.91 10.28L64.24 9.80L65.68 9.14L67.22 8.43L68.81 7.76L70.39 7.26L71.90 7.02L73.29 7.11L74.50 7.56L75.50 8.39L76.27 9.55L76.82 10.98L77.18 12.59L77.39 14.30L77.54 15.99L77.70 17.57L77.95 18.96L78.36 20.12L78.99 21.01L79.88 21.64L81.04 22.05L82.43 22.30L84.01 22.46L85.70 22.61L87.41 22.82L89.02 23.18L90.45 23.73L91.61 24.50L92.44 25.50L92.89 26.71L92.98 28.10L92.74 29.61L92.24 31.19L91.57 32.78L90.86 34.32L90.20 35.76L89.72 37.09L89.50 38.30L89.60 39.39L90.06 40.38L90.85 41.32L91.93 42.23L93.23 43.15L94.62 44.13L95.98 45.17L97.21 46.28L98.17 47.48L98.79 48.72L99.00 50.00Z" fill="#4f7cf7" />
+</svg>
+<span className="relative flex items-center justify-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-brain w-[18px] h-[18px] text-white" aria-hidden="true">
+<path d="M12 18V5" />
+<path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4" />
+<path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5" />
+<path d="M17.997 5.125a4 4 0 0 1 2.526 5.77" />
+<path d="M18 18a4 4 0 0 0 2-7.464" />
+<path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517" />
+<path d="M6 18a4 4 0 0 1-2-7.464" />
+<path d="M6.003 5.125a4 4 0 0 0-2.526 5.77" />
+</svg>
+</span>
+</span>
+<span className="font-bold tracking-[-0.03em] leading-none" style={{"fontSize": "30px"}}>{"0"}</span>
+</div>
+<span className="text-[16px] font-extrabold truncate">{"Hmmmm"}</span>
+<div className="h-2 rounded bg-d-surf2 overflow-hidden">
+<div className="h-full rounded transition-[width] duration-[1200ms] [transition-timing-function:cubic-bezier(.2,.8,.2,1)]" style={{"width": "0%", "background": "rgb(79, 124, 247)"}} />
+</div>
+</div>
+<div className="absolute w-[47%] h-32 rounded-[22px] bg-d-card text-d-ink shadow-[0_20px_34px_-16px_rgba(60,20,110,.5)] p-3.5 flex flex-col gap-2.5 transition-transform duration-[250ms] hover:!rotate-0 hover:-translate-y-2" style={{"left": "50%", "top": "132px", "rotate": "-2deg"}}>
+<div className="flex items-center justify-between gap-1">
+<span className="relative inline-flex shrink-0 items-center justify-center " style={{"width": "40px", "height": "40px"}}>
+<svg viewBox="0 0 100 100" width="40" height="40" className="absolute inset-0" aria-hidden="true">
+<path d="M99.00 50.00L98.79 51.28L98.17 52.52L97.21 53.72L95.98 54.83L94.62 55.87L93.23 56.85L91.93 57.77L90.85 58.68L90.06 59.62L89.60 60.61L89.50 61.70L89.72 62.91L90.20 64.24L90.86 65.68L91.57 67.22L92.24 68.81L92.74 70.39L92.98 71.90L92.89 73.29L92.44 74.50L91.61 75.50L90.45 76.27L89.02 76.82L87.41 77.18L85.70 77.39L84.01 77.54L82.43 77.70L81.04 77.95L79.88 78.36L78.99 78.99L78.36 79.88L77.95 81.04L77.70 82.43L77.54 84.01L77.39 85.70L77.18 87.41L76.82 89.02L76.27 90.45L75.50 91.61L74.50 92.44L73.29 92.89L71.90 92.98L70.39 92.74L68.81 92.24L67.22 91.57L65.68 90.86L64.24 90.20L62.91 89.72L61.70 89.50L60.61 89.60L59.62 90.06L58.68 90.85L57.77 91.93L56.85 93.23L55.87 94.62L54.83 95.98L53.72 97.21L52.52 98.17L51.28 98.79L50.00 99.00L48.72 98.79L47.48 98.17L46.28 97.21L45.17 95.98L44.13 94.62L43.15 93.23L42.23 91.93L41.32 90.85L40.38 90.06L39.39 89.60L38.30 89.50L37.09 89.72L35.76 90.20L34.32 90.86L32.78 91.57L31.19 92.24L29.61 92.74L28.10 92.98L26.71 92.89L25.50 92.44L24.50 91.61L23.73 90.45L23.18 89.02L22.82 87.41L22.61 85.70L22.46 84.01L22.30 82.43L22.05 81.04L21.64 79.88L21.01 78.99L20.12 78.36L18.96 77.95L17.57 77.70L15.99 77.54L14.30 77.39L12.59 77.18L10.98 76.82L9.55 76.27L8.39 75.50L7.56 74.50L7.11 73.29L7.02 71.90L7.26 70.39L7.76 68.81L8.43 67.22L9.14 65.68L9.80 64.24L10.28 62.91L10.50 61.70L10.40 60.61L9.94 59.62L9.15 58.68L8.07 57.77L6.77 56.85L5.38 55.87L4.02 54.83L2.79 53.72L1.83 52.52L1.21 51.28L1.00 50.00L1.21 48.72L1.83 47.48L2.79 46.28L4.02 45.17L5.38 44.13L6.77 43.15L8.07 42.23L9.15 41.32L9.94 40.38L10.40 39.39L10.50 38.30L10.28 37.09L9.80 35.76L9.14 34.32L8.43 32.78L7.76 31.19L7.26 29.61L7.02 28.10L7.11 26.71L7.56 25.50L8.39 24.50L9.55 23.73L10.98 23.18L12.59 22.82L14.30 22.61L15.99 22.46L17.57 22.30L18.96 22.05L20.12 21.64L21.01 21.01L21.64 20.12L22.05 18.96L22.30 17.57L22.46 15.99L22.61 14.30L22.82 12.59L23.18 10.98L23.73 9.55L24.50 8.39L25.50 7.56L26.71 7.11L28.10 7.02L29.61 7.26L31.19 7.76L32.78 8.43L34.32 9.14L35.76 9.80L37.09 10.28L38.30 10.50L39.39 10.40L40.38 9.94L41.32 9.15L42.23 8.07L43.15 6.77L44.13 5.38L45.17 4.02L46.28 2.79L47.48 1.83L48.72 1.21L50.00 1.00L51.28 1.21L52.52 1.83L53.72 2.79L54.83 4.02L55.87 5.38L56.85 6.77L57.77 8.07L58.68 9.15L59.62 9.94L60.61 10.40L61.70 10.50L62.91 10.28L64.24 9.80L65.68 9.14L67.22 8.43L68.81 7.76L70.39 7.26L71.90 7.02L73.29 7.11L74.50 7.56L75.50 8.39L76.27 9.55L76.82 10.98L77.18 12.59L77.39 14.30L77.54 15.99L77.70 17.57L77.95 18.96L78.36 20.12L78.99 21.01L79.88 21.64L81.04 22.05L82.43 22.30L84.01 22.46L85.70 22.61L87.41 22.82L89.02 23.18L90.45 23.73L91.61 24.50L92.44 25.50L92.89 26.71L92.98 28.10L92.74 29.61L92.24 31.19L91.57 32.78L90.86 34.32L90.20 35.76L89.72 37.09L89.50 38.30L89.60 39.39L90.06 40.38L90.85 41.32L91.93 42.23L93.23 43.15L94.62 44.13L95.98 45.17L97.21 46.28L98.17 47.48L98.79 48.72L99.00 50.00Z" fill="#f0512d" />
+</svg>
+<span className="relative flex items-center justify-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-question-mark w-[18px] h-[18px] text-white" aria-hidden="true">
+<circle cx="12" cy="12" r="10" />
+<path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+<path d="M12 17h.01" />
+</svg>
+</span>
+</span>
+<span className="font-bold tracking-[-0.03em] leading-none" style={{"fontSize": "30px"}}>{"0"}</span>
+</div>
+<span className="text-[16px] font-extrabold truncate">{"Chưa nhớ"}</span>
+<div className="h-2 rounded bg-d-surf2 overflow-hidden">
+<div className="h-full rounded transition-[width] duration-[1200ms] [transition-timing-function:cubic-bezier(.2,.8,.2,1)]" style={{"width": "0%", "background": "rgb(240, 81, 45)"}} />
+</div>
+</div>
+</div>
+<div className="relative -mx-1 mb-5 bg-white/15 rounded-[22px] p-3 flex flex-col gap-2">
+<span className="text-[12px] font-bold tracking-[0.14em] text-[#f1e7fc]">{"CẦN ÔN HÔM NAY"}</span>
+<span className="text-[13.5px] font-semibold text-[#f1e7fc]">{"Hôm nay không có từ nào đến hạn 🎉"}</span>
+<button type="button" data-dashboard-action="sets" className="self-start flex items-center gap-2 bg-[#1b1d22] text-white text-[14px] font-extrabold px-4 py-2.5 rounded-[14px] cursor-pointer transition-transform duration-300 [transition-timing-function:cubic-bezier(.34,1.8,.5,1)] hover:-translate-y-0.5">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-layers w-4 h-4" aria-hidden="true">
+<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z" />
+<path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12" />
+<path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17" />
+</svg>
+{"Chọn bộ từ"}
+</button>
+</div>
+</section>
+);
+}

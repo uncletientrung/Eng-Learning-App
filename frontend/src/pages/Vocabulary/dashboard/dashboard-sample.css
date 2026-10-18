@@ -1,0 +1,42 @@
+/* Dashboard-only rules and SVG animation from the supplied HTML/CSS sample. */
+@scope (.vocabulary-dashboard) {
+.tid-dash{--d-bg:#e9edf3;--d-surf:#fff;--d-surf2:#f1f3f7;--d-card:#fff;--d-ink:#1b1d22;--d-mute:#6b7080;--d-line:#e4e7ed;--d-accent:#4f7cf7}
+.tid-dash.dark,.dark .tid-dash{--d-bg:#0e1014;--d-surf:#171a20;--d-surf2:#232833;--d-card:#1f232b;--d-ink:#eef0f4;--d-mute:#8d93a0;--d-line:#2a2f39;--d-accent:#4f7cf7}
+@keyframes tdPop{0%{transform:translateY(22px)scale(.97)}to{transform:none}}
+@keyframes tdBob{0%{translate:0;rotate:-4deg}to{translate:0 -9px;rotate:5deg}}
+@keyframes tdTwinkle{0%{opacity:1;rotate:none;scale:1}to{opacity:.5;rotate:90deg;scale:.4}}
+@keyframes tdNudge{0%{translate:0 -3px}to{translate:0 3px}}
+@keyframes tdFlame{0%{rotate:-8deg;scale:1}to{rotate:8deg;scale:1.2}}
+@keyframes tdFire{0%,to{translate:0;scale:1}35%{translate:-2px -5px;scale:1.06 1.14}70%{translate:0 2px;scale:.96 .94}}
+@keyframes tdGlow{0%{opacity:.7;scale:1}to{opacity:1;scale:1.15}}
+@keyframes tdEmber{0%{opacity:0;translate:0;scale:1}15%{opacity:1}to{translate:var(--td-ember-x,6px) -50px;opacity:0;scale:.3}}
+@keyframes tdSpin{to{rotate:360deg}}
+@keyframes tdDash{0%{scale:1}to{scale:.55 1}}
+.td-pop{animation:.65s cubic-bezier(.3,1.35,.5,1) both tdPop}
+.td-bob{animation:2s ease-in-out infinite alternate tdBob}
+.td-twinkle{animation:1.5s ease-in-out infinite alternate tdTwinkle}
+.td-nudge{animation:.7s ease-in-out infinite alternate tdNudge;display:inline-block}
+.td-flame{animation:.48s ease-in-out infinite alternate tdFlame;display:inline-block}
+.td-fire{transform-origin:50% 100%;animation:.6s ease-in-out infinite tdFire}
+.td-glow{animation:.7s ease-in-out infinite alternate tdGlow}
+.td-ember{opacity:0;animation:1.6s ease-out infinite tdEmber}
+.td-spin{animation:2.6s linear infinite tdSpin}
+.td-dash{animation:.9s ease-in-out infinite alternate tdDash}
+@keyframes tdFloat{0%{translate:0 -3px}to{translate:0 4px}}
+.td-float{animation:2.6s ease-in-out infinite alternate tdFloat}
+.td-sun-rays{transform-box:fill-box;transform-origin:50%;animation:28s linear infinite tdSpin}
+@keyframes tdBlink{0%,93%,to{transform:scaleY(1)}96%{transform:scaleY(.12)}}
+.td-blink{transform-box:fill-box;transform-origin:50%;animation:4.6s ease-in-out infinite tdBlink}
+@keyframes tdOrbitMove{0%{offset-distance:0%}to{offset-distance:100%}}
+@keyframes tdOrbitDepth{0%{z-index:5;opacity:1;scale:.93}25%{z-index:5;opacity:1;scale:1.06}49.99%{z-index:5;opacity:1;scale:.93}50%{z-index:1;opacity:.92;scale:.93}75%{z-index:1;opacity:.85;scale:.76}99.99%{z-index:1;opacity:.92;scale:.93}to{z-index:5;opacity:1;scale:.93}}
+.td-planet{offset-anchor:50% 50%;offset-rotate:0deg;offset-distance:var(--td-at,0%);animation-name:tdOrbitMove,tdOrbitDepth;animation-timing-function:linear;animation-iteration-count:infinite;position:absolute;top:0;left:0}
+.td-planet>span{display:block}
+.td-star{clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);pointer-events:none}
+.td-noscroll{scrollbar-width:none}
+.td-noscroll::-webkit-scrollbar{display:none}
+@media (prefers-reduced-motion:reduce){.td-pop,.td-bob,.td-twinkle,.td-nudge,.td-flame,.td-fire,.td-glow,.td-ember,.td-spin,.td-dash,.td-float,.td-sun-rays,.td-blink,.td-planet{animation:none!important}}
+.td-overview{container-type:inline-size}
+.td-ov-grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"hero""streak""skills""count""cal""history";gap:16px;display:grid}
+@container (min-width:660px){.td-ov-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"hero hero""streak skills""count count""cal cal""history history"}}
+@container (min-width:1060px){.td-ov-grid{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-areas:"hero hero streak cal""skills count count history"}}
+}
