@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace EnglishLearning.DAL.Data;
-
+using EnglishLearning.DAL.Entities;
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options)
@@ -10,4 +11,34 @@ public class AppDbContext : DbContext
     }
 
     // Các DbSet<Entity> của bạn đặt ở đây
+    public DbSet<GrammarCategory> GrammarCategories => Set<GrammarCategory>();
+    public DbSet<GrammarSection> GrammarSections => Set<GrammarSection>();
+    public DbSet<Idiom> Idioms => Set<Idiom>();
+    public DbSet<ListeningExercise> ListeningExercises => Set<ListeningExercise>();
+    public DbSet<ListeningFillBlankAnswer> ListeningFillBlankAnswers => Set<ListeningFillBlankAnswer>();
+    public DbSet<ListeningQuestion> ListeningQuestions => Set<ListeningQuestion>();
+    public DbSet<ListeningQuestionOption> ListeningQuestionOptions => Set<ListeningQuestionOption>();
+    public DbSet<ReadingExercise> ReadingExercises => Set<ReadingExercise>();
+    public DbSet<ReadingFillBlankAnswer> ReadingFillBlankAnswers => Set<ReadingFillBlankAnswer>();
+    public DbSet<ReadingQuestion> ReadingQuestions => Set<ReadingQuestion>();
+    public DbSet<ReadingQuestionOption> ReadingQuestionOptions => Set<ReadingQuestionOption>();
+    public DbSet<SpeakingCriterionScore> SpeakingCriterionScores => Set<SpeakingCriterionScore>();
+    public DbSet<SpeakingExercise> SpeakingExercises => Set<SpeakingExercise>();
+    public DbSet<SpeakingGrade> SpeakingGrades => Set<SpeakingGrade>();
+    public DbSet<SpeakingQuestion> SpeakingQuestions => Set<SpeakingQuestion>();
+    public DbSet<Topic> Topics => Set<Topic>();
+    public DbSet<TranslationExercise> TranslationExercises => Set<TranslationExercise>();
+    public DbSet<User> Users => Set<User>();
+    public DbSet<UserListeningAnswer> UserListeningAnswers => Set<UserListeningAnswer>();
+    public DbSet<UserListeningAttempt> UserListeningAttempts => Set<UserListeningAttempt>();
+    public DbSet<UserReadingAnswer> UserReadingAnswers => Set<UserReadingAnswer>();
+    public DbSet<UserReadingAttempt> UserReadingAttempts => Set<UserReadingAttempt>();
+    public DbSet<UserSpeakingAnswer> UserSpeakingAnswers => Set<UserSpeakingAnswer>();
+    public DbSet<UserSpeakingAttempt> UserSpeakingAttempts => Set<UserSpeakingAttempt>();
+    public DbSet<UserTranslationAttempt> UserTranslationAttempts => Set<UserTranslationAttempt>();
+    public DbSet<UserWordProgress> UserWordProgresses => Set<UserWordProgress>();
+    public DbSet<UserWritingAttempt> UserWritingAttempts => Set<UserWritingAttempt>();
+    public DbSet<UserWritingCriterionScore> UserWritingCriterionScores => Set<UserWritingCriterionScore>();
+    public DbSet<Word> Words => Set<Word>();
+    public DbSet<WritingExercise> WritingExercises => Set<WritingExercise>();
 }

@@ -9,7 +9,7 @@ builder.Services.AddEndpointsApiExplorer(); builder.Services.AddSwaggerGen();
 
 // Đăng ký kết nối MySQL
 var connectionString = builder.Configuration
-    .GetConnectionString("DefaultConnection");
+    .GetConnectionString("MySqlConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySQL(connectionString!));
