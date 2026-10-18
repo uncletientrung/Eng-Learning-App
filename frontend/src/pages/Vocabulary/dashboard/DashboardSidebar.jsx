@@ -4,7 +4,7 @@ import { Bell, History, Layers, LayoutGrid, LibraryBig, LogOut, Moon, PanelLeftC
 const items = [
   { label: "Tổng quan", icon: LayoutGrid, view: "overview" },
   { label: "Bộ từ", icon: LibraryBig, view: "sets" },
-  { label: "Flashcard", icon: Layers, view: "flashcard", disabled: true },
+  { label: "Flashcard", icon: Layers, view: "flashcard" },
   { label: "Thống kê", icon: TrendingUp, view: "statistics", disabled: true },
   { label: "Lịch sử làm bài", icon: History, view: "history", disabled: true },
 ];

@@ -4,6 +4,7 @@ export default function PersonalWordSetCard({ hidden = false }) {
   return (
     <button
       type="button"
+      data-dashboard-action="notebook"
       hidden={hidden}
       className="td-pop group relative isolate flex min-h-[400px] w-full flex-col overflow-hidden rounded-[26px] bg-[#232833] text-center text-white select-none cursor-pointer transition-transform duration-200 hover:-translate-y-[5px] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-d-accent active:scale-[0.98]"
     >
