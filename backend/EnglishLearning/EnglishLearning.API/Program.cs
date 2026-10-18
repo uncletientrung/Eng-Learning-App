@@ -9,29 +9,37 @@ builder.Services.AddEndpointsApiExplorer(); builder.Services.AddSwaggerGen();
 
 // Đăng ký kết nối MySQL
 var connectionString = builder.Configuration
-    .GetConnectionString("MySqlConnection");
+    .GetConnectionString("MySqlConnection")
+    ?? throw new InvalidOperationException(
+        "Không tìm thấy chuỗi kết nối MySqlConnection.");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySQL(connectionString!));
+    options.UseMySql(
+    connectionString,
+    ServerVersion.AutoDetect(connectionString)
+));
 
 var app = builder.Build();
 
 
-// Check
-using (var scope = app.Services.CreateScope())
+// Migrate và seed trước khi ứng dụng bắt đầu nhận request.
+await using (var scope = app.Services.CreateAsyncScope())
 {
     var db = scope.ServiceProvider
         .GetRequiredService<AppDbContext>();
 
     try
     {
-        var connected = await db.Database.CanConnectAsync();
-        Console.WriteLine(
-            $"MySQL connection: {connected}");
+        await db.Database.MigrateAsync();
+        await DbSeeder.SeedAsync(db);
     }
     catch (Exception ex)
     {
-        Console.WriteLine(ex.Message);
+        // Print full exception details to console so we can see the exact failing
+        // stack frame and inner exceptions (including provider internals).
+        Console.WriteLine("Migration/Seeding failed: \n" + ex.ToString());
+        // Re-throw so the process still fails as before, but with logged details.
+        throw;
     }
 }
 
