@@ -7,6 +7,7 @@ import SpeakingLibrary from './pages/Speaking/SpeakingLibrary'
 import SpeakingPart1 from './pages/Speaking/SpeakingPart1'
 import SpeakingPart2 from './pages/Speaking/SpeakingPart2'
 import SpeakingPart3 from './pages/Speaking/SpeakingPart3'
+import VocabularyLibrary from './pages/Vocabulary/VocabularyLibrary'
 
 function App() {
   return (
@@ -28,6 +29,9 @@ function App() {
       <Route path="/speaking/p1/:id" element={<SpeakingPart1 />} />
       <Route path="/speaking/p2/:id" element={<SpeakingPart2 />} />
       <Route path="/speaking/p3/:id" element={<SpeakingPart3 />} />
+
+      {/* Vocab */}
+      <Route path="/vocabulary" element={<VocabularyLibrary />} />      
     </Routes>
   )
 }
