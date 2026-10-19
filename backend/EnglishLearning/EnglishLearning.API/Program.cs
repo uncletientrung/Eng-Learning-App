@@ -1,11 +1,25 @@
 using Microsoft.EntityFrameworkCore;
 using EnglishLearning.DAL.Data;
+using EnglishLearning.BLL.Interfaces;
+using EnglishLearning.BLL.Services;
+using EnglishLearning.DAL.Interfaces;
+using EnglishLearning.DAL.Repositories;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer(); builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<
+    IWritingExerciseRepository,
+    WritingExerciseRepository>();
+
+builder.Services.AddScoped<
+    IWritingExerciseService,
+    WritingExerciseService>();
+
 
 // Đăng ký kết nối MySQL
 var connectionString = builder.Configuration

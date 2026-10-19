@@ -23,4 +23,8 @@
     <ProjectReference Include="..\EnglishLearning.DAL\EnglishLearning.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Middleware\" />
+  </ItemGroup>
+
 </Project>

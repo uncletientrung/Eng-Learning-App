@@ -10,4 +10,8 @@
     <ProjectReference Include="..\EnglishLearning.DAL\EnglishLearning.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+  </ItemGroup>
+
 </Project>
