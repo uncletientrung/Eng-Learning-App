@@ -41,4 +41,39 @@ public class AppDbContext : DbContext
     public DbSet<UserWritingCriterionScore> UserWritingCriterionScores => Set<UserWritingCriterionScore>();
     public DbSet<Word> Words => Set<Word>();
     public DbSet<WritingExercise> WritingExercises => Set<WritingExercise>();
+
+
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<WritingExercise>() // Cấu hình entity WritingExercise
+            .HasOne(e => e.Topic) // Mỗi bài tập viết liên kết với một Topic
+            .WithMany() // Một Topic có thể liên kết với nhiều bài tập viết
+            .HasForeignKey(e => e.TopicId) // Cột TopicId là khóa ngoại.
+            .OnDelete(DeleteBehavior.Restrict); // Ngăn xóa Topic nếu vẫn còn bài tập viết tham chiếu đến nó.
+
+        modelBuilder.Entity<UserWritingAttempt>()
+            .HasOne(a => a.User)
+            .WithMany()
+            .HasForeignKey(a => a.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<UserWritingAttempt>()
+            .HasOne(a => a.Exercise)
+            .WithMany()
+            .HasForeignKey(a => a.ExerciseId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<UserWritingCriterionScore>()
+            .HasOne(s => s.Attempt)
+            .WithMany()
+            .HasForeignKey(s => s.AttemptId)
+            .OnDelete(DeleteBehavior.Cascade); // Khi xóa bản ghi cha, tự động xóa các bản ghi con liên quan.
+
+        modelBuilder.Entity<UserWritingCriterionScore>()
+            .HasIndex(s => new { s.AttemptId, s.CriterionCode })
+            .IsUnique();
+    }
 }

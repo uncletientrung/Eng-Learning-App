@@ -77,3 +77,9 @@ backend/
     ├── Repositories/
     ├── Configurations/
     └── Migrations/
+
+
+    Cách chạy : 
+    Nếu chưa có migrations: dotnet ef migrations add InitialCreate --project EnglishLearning.DAL --startup-project EnglishLearning.API --context    AppDbContext
+    donet build
+    dotnet ef database update --project EnglishLearning.DAL --startup-project EnglishLearning.API --context AppDbContext
