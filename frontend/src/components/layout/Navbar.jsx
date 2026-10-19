@@ -7,6 +7,7 @@ import {
   Crown,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 function Navbar({ transparentOnTop = false }) {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -23,18 +24,17 @@ function Navbar({ transparentOnTop = false }) {
     }
   }, [])
 
-  const isTransparent =  transparentOnTop && !isScrolled
-   
+  const isTransparent = transparentOnTop && !isScrolled
+
   return (
     <nav
       className={`
         fixed left-0 top-0 z-[100] w-full
         py-6
         transition-all duration-300
-        ${
-          isTransparent
-            ? 'bg-transparent'
-            : 'bg-white/80 backdrop-blur-md shadow-sm'
+        ${isTransparent
+          ? 'bg-transparent'
+          : 'bg-white/80 backdrop-blur-md shadow-sm'
         }
       `}
     >
@@ -136,9 +136,9 @@ function Navbar({ transparentOnTop = false }) {
             <div className="flex items-center transition-all duration-300 rounded-full backdrop-blur-sm border border-transparent hover:border-slate-100 bg-white/30">
 
               {/* Desktop user */}
-              <a
+              <Link
                 className="hidden lg:flex items-center gap-2.5 px-3 py-1.5 cursor-pointer"
-                href="/dashboard"
+                to="/vocabulary/dashboard"
               >
                 <div className="relative flex-shrink-0">
                   <div className="w-8 h-8 rounded-full bg-herb-100 flex items-center justify-center text-herb-600 font-bold overflow-hidden shadow-inner border border-herb-50">
@@ -163,7 +163,7 @@ function Navbar({ transparentOnTop = false }) {
                     </span>
                   </div>
                 </div>
-              </a>
+              </Link>
 
               {/* Mobile user */}
               <button
@@ -185,21 +185,21 @@ function Navbar({ transparentOnTop = false }) {
               <div className="hidden lg:flex items-center pr-2">
                 <div className="w-[1px] h-6 bg-slate-500/20 mx-1 shrink-0" />
 
-                <a
+                <Link
                   className="flex items-center gap-1.5 whitespace-nowrap px-2.5 py-1.5 rounded-xl text-[12px] font-bold text-slate-800 hover:text-amber-700 hover:bg-white/50 transition-colors"
-                  href="/dashboard?tab=notebook"
+                  to="/vocabulary/dashboard?tab=notebook"
                 >
                   <BookOpen size={14} aria-hidden="true" />
                   Sổ từ vựng
-                </a>
+                </Link>
 
-                <a
+                <Link
                   className="flex items-center gap-1.5 whitespace-nowrap px-2.5 py-1.5 rounded-xl text-[12px] font-bold text-slate-800 hover:text-blue-700 hover:bg-white/50 transition-colors"
-                  href="/dashboard?tab=history"
+                  to="/vocabulary/dashboard?tab=history"
                 >
                   <History size={14} aria-hidden="true" />
                   Lịch sử
-                </a>
+                </Link>
               </div>
             </div>
           </div>
