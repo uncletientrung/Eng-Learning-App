@@ -5,21 +5,22 @@ using EnglishLearning.BLL.Services;
 using EnglishLearning.DAL.Interfaces;
 using EnglishLearning.DAL.Repositories;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddEndpointsApiExplorer(); builder.Services.AddSwaggerGen();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
+// Đăng ký Repository
 builder.Services.AddScoped<
     IWritingExerciseRepository,
     WritingExerciseRepository>();
 
+// Đăng ký Service
 builder.Services.AddScoped<
     IWritingExerciseService,
     WritingExerciseService>();
-
 
 // Đăng ký kết nối MySQL
 var connectionString = builder.Configuration
@@ -29,14 +30,25 @@ var connectionString = builder.Configuration
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
-    connectionString,
-    ServerVersion.AutoDetect(connectionString)
-));
+        connectionString,
+        ServerVersion.AutoDetect(connectionString)
+    ));
+
+// Cấu hình CORS cho ReactJS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Frontend", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
-
-// Migrate và seed trước khi ứng dụng bắt đầu nhận request.
+// Migration và seed dữ liệu
 await using (var scope = app.Services.CreateAsyncScope())
 {
     var db = scope.ServiceProvider
@@ -49,19 +61,19 @@ await using (var scope = app.Services.CreateAsyncScope())
     }
     catch (Exception ex)
     {
-        // Print full exception details to console so we can see the exact failing
-        // stack frame and inner exceptions (including provider internals).
-        Console.WriteLine("Migration/Seeding failed: \n" + ex.ToString());
-        // Re-throw so the process still fails as before, but with logged details.
+        Console.WriteLine(
+            "Migration/Seeding failed: \n" + ex);
         throw;
     }
 }
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-
-//
-
-if (app.Environment.IsDevelopment()) { app.UseSwagger(); app.UseSwaggerUI(); }
+app.UseCors("Frontend");
 
 app.UseHttpsRedirection();
 

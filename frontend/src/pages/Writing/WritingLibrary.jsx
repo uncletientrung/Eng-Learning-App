@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import WritingHeader from '../../components/sections/writing/WritingHeader'
@@ -8,6 +8,7 @@ import WritingPagination from '../../components/sections/writing/WritingPaginati
 import MainLayout from '../../components/layout/MainLayout'
 
 import { writingTests } from '../../data/writingTests'
+import { getWritingExercises } from '../../services/writingApi.js';
 
 function WritingLibrary() {
   const [activeChartFilter, setActiveChartFilter] =useState('ALL')
@@ -37,6 +38,18 @@ function WritingLibrary() {
     navigate(`/writing/${test.id}`)
   }
 
+  useEffect(() => {
+    getWritingExercises()
+      .then(data => {
+        console.log('Dữ liệu bài tập:', data)
+      })
+      .catch(error => {
+        console.error('Lỗi API:', error)
+      })
+  }, [])
+
+  console.log("==================================");
+  console.log(getWritingExercises);
   return (
       <MainLayout>
         <main

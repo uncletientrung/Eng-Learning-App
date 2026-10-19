@@ -51,7 +51,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("grammar_categories", (string)null);
+                    b.ToTable("grammar_categories");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.GrammarSection", b =>
@@ -83,7 +83,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("grammar_sections", (string)null);
+                    b.ToTable("grammar_sections");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.Idiom", b =>
@@ -129,7 +129,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("idioms", (string)null);
+                    b.ToTable("idioms");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ListeningExercise", b =>
@@ -184,7 +184,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("TopicId");
 
-                    b.ToTable("listening_exercises", (string)null);
+                    b.ToTable("listening_exercises");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ListeningFillBlankAnswer", b =>
@@ -213,7 +213,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("listening_fill_blank_answers", (string)null);
+                    b.ToTable("listening_fill_blank_answers");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ListeningQuestion", b =>
@@ -257,7 +257,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("ExerciseId");
 
-                    b.ToTable("listening_questions", (string)null);
+                    b.ToTable("listening_questions");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ListeningQuestionOption", b =>
@@ -291,7 +291,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("listening_question_options", (string)null);
+                    b.ToTable("listening_question_options");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ReadingExercise", b =>
@@ -334,7 +334,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("TopicId");
 
-                    b.ToTable("reading_exercises", (string)null);
+                    b.ToTable("reading_exercises");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ReadingFillBlankAnswer", b =>
@@ -363,7 +363,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("reading_fill_blank_answers", (string)null);
+                    b.ToTable("reading_fill_blank_answers");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ReadingQuestion", b =>
@@ -406,7 +406,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("ExerciseId");
 
-                    b.ToTable("reading_questions", (string)null);
+                    b.ToTable("reading_questions");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ReadingQuestionOption", b =>
@@ -440,7 +440,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("reading_question_options", (string)null);
+                    b.ToTable("reading_question_options");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.SpeakingCriterionScore", b =>
@@ -480,7 +480,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("GradeId");
 
-                    b.ToTable("speaking_criterion_scores", (string)null);
+                    b.ToTable("speaking_criterion_scores");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.SpeakingExercise", b =>
@@ -508,7 +508,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("TopicId");
 
-                    b.ToTable("speaking_exercises", (string)null);
+                    b.ToTable("speaking_exercises");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.SpeakingGrade", b =>
@@ -548,7 +548,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("GraderId");
 
-                    b.ToTable("speaking_grades", (string)null);
+                    b.ToTable("speaking_grades");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.SpeakingQuestion", b =>
@@ -590,7 +590,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("ExerciseId");
 
-                    b.ToTable("speaking_questions", (string)null);
+                    b.ToTable("speaking_questions");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.Topic", b =>
@@ -630,7 +630,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("CreateByUserId");
 
-                    b.ToTable("topics", (string)null);
+                    b.ToTable("topics");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.TranslationExercise", b =>
@@ -672,7 +672,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("TopicId");
 
-                    b.ToTable("translation_exercises", (string)null);
+                    b.ToTable("translation_exercises");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.User", b =>
@@ -718,7 +718,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("user", (string)null);
+                    b.ToTable("user");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserListeningAnswer", b =>
@@ -752,7 +752,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("user_listening_answers", (string)null);
+                    b.ToTable("user_listening_answers");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserListeningAttempt", b =>
@@ -796,7 +796,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("user_listening_attempts", (string)null);
+                    b.ToTable("user_listening_attempts");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserReadingAnswer", b =>
@@ -830,7 +830,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("user_reading_answers", (string)null);
+                    b.ToTable("user_reading_answers");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserReadingAttempt", b =>
@@ -874,7 +874,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("user_reading_attempts", (string)null);
+                    b.ToTable("user_reading_attempts");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserSpeakingAnswer", b =>
@@ -909,7 +909,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("user_speaking_answers", (string)null);
+                    b.ToTable("user_speaking_answers");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserSpeakingAttempt", b =>
@@ -951,7 +951,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("user_speaking_attempts", (string)null);
+                    b.ToTable("user_speaking_attempts");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserTranslationAttempt", b =>
@@ -993,7 +993,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("user_translation_attempts", (string)null);
+                    b.ToTable("user_translation_attempts");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserWordProgress", b =>
@@ -1032,7 +1032,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("WordId");
 
-                    b.ToTable("user_word_progress", (string)null);
+                    b.ToTable("user_word_progress");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserWritingAttempt", b =>
@@ -1079,7 +1079,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("user_writing_attempts", (string)null);
+                    b.ToTable("user_writing_attempts");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserWritingCriterionScore", b =>
@@ -1125,9 +1125,10 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AttemptId");
+                    b.HasIndex("AttemptId", "CriterionCode")
+                        .IsUnique();
 
-                    b.ToTable("user_writing_criterion_scores", (string)null);
+                    b.ToTable("user_writing_criterion_scores");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.Word", b =>
@@ -1171,7 +1172,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("TopicId");
 
-                    b.ToTable("words", (string)null);
+                    b.ToTable("words");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.WritingExercise", b =>
@@ -1187,13 +1188,11 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnName("created_at");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)")
                         .HasColumnName("image_url");
 
                     b.Property<string>("Instruction")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("QuestionText")
@@ -1202,7 +1201,6 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnName("question_text");
 
                     b.Property<string>("ReferenceAnswer")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("reference_answer");
 
@@ -1216,7 +1214,6 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnName("topic_id");
 
                     b.Property<string>("WritingType")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)")
                         .HasColumnName("writing_type");
@@ -1225,7 +1222,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasIndex("TopicId");
 
-                    b.ToTable("writing_exercises", (string)null);
+                    b.ToTable("writing_exercises");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.GrammarCategory", b =>
@@ -1565,13 +1562,13 @@ namespace EnglishLearning.DAL.Migrations
                     b.HasOne("EnglishLearning.DAL.Entities.WritingExercise", "Exercise")
                         .WithMany()
                         .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("EnglishLearning.DAL.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Exercise");
@@ -1606,7 +1603,7 @@ namespace EnglishLearning.DAL.Migrations
                     b.HasOne("EnglishLearning.DAL.Entities.Topic", "Topic")
                         .WithMany()
                         .HasForeignKey("TopicId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Topic");

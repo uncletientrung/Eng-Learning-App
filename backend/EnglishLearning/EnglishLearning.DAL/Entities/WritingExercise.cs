@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace EnglishLearning.DAL.Entities
 {
@@ -18,22 +17,22 @@ namespace EnglishLearning.DAL.Entities
         [Required, StringLength(255)]
         public string Title { get; set; } = string.Empty;
 
-        [Required, StringLength(255)]
+        [StringLength(255)]
         [Column("image_url")]
-        public string ImageUrl { get; set; } = string.Empty;
+        public string? ImageUrl { get; set; }
 
-        [Required, StringLength(50)]
+        [StringLength(50)]
         [Column("writing_type")]
-        public string WritingType { get; set; } = string.Empty;
+        public string? WritingType { get; set; }
 
         [Required, Column("question_text", TypeName = "text")]
         public string QuestionText { get; set; } = string.Empty;
 
-        [Required, Column(TypeName = "text")]
-        public string Instruction { get; set; } = string.Empty;
+        [Column(TypeName = "text")]
+        public string? Instruction { get; set; }
 
-        [Required, Column("reference_answer", TypeName = "text")]
-        public string ReferenceAnswer { get; set; } = string.Empty;
+        [Column("reference_answer", TypeName = "text")]
+        public string? ReferenceAnswer { get; set; }
 
         [Required, Column("created_at", TypeName = "timestamp")]
         public DateTime CreatedAt { get; set; }
