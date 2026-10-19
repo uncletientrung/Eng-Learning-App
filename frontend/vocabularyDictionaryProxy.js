@@ -5,10 +5,10 @@ import { Agent } from 'node:https'
 export function vocabularyDictionaryProxy() {
   return {
     '/api/vocabulary/dictionary': {
-      target: 'https://api.dictionaryapi.dev',
+      target: 'https://dict.minhqnd.com',
       changeOrigin: true,
       agent: new Agent({ family: 4, keepAlive: true, maxSockets: 12 }),
-      rewrite: (path) => path.replace(/^\/api\/vocabulary\/dictionary/, '/api/v2/entries/en'),
+      rewrite: (path) => path.replace(/^\/api\/vocabulary\/dictionary(?=\?|$)/, '/api/v1/lookup'),
       proxyTimeout: 5000,
       timeout: 6500,
     },

@@ -10,7 +10,7 @@ export default defineConfig({
     tailwindcss(),
   ],
   // k khai bao proxy : fe -> localhost:5173/api
-  // khai bao proxy: fe -> localhost:5173/api -> proxy -> api.dictionaryapi.dev
+  // khai bao proxy: fe -> localhost:5173/api -> proxy -> dict.minhqnd.com
   server: { proxy: vocabularyDictionaryProxy() },
   preview: { proxy: vocabularyDictionaryProxy() },
 })

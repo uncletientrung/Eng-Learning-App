@@ -1,7 +1,7 @@
 const cache = new Map();
 const pending = new Map();
 const notFoundCache = new Map();
-const CACHE_KEY = "vocabulary-dictionary-cache-v1";
+const CACHE_KEY = "vocabulary-dictionary-cache-minhqnd-en-vi-v2";
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const NOT_FOUND_TTL_MS = 20_000;
 const MAX_CACHE_ENTRIES = 100;
@@ -13,7 +13,7 @@ let cacheLoaded = false;
 // Production can point this to its own deployed proxy. Vite's proxy exists in
 // development/preview only; a static production build keeps the public endpoint.
 const configuredBase = import.meta.env?.VITE_DICTIONARY_API_BASE_URL?.trim();
-const dictionaryBase = (configuredBase || (import.meta.env?.DEV ? "/api/vocabulary/dictionary" : "https://api.dictionaryapi.dev/api/v2/entries/en")).replace(/\/+$/, "");
+const dictionaryBase = (configuredBase || (import.meta.env?.DEV ? "/api/vocabulary/dictionary" : "https://dict.minhqnd.com/api/v1/lookup")).replace(/\/+$/, "");
 const normalize = (query) => query.trim().replace(/\s+/g, " ").toLowerCase();
 
 function loadCache() {
@@ -74,7 +74,8 @@ function makeRequest(word) {
   const timeout = setTimeout(() => { timedOut = true; controller.abort(); }, DICTIONARY_TIMEOUT_MS);
   request.promise = (async () => {
     try {
-      const response = await fetch(`${dictionaryBase}/${encodeURIComponent(word)}`, { signal: controller.signal, headers: { Accept: "application/json" } });
+      const params = new URLSearchParams({ word, lang: "en", def_lang: "vi" });
+      const response = await fetch(`${dictionaryBase}?${params}`, { signal: controller.signal, headers: { Accept: "application/json" } });
       if (response.status === 404) {
         const error = new Error("Không tìm thấy từ này. Bạn kiểm tra lại chính tả nhé.");
         notFoundCache.set(word, { error, expiresAt: Date.now() + NOT_FOUND_TTL_MS });
@@ -84,7 +85,14 @@ function makeRequest(word) {
       if (response.status === 429) throw new Error("Từ điển đang nhận nhiều yêu cầu. Vui lòng thử lại sau một chút.");
       if (response.status === 504 || response.status === 502) throw new Error("Từ điển phản hồi chậm hoặc chưa kết nối được. Vui lòng thử lại.");
       if (!response.ok) throw new Error("Từ điển tạm thời chưa phản hồi. Vui lòng thử lại.");
-      const options = parseDictionaryEntries(await response.json(), word);
+      const data = await response.json();
+      if (data?.exists === false) {
+        const error = new Error("Không tìm thấy từ này. Bạn kiểm tra lại chính tả nhé.");
+        notFoundCache.set(word, { error, expiresAt: Date.now() + NOT_FOUND_TTL_MS });
+        while (notFoundCache.size > MAX_CACHE_ENTRIES) notFoundCache.delete(notFoundCache.keys().next().value);
+        throw error;
+      }
+      const options = parseDictionaryEntries(data, word);
       if (!options.length) throw new Error("Từ này chưa có định nghĩa để chọn.");
       remember(word, options);
       return options;
@@ -136,31 +144,29 @@ function consumeRequest(word, request, signal) {
 }
 
 export function parseDictionaryEntries(entries, query) {
-  if (!Array.isArray(entries)) return [];
+  if (!entries || entries.exists !== true || !Array.isArray(entries.results)) return [];
   const options = [];
   const seen = new Set();
-  entries.forEach((entry, entryIndex) => {
-    if (!entry || typeof entry !== "object") return;
-    const word = typeof entry.word === "string" && entry.word.trim() ? entry.word.trim() : query;
-    (Array.isArray(entry.meanings) ? entry.meanings : []).forEach((meaning, meaningIndex) => {
-      if (!meaning || typeof meaning.partOfSpeech !== "string") return;
-      const type = meaning.partOfSpeech.trim().toLowerCase();
-      if (!type) return;
-      (Array.isArray(meaning.definitions) ? meaning.definitions : []).forEach((item, definitionIndex) => {
-        if (!item || typeof item.definition !== "string" || !item.definition.trim()) return;
-        const definition = item.definition.trim();
-        const key = JSON.stringify([type, definition.replace(/\s+/g, " ").toLowerCase()]);
-        if (seen.has(key)) return;
-        seen.add(key);
-        options.push({
-          id: `${entryIndex}-${meaningIndex}-${definitionIndex}`,
-          word,
-          type,
-          meaning: definition,
-          example: typeof item.example === "string" ? item.example.trim() : "",
-          phonetic: typeof entry.phonetic === "string" ? entry.phonetic : "",
-          sourceUrl: Array.isArray(entry.sourceUrls) ? entry.sourceUrls.find((url) => typeof url === "string" && /^https?:\/\//.test(url)) || "" : "",
-        });
+  const word = typeof entries.word === "string" && entries.word.trim() ? entries.word.trim() : query;
+  entries.results.forEach((entry, entryIndex) => {
+    if (!entry || entry.lang_code !== "en") return;
+    const phonetic = (Array.isArray(entry.pronunciations) ? entry.pronunciations : []).find((item) => typeof item?.ipa === "string" && item.ipa.trim())?.ipa.trim() || "";
+    (Array.isArray(entry.meanings) ? entry.meanings : []).forEach((item, meaningIndex) => {
+      if (!item || item.definition_lang !== "vi" || typeof item.pos !== "string" || !item.pos.trim() || typeof item.definition !== "string" || !item.definition.trim()) return;
+      const type = item.pos.trim();
+      const definition = item.definition.trim();
+      const key = JSON.stringify([type.toLowerCase(), definition.replace(/\s+/g, " ").toLowerCase()]);
+      if (seen.has(key)) return;
+      seen.add(key);
+      options.push({
+        id: `${entryIndex}-${meaningIndex}`,
+        word,
+        type,
+        meaning: definition,
+        example: typeof item.example === "string" ? item.example.trim() : "",
+        phonetic,
+        source: typeof item.source === "string" ? item.source.trim() : "",
+        sourceUrl: "",
       });
     });
   });
