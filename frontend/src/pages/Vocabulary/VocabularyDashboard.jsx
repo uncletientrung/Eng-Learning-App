@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Bell, Menu } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import DashboardSidebar, { DashboardThemeButton } from "./dashboard/DashboardSidebar";
 import OverviewTab from "./dashboard/overview/OverviewTab";
 import WordSetsTab from "./dashboard/word-sets/WordSetsTab";
 import FlashcardTab from "./dashboard/flashcard/FlashcardTab";
 import NotebookTab from "./dashboard/notebook/NotebookTab";
+import NotebookFlashcards from "./dashboard/flashcard/NotebookFlashcards";
 import DashboardDialog from "./dashboard/DashboardDialog";
 import "./dashboard/dashboard-sample.css";
 import "./VocabularyDashboard.css";
@@ -31,14 +32,15 @@ function bangkokDate() {
   return `${get("year")}-${get("month")}-${get("day")}`;
 }
 
-export default function VocabularyDashboard() {
+export default function VocabularyDashboard({ flashcardPage = false }) {
+  const navigate = useNavigate();
   const [preferences, setPreferences] = useState(loadPreferences);
   const expanded = preferences.sidebarExpanded;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const tab = searchParams.get("tab");
   const folderId = searchParams.get("folder");
-  const view = tab === "botu" ? "sets" : tab === "flashcard" ? "flashcard" : tab === "notebook" ? "notebook" : "overview";
+  const view = flashcardPage ? "flashcard" : tab === "botu" ? "sets" : tab === "flashcard" ? "flashcard" : tab === "notebook" ? "notebook" : "overview";
   const [notice, setNotice] = useState(null);
   const [today, setToday] = useState(bangkokDate);
   const contentRef = useRef(null);
@@ -64,10 +66,14 @@ export default function VocabularyDashboard() {
   const toggleTheme = () => setPreferences((previous) => ({ ...previous, dark: !previous.dark }));
   const showNotice = (title, description) => setNotice({ title, description });
   const changeView = (target) => {
+    if (flashcardPage || target === "flashcard") {
+      navigate(target === "flashcard" ? "/vocabulary/flashcard" : `/vocabulary/dashboard${target === "overview" ? "" : `?tab=${target === "sets" ? "botu" : "notebook"}`}`);
+      return;
+    }
     setSearchParams((previous) => {
       const next = new URLSearchParams(previous); // copy tham số hiện tại
       next.delete("folder");
-      if (target === "overview") { 
+      if (target === "overview") {
         next.delete("tab"); // Màn default -> khỏi cần url có tab
       } else if (target === "sets") {
         next.set("tab", "botu");
@@ -75,7 +81,7 @@ export default function VocabularyDashboard() {
         next.set("tab", "flashcard");
       } else if (target === "notebook") {
         next.set("tab", "notebook");
-      } 
+      }
       return next; // dùng
     });
   };
@@ -103,15 +109,15 @@ export default function VocabularyDashboard() {
         <DashboardSidebar expanded={expanded} onToggleExpanded={toggleSidebar} mobileOpen={mobileOpen} onCloseMobile={() => setMobileOpen(false)} dark={preferences.dark} onToggleTheme={toggleTheme} view={view === "notebook" ? "sets" : view} onNavigate={navigateView} onNotice={showNotice} />
         <header className="vd-mobile-header">
           <button type="button" aria-label="Mở menu" aria-expanded={mobileOpen} className="vd-icon-button" onClick={() => setMobileOpen(true)}><Menu size={20} /></button>
-          <div className="min-w-0 flex-1"><p className="truncate text-[10px] font-extrabold tracking-widest text-d-mute">{view === "overview" ? "TỔNG QUAN · TIẾN ĐỘ LUYỆN ĐỀ" : view === "flashcard" ? "FLASHCARD · IELTS" : view === "notebook" ? "BỘ TỪ CỦA BẢN THÂN" : "BỘ TỪ VỰNG · IELTS"}</p><p className="truncate text-sm font-bold">{view === "overview" ? "Chào bạn, hôm nay luyện đề nhé!" : view === "flashcard" ? "Chọn bộ từ để bắt đầu ôn tập" : view === "notebook" ? "Thư mục của bạn." : "Chọn bộ từ để bắt đầu học"}</p></div>
+          <div className="min-w-0 flex-1"><p className="truncate text-[10px] font-extrabold tracking-widest text-d-mute">{view === "overview" ? "TỔNG QUAN · TIẾN ĐỘ LUYỆN ĐỀ" : view === "flashcard" ? "FLASHCARD · IELTS" : view === "notebook" ? "BỘ TỪ CỦA BẢN THÂN" : "BỘ TỪ VỰNG · IELTS"}</p><p className="truncate text-sm font-bold">{view === "overview" ? "Chào bạn, hôm nay luyện đề nhé!" : view === "flashcard" ? (folderId ? "Lật thẻ, nhớ từ lâu hơn" : "Chọn bộ từ để bắt đầu ôn tập") : view === "notebook" ? "Thư mục của bạn." : "Chọn bộ từ để bắt đầu học"}</p></div>
           <button type="button" aria-label="Thông báo" className="vd-icon-button" onClick={() => showNotice("Thông báo", "Bạn chưa có thông báo mới.")}><Bell size={18} /></button>
           <DashboardThemeButton dark={preferences.dark} onToggle={toggleTheme} />
         </header>
-        <main ref={contentRef} className="vd-main" onClick={handleAction}>
+        <main ref={contentRef} className={`vd-main${view === "flashcard" && folderId ? " vd-main-study" : ""}`} onClick={handleAction}>
           {view === "overview"
             ? <OverviewTab preferences={preferences} onBandChange={changeBand} onExamDateChange={(examDate) => setPreferences((previous) => ({ ...previous, examDate }))} today={today} />
             : view === "flashcard"
-              ? <FlashcardTab onChooseSet={() => navigateView("sets")} />
+              ? folderId ? <NotebookFlashcards key={folderId} folderId={folderId} /> : <FlashcardTab onChooseSet={() => navigateView("sets")} />
               : view === "notebook"
                 ? <NotebookTab onBack={() => navigateView("sets")} />
                 : <WordSetsTab key={view} />}

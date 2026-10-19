@@ -5,6 +5,7 @@ import CalendarBadge from "../overview/CalendarBadge";
 import NotebookFolderCard from "./NotebookFolderCard";
 import NotebookFolderDetail from "./NotebookFolderDetail";
 import FolderActionDialog from "./FolderActionDialog";
+import { nextFolderColor } from "./folderColors";
 import { addNotebookWords, getNotebookFolders, saveNotebookFolders, useNotebookFolders } from "./notebookStorage";
 import "./NotebookTab.css";
 
@@ -42,7 +43,8 @@ export default function NotebookTab({ onBack }) {
       nameInputRef.current?.focus();
       return;
     }
-    const nextFolders = [{ id: crypto.randomUUID(), name: folderName, createdAt: new Date().toISOString(), words: [], wordCount: 0 }, ...getNotebookFolders()];
+    const currentFolders = getNotebookFolders();
+    const nextFolders = [{ id: crypto.randomUUID(), name: folderName, color: nextFolderColor(currentFolders), createdAt: new Date().toISOString(), words: [], wordCount: 0 }, ...currentFolders];
     try {
       saveNotebookFolders(nextFolders);
       setStorageError(false);

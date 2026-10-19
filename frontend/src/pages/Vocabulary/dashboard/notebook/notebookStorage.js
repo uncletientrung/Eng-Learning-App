@@ -1,6 +1,7 @@
 // temp file, localstorage
 
 import { useSyncExternalStore } from "react";
+import { getFolderColor } from "./folderColors";
 
 const storageKey = "vocabulary-notebook-folders";
 const changeEvent = "vocabulary-notebook-updated";
@@ -14,7 +15,7 @@ function parseFolders(raw) {
     if (!Array.isArray(data)) return [];
     return data.filter((folder) => folder && typeof folder.id === "string" && typeof folder.name === "string" && folder.name.trim() && typeof folder.createdAt === "string" && !Number.isNaN(Date.parse(folder.createdAt))).map((folder) => {
       const words = (Array.isArray(folder.words) ? folder.words : []).filter((item) => item && typeof item.word === "string" && item.word.trim() && typeof item.type === "string" && typeof item.meaning === "string" && item.meaning.trim()).map((item, index) => ({ ...item, id: typeof item.id === "string" ? item.id : `${folder.id}-word-${index}`, example: typeof item.example === "string" ? item.example : "" }));
-      return { ...folder, words, wordCount: words.length };
+      return { ...folder, color: getFolderColor(folder), words, wordCount: words.length };
     });
   } catch { return []; }
 }

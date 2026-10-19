@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { ChevronLeft, CircleCheck, Folder, FolderInput, Layers, Pencil, Plus, X } from "lucide-react";
 import AddWordsDialog from "./AddWordsDialog";
 import PartOfSpeechBadge from "./PartOfSpeechBadge";
 import WordActionDialog from "./WordActionDialog";
 import { deleteNotebookWords } from "./notebookStorage";
+import { getFolderColor } from "./folderColors";
 import "./NotebookFolderDetail.css";
 
 export default function NotebookFolderDetail({ folder, onBack, onAddWords }) {
@@ -20,7 +22,7 @@ export default function NotebookFolderDetail({ folder, onBack, onAddWords }) {
     if (!result.error) { setSelected([]); setSelecting(false); }
   };
   return (
-    <section className="vd-notebook vd-folder-detail" aria-labelledby="vd-folder-detail-title">
+    <section className="vd-notebook vd-folder-detail" style={{ "--folder-color": getFolderColor(folder) }} aria-labelledby="vd-folder-detail-title">
       <button type="button" className="vd-notebook-back" onClick={onBack}><ChevronLeft size={17} strokeWidth={2.6} />Tất cả thư mục</button>
       <header className="vd-folder-detail-header">
         <span className="vd-folder-detail-orb" aria-hidden="true" />
@@ -34,7 +36,7 @@ export default function NotebookFolderDetail({ folder, onBack, onAddWords }) {
         <div className="vd-folder-detail-actions">
           <button type="button" onClick={() => { setMessage(""); setAdding(true); }} className="vd-folder-add-word"><Plus size={20} />Thêm từ mới</button>
           <button type="button" disabled={!words.length} className="vd-folder-select-words" aria-pressed={selecting} onClick={() => { setSelecting(!selecting); setSelected([]); }}><CircleCheck size={20} />{selecting ? "Hủy chọn" : "Chọn để xoá"}</button>
-          <button type="button" disabled className="vd-folder-practice"><Layers size={21} />Luyện Flashcard</button>
+          {words.length ? <Link className="vd-folder-practice" to={`/vocabulary/flashcard?folder=${encodeURIComponent(folder.id)}`}><Layers size={21} />Luyện Flashcard</Link> : <button type="button" disabled className="vd-folder-practice" title="Thêm từ vào thư mục để luyện flashcard"><Layers size={21} />Luyện Flashcard</button>}
         </div>
       </header>
       {message && <p className="vd-folder-save-message" role="status">{message}</p>}

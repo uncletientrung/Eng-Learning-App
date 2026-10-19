@@ -14,7 +14,7 @@ const VocabularyDashboard = lazy(() => import('./pages/Vocabulary/VocabularyDash
 
 function App() {
   return (
-    <Routes>  
+    <Routes>
       <Route path="/" element={<Home />} />
 
       <Route
@@ -34,8 +34,9 @@ function App() {
       <Route path="/speaking/p3/:id" element={<SpeakingPart3 />} />
 
       {/* Vocab */}
-      <Route path="/vocabulary" element={<VocabularyLibrary />} />      
+      <Route path="/vocabulary" element={<VocabularyLibrary />} />
       <Route path="/vocabulary/dashboard" element={<Suspense fallback={<div className="min-h-screen bg-[#0e1014]" role="status" aria-label="Đang tải dashboard" />}><VocabularyDashboard /></Suspense>} />
+      <Route path="/vocabulary/flashcard" element={<Suspense fallback={<div className="min-h-screen bg-[#0e1014]" role="status" aria-label="Đang tải flashcard" />}><VocabularyDashboard flashcardPage /></Suspense>} />
     </Routes>
   )
 }

@@ -13,7 +13,7 @@
   overflow: hidden;
   padding: 32px 36px;
   border-radius: 36px;
-  background: #e99000;
+  background: var(--folder-color, #e99000);
   color: white;
 }
 
@@ -83,7 +83,7 @@
   gap: 12px;
 }
 
-.vocabulary-dashboard .vd-folder-detail-actions button {
+.vocabulary-dashboard .vd-folder-detail-actions :is(button, a) {
   display: inline-flex;
   min-height: 58px;
   align-items: center;
@@ -142,7 +142,7 @@
   bottom: 20px;
   width: 6px;
   border-radius: 0 8px 8px 0;
-  background: #e99000;
+  background: var(--folder-color, #e99000);
 }
 
 .vocabulary-dashboard .vd-folder-word-heading {
