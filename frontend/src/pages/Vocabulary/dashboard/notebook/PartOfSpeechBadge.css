@@ -1,0 +1,71 @@
+.vocabulary-dashboard .vd-pos-badge {
+    --pos-fg: #616779;
+    --pos-dark: #c4c8d0;
+    --pos-bg: #8d93a024;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    width: fit-content;
+    padding: 6px 10px;
+    border-radius: 9px;
+    background: var(--pos-bg);
+    color: var(--pos-fg);
+    font-size: 10px;
+    font-weight: 900;
+    line-height: 1.2;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.vocabulary-dashboard .dark .vd-pos-badge {
+    color: var(--pos-dark);
+}
+
+.vocabulary-dashboard .vd-pos-noun {
+    --pos-fg: #a3660d;
+    --pos-dark: #eeb16c;
+    --pos-bg: #e990002b;
+}
+
+.vocabulary-dashboard .vd-pos-verb {
+    --pos-fg: #7651bd;
+    --pos-dark: #c8a4ff;
+    --pos-bg: #9b5de526;
+}
+
+.vocabulary-dashboard .vd-pos-adjective {
+    --pos-fg: #16805e;
+    --pos-dark: #77d7b9;
+    --pos-bg: #20b48624;
+}
+
+.vocabulary-dashboard .vd-pos-adverb {
+    --pos-fg: #3864c4;
+    --pos-dark: #94b5ff;
+    --pos-bg: #4f7cf724;
+}
+
+.vocabulary-dashboard .vd-pos-pronoun {
+    --pos-fg: #ae4a77;
+    --pos-dark: #f6a5ca;
+    --pos-bg: #de7fac24;
+}
+
+.vocabulary-dashboard .vd-pos-preposition {
+    --pos-fg: #237b89;
+    --pos-dark: #8ad1dd;
+    --pos-bg: #36a0b124;
+}
+
+.vocabulary-dashboard .vd-pos-conjunction {
+    --pos-fg: #a85a22;
+    --pos-dark: #ffb38a;
+    --pos-bg: #ff8a5c24;
+}
+
+.vocabulary-dashboard .vd-pos-interjection,
+.vocabulary-dashboard .vd-pos-exclamation {
+    --pos-fg: #ae4858;
+    --pos-dark: #ff9dac;
+    --pos-bg: #e5566b24;
+}

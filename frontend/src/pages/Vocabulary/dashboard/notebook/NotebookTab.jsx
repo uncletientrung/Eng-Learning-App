@@ -4,21 +4,15 @@ import { ChevronLeft, FolderPlus, PencilLine, Plus } from "lucide-react";
 import CalendarBadge from "../overview/CalendarBadge";
 import NotebookFolderCard from "./NotebookFolderCard";
 import NotebookFolderDetail from "./NotebookFolderDetail";
+import FolderActionDialog from "./FolderActionDialog";
+import { addNotebookWords, getNotebookFolders, saveNotebookFolders, useNotebookFolders } from "./notebookStorage";
 import "./NotebookTab.css";
 
-const storageKey = "vocabulary-notebook-folders";
-
-function loadFolders() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
-    if (!Array.isArray(saved)) return [];
-    return saved.filter((folder) => folder && typeof folder.id === "string" && typeof folder.name === "string" && folder.name.trim() && typeof folder.createdAt === "string" && !Number.isNaN(Date.parse(folder.createdAt)) && Number.isInteger(folder.wordCount) && folder.wordCount >= 0);
-  } catch { return []; }
-}
-
 export default function NotebookTab({ onBack }) {
-  const [folders, setFolders] = useState(loadFolders);
+  const folders = useNotebookFolders();
   const [creating, setCreating] = useState(false);
+  const [folderAction, setFolderAction] = useState(null);
+  const [message, setMessage] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [storageError, setStorageError] = useState(false);
@@ -48,12 +42,11 @@ export default function NotebookTab({ onBack }) {
       nameInputRef.current?.focus();
       return;
     }
-    const nextFolders = [{ id: crypto.randomUUID(), name: folderName, createdAt: new Date().toISOString(), wordCount: 0 }, ...folders];
+    const nextFolders = [{ id: crypto.randomUUID(), name: folderName, createdAt: new Date().toISOString(), words: [], wordCount: 0 }, ...getNotebookFolders()];
     try {
-      localStorage.setItem(storageKey, JSON.stringify(nextFolders));
+      saveNotebookFolders(nextFolders);
       setStorageError(false);
-    } catch { setStorageError(true); }
-    setFolders(nextFolders);
+    } catch { setStorageError(true); return; }
     cancelCreating();
   };
   const wordCount = folders.reduce((total, folder) => total + folder.wordCount, 0);
@@ -73,7 +66,7 @@ export default function NotebookTab({ onBack }) {
     });
   };
 
-  if (selectedFolder) return <NotebookFolderDetail folder={selectedFolder} onBack={backToFolders} />;
+  if (selectedFolder) return <NotebookFolderDetail key={selectedFolder.id} folder={selectedFolder} onBack={backToFolders} onAddWords={(selections) => addNotebookWords(selectedFolder.id, selections)} />;
   if (selectedFolderId) return <section className="vd-notebook"><button type="button" className="vd-notebook-back" onClick={backToFolders}><ChevronLeft size={17} />Tất cả thư mục</button><p role="status">Không tìm thấy thư mục.</p></section>;
 
   return (
@@ -95,7 +88,8 @@ export default function NotebookTab({ onBack }) {
           <button type="button" onClick={startCreating} className="vd-notebook-create"><FolderPlus size={17} />Tạo thư mục mới</button>
         </div>
       </header>
-      {storageError && <p role="status" className="text-sm text-d-mute">Trình duyệt chưa lưu được thư mục. Thư mục mới sẽ chỉ được giữ trong lần mở này.</p>}
+      {storageError && <p role="status" className="text-sm text-d-mute">Trình duyệt chưa lưu được thư mục. Vui lòng kiểm tra dung lượng hoặc quyền lưu rồi thử lại.</p>}
+      {message && <p role="status" className="vd-notebook-folder-message">{message}</p>}
       <div className="vd-notebook-folders">
         {creating ? (
           <form className="vd-notebook-folder-form" onSubmit={createFolder} onKeyDown={(event) => { if (event.key === "Escape") { event.stopPropagation(); cancelCreating(); } }} aria-label="Tạo thư mục">
@@ -104,8 +98,9 @@ export default function NotebookTab({ onBack }) {
             <div className="vd-notebook-folder-form-actions"><button type="submit">Tạo</button><button type="button" onClick={cancelCreating}>Hủy</button></div>
           </form>
         ) : <button type="button" onClick={startCreating} className="vd-notebook-new-folder"><Plus size={20} strokeWidth={3} />Thư mục mới</button>}
-        {folders.map((folder) => <NotebookFolderCard key={folder.id} folder={folder} onOpen={openFolder} />)}
+        {folders.map((folder) => <NotebookFolderCard key={folder.id} folder={folder} onOpen={openFolder} onAction={(mode, target) => setFolderAction({ mode, folder: target })} />)}
       </div>
+      {folderAction && <FolderActionDialog folder={folderAction.folder} mode={folderAction.mode} onClose={() => setFolderAction(null)} onSuccess={setMessage} />}
     </section>
   );
 }

@@ -1,47 +1,434 @@
-.vocabulary-dashboard .vd-notebook { display: flex; width: 100%; flex-direction: column; gap: 18px; padding-bottom: 40px; }
-.vocabulary-dashboard .vd-notebook-back { display: inline-flex; align-items: center; align-self: flex-start; gap: 4px; padding: 4px 4px 0; color: var(--d-accent); font-size: 14px; font-weight: 700; }
-.vocabulary-dashboard .vd-notebook-back:hover { text-decoration: underline; text-underline-offset: 3px; }
-.vocabulary-dashboard .vd-notebook-header { position: relative; isolation: isolate; display: flex; flex-wrap: wrap; align-items: center; gap: 18px 24px; overflow: hidden; border-radius: 30px; background: #1b1d22; padding: 26px 28px; color: white; }
-.vocabulary-dashboard .vd-notebook-grid { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(#ffffff12 1px, transparent 1px) 0 0 / 30px 30px, linear-gradient(90deg, #ffffff12 1px, transparent 1px) 0 0 / 30px 30px; }
-.vocabulary-dashboard .vd-notebook-orb { position: absolute; right: -60px; top: -80px; width: 240px; height: 240px; border-radius: 50%; background: #ffc02e; opacity: .9; pointer-events: none; }
-.vocabulary-dashboard .vd-notebook-badge { position: relative; display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; width: 64px; height: 64px; color: var(--d-accent); }
-.vocabulary-dashboard .vd-notebook-badge > svg:first-child { position: absolute; inset: 0; width: 64px; height: 64px; margin: 0; }
-.vocabulary-dashboard .vd-notebook-badge > svg:last-child { position: relative; }
-.vocabulary-dashboard .vd-notebook-heading { position: relative; display: flex; min-width: 0; flex: 1 1 240px; flex-direction: column; gap: 6px; }
-.vocabulary-dashboard .vd-notebook-eyebrow { color: #c4c8d0; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .16em; }
-.vocabulary-dashboard .vd-notebook-heading h1 { margin: 0; font-size: clamp(30px, 3.4vw, 44px); font-weight: 700; line-height: 1; letter-spacing: -.03em; }
-.vocabulary-dashboard .vd-notebook-counts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-.vocabulary-dashboard .vd-notebook-counts > span { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: #ffffff1f; font-size: 13px; font-weight: 700; }
-.vocabulary-dashboard .vd-notebook-counts i { width: 8px; height: 8px; border-radius: 50%; }
-.vocabulary-dashboard .vd-notebook-dot-green { background: #20b486; }
-.vocabulary-dashboard .vd-notebook-dot-yellow { background: #ffc02e; }
-.vocabulary-dashboard .vd-notebook-actions { position: relative; display: flex; flex-wrap: wrap; gap: 10px; }
-.vocabulary-dashboard .vd-notebook-actions button { display: inline-flex; height: 48px; align-items: center; justify-content: center; gap: 8px; padding: 0 18px; border-radius: 15px; font-size: 15px; font-weight: 700; transition: transform .3s cubic-bezier(.34,1.8,.5,1); }
-.vocabulary-dashboard .vd-notebook-actions button:hover { transform: translateY(-3px); }
-.vocabulary-dashboard .vd-notebook-create { background: white; color: #1b1d22; box-shadow: 0 10px 20px -10px #0009; }
-.vocabulary-dashboard .vd-notebook-folders { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(248px, 100%), 1fr)); align-items: start; gap: 28px; padding-top: 14px; }
-.vocabulary-dashboard .vd-notebook-new-folder { display: flex; min-height: 260px; align-items: center; justify-content: center; gap: 8px; border: 2.5px dashed var(--d-line); border-radius: 20px; color: var(--d-mute); font-size: 16px; font-weight: 700; transition: color .2s, border-color .2s, background-color .2s; }
-.vocabulary-dashboard .vd-notebook-new-folder:hover { border-color: var(--d-accent); background: var(--d-surf); color: var(--d-ink); }
-.vocabulary-dashboard .vd-notebook button:disabled { cursor: not-allowed; }
-.vocabulary-dashboard .vd-notebook-folder-form { display: flex; min-width: 0; min-height: 260px; flex-direction: column; gap: 12px; padding: 38px 16px 14px; border: 1.5px dotted var(--d-mute); border-radius: 15px; }
-.vocabulary-dashboard .vd-notebook-folder-form input { min-width: 0; width: 100%; height: 68px; padding: 12px 18px; border: 1.5px solid #6678db; border-radius: 22px; background: transparent; color: var(--d-ink); font-size: 18px; font-weight: 800; text-align: center; }
-.vocabulary-dashboard .vd-notebook-folder-form input::placeholder { color: var(--d-ink); opacity: 1; }
-.vocabulary-dashboard .vd-notebook-folder-form > p { margin: 0; color: #e5566b; font-size: 12px; }
-.vocabulary-dashboard .vd-notebook-folder-form-actions { display: flex; flex-direction: column; gap: 10px; margin-top: auto; padding-top: 20px; }
-.vocabulary-dashboard .vd-notebook-folder-form-actions button { min-height: 44px; border-radius: 15px; font-size: 19px; line-height: 1.2; font-weight: 800; color: white; transition: transform .2s, filter .2s; }
-.vocabulary-dashboard .vd-notebook-folder-form-actions button:hover { filter: brightness(1.1); transform: translateY(-2px); }
-.vocabulary-dashboard .vd-notebook-folder-form-actions button:active { transform: scale(.98); }
-.vocabulary-dashboard .vd-notebook-folder-form-actions button[type="submit"] { background: var(--d-accent); }
-.vocabulary-dashboard .vd-notebook-folder-form-actions button[type="button"] { background: #3b3e3c; }
-.vocabulary-dashboard .vd-notebook-folder-card { position: relative; display: flex; min-width: 0; min-height: 260px; flex-direction: column; align-items: center; padding: 42px 20px 20px; border-radius: 15px; background: var(--d-surf); color: var(--d-ink); animation: .35s ease-out vd-folder-appear; }
-.vocabulary-dashboard .vd-notebook-folder-open { position: absolute; z-index: 1; inset: 0; width: 100%; border-radius: inherit; background: transparent; }
-.vocabulary-dashboard .vd-notebook-folder-card { transition: transform .2s, box-shadow .2s; }
-.vocabulary-dashboard .vd-notebook-folder-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -16px #0005; }
-.vocabulary-dashboard .vd-notebook-folder-word-count { position: absolute; top: 10px; right: 18px; display: inline-flex; align-items: baseline; gap: 5px; line-height: 1; }
-.vocabulary-dashboard .vd-notebook-folder-word-count strong { font-size: 36px; font-weight: 900; letter-spacing: -.06em; }
-.vocabulary-dashboard .vd-notebook-folder-word-count > span { font-size: 15px; font-weight: 700; }
-.vocabulary-dashboard .vd-notebook-book { width: 128px; height: 120px; flex-shrink: 0; }
-.vocabulary-dashboard .vd-notebook-folder-card h2 { max-width: 100%; margin: 18px 0 6px; font-size: 20px; font-weight: 800; line-height: 1.25; text-align: center; overflow-wrap: anywhere; }
-.vocabulary-dashboard .vd-notebook-folder-card p { margin: 0; color: var(--d-mute); font-size: 17px; font-weight: 700; text-align: center; }
-@keyframes vd-folder-appear { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-@media (max-width: 767px) { .vocabulary-dashboard .vd-notebook-header { padding: 24px 20px; } }
+.vocabulary-dashboard .vd-notebook {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 18px;
+    padding-bottom: 40px;
+}
+
+.vocabulary-dashboard .vd-notebook-back {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 4px;
+    padding: 4px 4px 0;
+    color: var(--d-accent);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.vocabulary-dashboard .vd-notebook-back:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.vocabulary-dashboard .vd-notebook-header {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 18px 24px;
+    overflow: hidden;
+    border-radius: 30px;
+    background: #1b1d22;
+    padding: 26px 28px;
+    color: white;
+}
+
+.vocabulary-dashboard .vd-notebook-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(#ffffff12 1px, transparent 1px) 0 0 / 30px 30px, linear-gradient(90deg, #ffffff12 1px, transparent 1px) 0 0 / 30px 30px;
+}
+
+.vocabulary-dashboard .vd-notebook-orb {
+    position: absolute;
+    right: -60px;
+    top: -80px;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: #ffc02e;
+    opacity: .9;
+    pointer-events: none;
+}
+
+.vocabulary-dashboard .vd-notebook-badge {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    color: var(--d-accent);
+}
+
+.vocabulary-dashboard .vd-notebook-badge>svg:first-child {
+    position: absolute;
+    inset: 0;
+    width: 64px;
+    height: 64px;
+    margin: 0;
+}
+
+.vocabulary-dashboard .vd-notebook-badge>svg:last-child {
+    position: relative;
+}
+
+.vocabulary-dashboard .vd-notebook-heading {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    flex: 1 1 240px;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.vocabulary-dashboard .vd-notebook-eyebrow {
+    color: #c4c8d0;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .16em;
+}
+
+.vocabulary-dashboard .vd-notebook-heading h1 {
+    margin: 0;
+    font-size: clamp(30px, 3.4vw, 44px);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -.03em;
+}
+
+.vocabulary-dashboard .vd-notebook-counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.vocabulary-dashboard .vd-notebook-counts>span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #ffffff1f;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.vocabulary-dashboard .vd-notebook-counts i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.vocabulary-dashboard .vd-notebook-dot-green {
+    background: #20b486;
+}
+
+.vocabulary-dashboard .vd-notebook-dot-yellow {
+    background: #ffc02e;
+}
+
+.vocabulary-dashboard .vd-notebook-actions {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.vocabulary-dashboard .vd-notebook-actions button {
+    display: inline-flex;
+    height: 48px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 18px;
+    border-radius: 15px;
+    font-size: 15px;
+    font-weight: 700;
+    transition: transform .3s cubic-bezier(.34, 1.8, .5, 1);
+}
+
+.vocabulary-dashboard .vd-notebook-actions button:hover {
+    transform: translateY(-3px);
+}
+
+.vocabulary-dashboard .vd-notebook-create {
+    background: white;
+    color: #1b1d22;
+    box-shadow: 0 10px 20px -10px #0009;
+}
+
+.vocabulary-dashboard .vd-notebook-folders {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(248px, 100%), 1fr));
+    align-items: start;
+    gap: 28px;
+    padding-top: 14px;
+}
+
+.vocabulary-dashboard .vd-notebook-new-folder {
+    display: flex;
+    min-height: 260px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 2.5px dashed var(--d-line);
+    border-radius: 20px;
+    color: var(--d-mute);
+    font-size: 16px;
+    font-weight: 700;
+    transition: color .2s, border-color .2s, background-color .2s;
+}
+
+.vocabulary-dashboard .vd-notebook-new-folder:hover {
+    border-color: var(--d-accent);
+    background: var(--d-surf);
+    color: var(--d-ink);
+}
+
+.vocabulary-dashboard .vd-notebook button:disabled {
+    cursor: not-allowed;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-form {
+    display: flex;
+    min-width: 0;
+    min-height: 260px;
+    flex-direction: column;
+    gap: 12px;
+    padding: 38px 16px 14px;
+    border: 1.5px dotted var(--d-mute);
+    border-radius: 15px;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-form input {
+    min-width: 0;
+    width: 100%;
+    height: 68px;
+    padding: 12px 18px;
+    border: 1.5px solid #6678db;
+    border-radius: 22px;
+    background: transparent;
+    color: var(--d-ink);
+    font-size: 18px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-form input::placeholder {
+    color: var(--d-ink);
+    opacity: 1;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-form>p {
+    margin: 0;
+    color: #e5566b;
+    font-size: 12px;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-form-actions button {
+    min-height: 44px;
+    border-radius: 15px;
+    font-size: 19px;
+    line-height: 1.2;
+    font-weight: 800;
+    color: white;
+    transition: transform .2s, filter .2s;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-form-actions button:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+}
+
+.vocabulary-dashboard .vd-notebook-folder-form-actions button:active {
+    transform: scale(.98);
+}
+
+.vocabulary-dashboard .vd-notebook-folder-form-actions button[type="submit"] {
+    background: var(--d-accent);
+}
+
+.vocabulary-dashboard .vd-notebook-folder-form-actions button[type="button"] {
+    background: #3b3e3c;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-card {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    min-height: 260px;
+    flex-direction: column;
+    align-items: center;
+    padding: 42px 20px 20px;
+    border-radius: 15px;
+    background: var(--d-surf);
+    color: var(--d-ink);
+    animation: .35s ease-out vd-folder-appear;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-open {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    width: 100%;
+    border-radius: inherit;
+    background: transparent;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-tools {
+    position: absolute;
+    z-index: 2;
+    top: 10px;
+    left: 12px;
+    display: flex;
+    gap: 4px;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-tools button {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    color: var(--d-mute);
+    background: var(--d-surf2);
+    cursor: pointer;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-tools button:hover {
+    color: var(--d-accent);
+}
+
+.vocabulary-dashboard .vd-notebook-folder-tools button:last-child:hover {
+    color: #e5566b;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-message {
+    margin: 0;
+    color: var(--d-accent);
+    font-size: 14px;
+}
+
+.vocabulary-dashboard .vd-folder-action-dialog {
+    width: min(520px, calc(100% - 32px));
+}
+
+.vocabulary-dashboard .vd-folder-action-dialog .vd-add-words-header {
+    grid-template-columns: minmax(0, 1fr) 36px;
+}
+
+.vocabulary-dashboard .vd-folder-rename-label {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-weight: 700;
+}
+
+.vocabulary-dashboard .vd-folder-rename-label input {
+    width: 100%;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid var(--d-line);
+    border-radius: 12px;
+    background: var(--d-surf2);
+    color: var(--d-ink);
+    font: inherit;
+}
+
+.vocabulary-dashboard .vd-folder-delete-description {
+    margin: 0;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.vocabulary-dashboard .vd-folder-delete-confirm {
+    background: #d83e55;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-card {
+    transition: transform .2s, box-shadow .2s;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -16px #0005;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-word-count {
+    position: absolute;
+    top: 10px;
+    right: 18px;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    line-height: 1;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-word-count strong {
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: -.06em;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-word-count>span {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.vocabulary-dashboard .vd-notebook-book {
+    width: 128px;
+    height: 120px;
+    flex-shrink: 0;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-card h2 {
+    max-width: 100%;
+    margin: 18px 0 6px;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.25;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.vocabulary-dashboard .vd-notebook-folder-card p {
+    margin: 0;
+    color: var(--d-mute);
+    font-size: 17px;
+    font-weight: 700;
+    text-align: center;
+}
+
+@keyframes vd-folder-appear {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 767px) {
+    .vocabulary-dashboard .vd-notebook-header {
+        padding: 24px 20px;
+    }
+}

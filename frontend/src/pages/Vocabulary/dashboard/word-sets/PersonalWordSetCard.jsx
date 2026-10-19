@@ -1,6 +1,9 @@
 import { Plus } from "lucide-react";
+import { useNotebookFolders } from "../notebook/notebookStorage";
 
 export default function PersonalWordSetCard({ hidden = false }) {
+  const folders = useNotebookFolders();
+  const wordCount = folders.reduce((total, folder) => total + folder.wordCount, 0);
   return (
     <button
       type="button"
@@ -11,7 +14,7 @@ export default function PersonalWordSetCard({ hidden = false }) {
       <div className="flex flex-col items-center gap-2 px-6 pt-[26px]">
         <h3 className="m-0 text-[26px] font-bold leading-[1.1] tracking-[-0.02em]">Bộ từ của bản thân</h3>
         <p className="m-0 text-[14.5px] font-medium leading-[1.45] text-[#c4c8d0]">Tự thêm và ôn tập từ vựng của riêng bạn.</p>
-        <span className="text-[12px] font-bold uppercase tracking-[0.04em] text-[#9aa0ab]">Cá nhân · 0 từ</span>
+        <span className="text-[12px] font-bold uppercase tracking-[0.04em] text-[#9aa0ab]">Cá nhân · {wordCount} từ</span>
       </div>
       <div className="relative mt-3.5 flex min-h-[220px] flex-1 items-center justify-center">
         <span
