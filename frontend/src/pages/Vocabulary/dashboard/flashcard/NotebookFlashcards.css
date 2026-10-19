@@ -99,6 +99,8 @@
 
 .vocabulary-dashboard .vf-card-area {
   position: relative;
+  display: grid;
+  padding: 70px 26px 40px 0;
   min-width: 0;
   min-height: 480px;
   touch-action: pan-y;
@@ -124,29 +126,29 @@
 }
 
 .vocabulary-dashboard .vf-card {
-  position: absolute;
+  position: relative;
+  display: grid;
+  width: calc(100% + 20px);
   left: -20px;
-  right: 26px;
-  top: 70px;
-  bottom: 40px;
   perspective: 1600px;
   cursor: pointer;
 }
 
 .vocabulary-dashboard .vf-card-face {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  grid-area: 1 / 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: 30px 26px 72px 50px;
+  padding: 30px 26px 24px 50px;
   border-radius: 0 28px 28px 0;
   background: white;
   color: #1b1d22;
   box-shadow: 0 26px 40px -22px #1b1d2273;
   backface-visibility: hidden;
   transition: transform .55s cubic-bezier(.3, 1.3, .5, 1);
-  overflow-y: auto;
+  overflow: clip;
   overflow-wrap: anywhere;
   scrollbar-width: thin;
 }
@@ -167,15 +169,21 @@
 }
 
 .vocabulary-dashboard .vf-card-back {
+  position: absolute;
+  inset: 0;
   transform: rotateY(180deg);
   padding-bottom: 24px;
 }
 
 .vocabulary-dashboard .vf-card.is-flipped .vf-card-front {
+  position: absolute;
+  inset: 0;
   transform: rotateY(-180deg);
 }
 
 .vocabulary-dashboard .vf-card.is-flipped .vf-card-back {
+  position: relative;
+  inset: auto;
   transform: rotateY(0);
 }
 
@@ -219,6 +227,7 @@
 
 .vocabulary-dashboard .vf-card-flip-target {
   position: relative;
+  flex-shrink: 0;
   z-index: 1;
   display: flex;
   width: 100%;
@@ -259,12 +268,13 @@
 
 .vocabulary-dashboard .vf-card-tags {
   position: relative;
+  flex-shrink: 0;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
   margin-top: 8px;
-  margin-bottom: -50px;
+  margin-bottom: 0;
   z-index: 1;
 }
 
@@ -900,12 +910,11 @@
 
   .vocabulary-dashboard .vf-card-area {
     min-height: 365px;
+    padding: 14px 18px 12px 0;
   }
 
   .vocabulary-dashboard .vf-card {
-    top: 14px;
-    right: 18px;
-    bottom: 12px;
+    min-height: 339px;
   }
 
   .vocabulary-dashboard .vf-paper {
@@ -913,7 +922,7 @@
   }
 
   .vocabulary-dashboard .vf-card-face {
-    padding: 22px 22px 65px 44px;
+    padding: 22px 22px 24px 44px;
   }
 
   .vocabulary-dashboard .vf-card-back {
