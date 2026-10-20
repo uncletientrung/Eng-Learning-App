@@ -9,6 +9,8 @@ import SpeakingPart1 from './pages/Speaking/SpeakingPart1'
 import SpeakingPart2 from './pages/Speaking/SpeakingPart2'
 import SpeakingPart3 from './pages/Speaking/SpeakingPart3'
 import VocabularyLibrary from './pages/Vocabulary/VocabularyLibrary'
+import ReadingLibrary from "./pages/Reading/ReadingLibrary.jsx";
+import LoginPage from "./pages/Login/LoginPage.jsx";
 
 const VocabularyDashboard = lazy(() => import('./pages/Vocabulary/VocabularyDashboard'))
 
@@ -16,7 +18,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-
+      <Route path="/login" element={<LoginPage/>}/>
       <Route
         path="/writing"
         element={<WritingLibrary />}
@@ -37,6 +39,8 @@ function App() {
       <Route path="/vocabulary" element={<VocabularyLibrary />} />
       <Route path="/vocabulary/dashboard" element={<Suspense fallback={<div className="min-h-screen bg-[#0e1014]" role="status" aria-label="Đang tải dashboard" />}><VocabularyDashboard /></Suspense>} />
       <Route path="/vocabulary/flashcard" element={<Suspense fallback={<div className="min-h-screen bg-[#0e1014]" role="status" aria-label="Đang tải flashcard" />}><VocabularyDashboard flashcardPage /></Suspense>} />
+
+      <Route path="/reading" element={<ReadingLibrary />} />
     </Routes>
   )
 }
