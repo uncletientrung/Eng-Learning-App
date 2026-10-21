@@ -1,9 +1,149 @@
 import { useState } from 'react'
 import { ChevronUp, ChevronDown } from 'lucide-react'
 
+
+function parseInstruction(text = '') {
+  const lines = text
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map(line => line.trim())
+    .filter(Boolean)
+
+  const findSection = (pattern) =>
+    lines.findIndex(line => pattern.test(line))
+
+  const explanationIndex = findSection(
+    /^1\.\s*Giải thích đề/i
+  )
+  const introductionIndex = findSection(
+    /^2\.\s*Introduction/i
+  )
+  const overviewIndex = findSection(
+    /^3\.\s*Overview/i
+  )
+  const bodyIndex = findSection(
+    /^4\.\s*Chia BODY/i
+  )
+  const vocabularyIndex = findSection(
+    /^5\.\s*Gợi ý từ vựng/i
+  )
+  const sampleIndex = findSection(/^Sample\s*8\.0/i)
+
+  const sectionText = (start, end) =>
+    start < 0
+      ? []
+      : lines.slice(
+          start + 1,
+          end < 0 ? lines.length : end
+        )
+
+  const explanationLines = sectionText(
+    explanationIndex,
+    introductionIndex
+  )
+
+  const introLines = sectionText(
+    introductionIndex,
+    overviewIndex
+  )
+
+  const overviewLines = sectionText(
+    overviewIndex,
+    bodyIndex
+  )
+
+  const bodyLines = sectionText(
+    bodyIndex,
+    vocabularyIndex
+  )
+
+  const vocabulary = sectionText(
+    vocabularyIndex,
+    sampleIndex
+  )
+
+  const sampleParagraphs = sectionText(
+    sampleIndex,
+    -1
+  ).join('\n').split(/\n{2,}/).map(s => s.trim()).filter(Boolean)
+
+  // Hỗ trợ cả dữ liệu xuống dòng đơn giữa các đoạn sample.
+  const sampleStart = sampleIndex < 0
+    ? -1
+    : lines.findIndex(
+        (line, i) =>
+          i > sampleIndex &&
+          /^The two pie charts|^The chart|^The graph/i.test(line)
+      )
+
+  const actualSample = sampleStart >= 0
+    ? lines.slice(sampleStart).join('\n').split(/\n{2,}/).map(s => s.trim()).filter(Boolean)
+    : sampleParagraphs
+
+  const typeLine = explanationLines.find(
+    line => line.startsWith('→ Dạng:')
+  ) || ''
+
+  const introductionSampleIndex = introLines.findIndex(
+    line => /^Mẫu:/i.test(line)
+  )
+
+  const bodySections = []
+  let currentSection = null
+
+  for (const line of bodyLines) {
+    if (/^BODY\s*\d+/i.test(line)) {
+      currentSection = {
+        title: line,
+        items: []
+      }
+      bodySections.push(currentSection)
+    } else if (currentSection) {
+      currentSection.items.push(line)
+    }
+  }
+
+  return {
+    title: lines[1] || '',
+    content: {
+      explanation: explanationLines
+        .filter(line => !line.startsWith('→ Dạng:'))
+        .join(' '),
+
+      type: typeLine.replace('→ Dạng:', '').trim(),
+
+      introduction: {
+        description: introLines
+          .filter(line => !/^Mẫu:/i.test(line))
+          .join(' '),
+
+        sample: introductionSampleIndex >= 0
+          ? introLines
+              .slice(introductionSampleIndex)
+              .join(' ')
+              .replace(/^Mẫu:\s*/i, '')
+          : ''
+      },
+
+      overview: overviewLines,
+
+      body: bodySections,
+
+      vocabulary,
+
+      sample: {
+        paragraphs: actualSample
+      }
+    }
+  }
+}
+
+
 function WritingGuide({ test }) {
   const [isOpen, setIsOpen] = useState(false)
-  const guide = test.guide
+  const guide = parseInstruction(
+    test.instruction || ''
+  )
   return (
     <div className="
       bg-[#fdfcf9]
@@ -30,7 +170,7 @@ function WritingGuide({ test }) {
       >
 
         <span className="font-bold text-slate-800">
-          {guide.title}
+          Hướng dẫn viết bài + sample 8.0
         </span>
 
         <div className="flex items-center gap-2">
@@ -43,9 +183,7 @@ function WritingGuide({ test }) {
             px-2 py-1
             rounded
           ">
-            {test.taskType === 'TASK_1'
-              ? 'TASK 1'
-              : 'TASK 2'}
+            Gợi
           </span>
 
           {isOpen ? (

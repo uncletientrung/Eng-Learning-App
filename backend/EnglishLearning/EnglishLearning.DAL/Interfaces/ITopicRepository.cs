@@ -7,4 +7,5 @@ public interface ITopicRepository
     Task<List<Topic>> GetAllAsync();
 
     Task<List<Topic>> GetByModuleTypeAsync(string moduleType);
+    Task<Topic?> GetTopicByIdAsync(int id);
 }

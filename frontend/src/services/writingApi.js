@@ -1,4 +1,4 @@
-import API_URL from './apiConfig';
+import API_URL from '../constant/apiConfig';
 
 export async function getWritingExercises() {
   const response = await fetch(
@@ -23,3 +23,4 @@ export async function getWritingExerciseById(id) {
 
   return response.json();
 }
+

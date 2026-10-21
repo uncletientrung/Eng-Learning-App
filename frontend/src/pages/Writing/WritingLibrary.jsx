@@ -7,26 +7,57 @@ import WritingTestList from '../../components/sections/writing/WritingTestList'
 import WritingPagination from '../../components/sections/writing/WritingPagination'
 import MainLayout from '../../components/layout/MainLayout'
 
-import { writingTests } from '../../data/writingTests'
 import { getWritingExercises } from '../../services/writingAPI.js';
+import { getTopicByModule } from '../../services/topicAPI';
 
 function WritingLibrary() {
   const [activeChartFilter, setActiveChartFilter] =useState('ALL')
   const [currentPage, setCurrentPage] = useState(1)
+
+  const [tests, setTests] = useState([]);
+  const [topics, setTopics] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
   const navigate = useNavigate()
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        setError('');
+        const [exerciseData, topicData] = await Promise.all([
+          getWritingExercises(),
+          getTopicByModule('WRITING'),
+        ]);
+
+        const safeExercises = Array.isArray(exerciseData) ? exerciseData.reverse() : [];
+        const safeTopics = Array.isArray(topicData) ? topicData : [];
+    
+
+        setTests(safeExercises);
+        setTopics(safeTopics);
+      } catch (err) {
+          console.error('Lỗi tải dữ liệu:', err);
+          setError('Không thể tải dữ liệu Writing.');
+      } finally {
+          setLoading(false);
+        }
+      }
+
+    fetchData();
+  }, []);
+
   const filteredTests = useMemo(() => {
-    let result = writingTests
-    // Filter loại biểu đồ
-    if (activeChartFilter !== 'ALL') {
-      result = result.filter(
-        (test) =>
-          test.chartType === activeChartFilter
-      )
+    if (activeChartFilter === 'ALL') {
+      return tests;
     }
 
-    return result
-  }, [activeChartFilter])
+    return tests.filter(
+      (test) => Number(test.topicId) === Number(activeChartFilter)
+    );
+  }, [tests, activeChartFilter]);
 
 
   const handleChartFilterChange = (filter) => {
@@ -38,18 +69,6 @@ function WritingLibrary() {
     navigate(`/writing/${test.id}`)
   }
 
-  useEffect(() => {
-    getWritingExercises()
-      .then(data => {
-        console.log('Dữ liệu bài tập:', data)
-      })
-      .catch(error => {
-        console.error('Lỗi API:', error)
-      })
-  }, [])
-
-  console.log("==================================");
-  console.log(getWritingExercises);
   return (
       <MainLayout>
         <main
@@ -64,20 +83,34 @@ function WritingLibrary() {
           <WritingHeader />
 
           <WritingChartFilters
+            topics={topics}
             activeChartFilter={activeChartFilter}
             onChartFilterChange={handleChartFilterChange}
           />
 
-          <WritingTestList
-            tests={filteredTests}
-            onTestClick={handleTestClick}
-          />
+          {loading ? (
+            <p className="py-6 text-slate-500">
+              Đang tải dữ liệu...
+            </p>
+          ) : error ? (
+            <p className="py-6 text-red-600">{error}</p>
+          ) : (
+            <>
+              <WritingTestList
+                tests={filteredTests}
+                onTestClick={handleTestClick}
+              />
 
-          <WritingPagination
-            currentPage={currentPage}
-            totalPages={3}
-            onPageChange={setCurrentPage}
-          />
+              <WritingPagination
+                currentPage={currentPage}
+                totalPages={Math.max(
+                  1,
+                  Math.ceil(filteredTests.length / 10)
+                )}
+                onPageChange={setCurrentPage}
+              />
+            </>
+          )}
         </main>
       </MainLayout>
     )

@@ -1,4 +1,11 @@
+import {getImageUrl} from '../../../utils/imageUtils.js'
+import { getTopicColors } from '../../../constant/writingConstant.js';
+
+
 function WritingTestCard({ test, onClick }) {
+  const imageSrc = getImageUrl(test.imageUrl);
+  const colors = getTopicColors(test.topic.name);
+  
   return (
     <button
       type="button"
@@ -19,6 +26,7 @@ function WritingTestCard({ test, onClick }) {
         focus-visible:ring-2
         focus-visible:ring-[#ffc926]
         focus-visible:ring-offset-2
+        h-[270px]
       "
     >
       {/* Thumbnail */}
@@ -26,13 +34,13 @@ function WritingTestCard({ test, onClick }) {
         className="
           relative flex w-[35%] shrink-0
           items-center justify-center
-          overflow-hidden border-r-2 border-[#111]
+          overflow-hidden border-r-2 border-slate-200
           bg-[#f8f9fa] p-3
         "
       >
-        {test.thumbnail ? (
+        {imageSrc ? (
           <img
-            src={test.thumbnail}
+            src={imageSrc}
             alt={test.title}
             className="
               h-full w-full object-contain
@@ -50,16 +58,25 @@ function WritingTestCard({ test, onClick }) {
         )}
 
         {/* Category */}
-        {test.category && (
+        {test.topic.name && (
+          // <div
+          //   className={`
+          //     absolute left-0 top-0 max-w-[90%]
+          //     truncate border-b-2 border-r-2 border-[#111]
+          //     px-3 py-1 text-[11px] font-black
+          //     ${colors.badge}
+          //   `}
+          // >
           <div
-            className="
+            className={`
               absolute left-0 top-0 max-w-[90%]
-              truncate border-b-2 border-r-2 border-[#111]
-              bg-[#ffc926] px-3 py-1
-              text-[11px] font-black text-[#111]
-            "
+              truncate rounded-br-lg border-b-2 border-r-2 border-[#111]
+              px-3 py-1 text-[11px] font-bold
+              shadow-sm
+              ${colors.badge}
+            `}
           >
-            {test.category}
+            {test.topic.name}
           </div>
         )}
       </div>
@@ -68,36 +85,23 @@ function WritingTestCard({ test, onClick }) {
       <div className="flex w-[65%] flex-col justify-start p-4 sm:p-5">
         <h3
           className="
-            mb-2 line-clamp-2 text-sm font-black
-            leading-snug text-[#111]
-            transition-colors group-hover:text-indigo-700
+            mb-2 line-clamp-2
+            text-sm font-bold leading-snug
+            text-blue-600
+            transition-colors
+            group-hover:text-blue-700
           "
         >
           {test.title}
         </h3>
 
-        {test.description && (
-          <p
-            className="
-              line-clamp-3 text-[13px]
-              leading-relaxed text-slate-600
-            "
-          >
-            {test.description}
+        {test.questionText && (
+          <p className="line-clamp-3 text-[13px] leading-relaxed text-slate-600">
+            {test.questionText}
           </p>
         )}
 
-        {test.taskType && (
-          <span
-            className="
-              mt-4 w-fit border-2 border-[#111]
-              bg-white px-2 py-1
-              text-xs font-bold text-[#111]
-            "
-          >
-            {test.taskType}
-          </span>
-        )}
+
       </div>
     </button>
   );

@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import WritingToolbar from './WritingToolbar'
+import {normalizeTopic, WRITING_TYPE_CONFIG } from "../../../../constant/writingConstant";
 
 function WritingEditor({ test, isFullscreen, onFullscreen }) {
-    
   const [content, setContent] = useState('')
   const [fontSize, setFontSize] = useState(16)
   const [fontFamily, setFontFamily] = useState('Inter')
+
+  const topicKey = normalizeTopic(test.topic.name);
+  const recommend = WRITING_TYPE_CONFIG[topicKey];
 
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length
   const canSubmit = wordCount >= 50
@@ -50,12 +53,12 @@ function WritingEditor({ test, isFullscreen, onFullscreen }) {
 
             <span
               className={
-                wordCount >= test.minimumWords
+                wordCount >= recommend.minimumWords
                   ? 'font-bold text-emerald-500'
                   : 'font-bold text-rose-500'
               }
             >
-              {wordCount} / {test.minimumWords} từ
+              {wordCount} / {recommend.minimumWords} từ
             </span>
 
             <button
@@ -122,7 +125,7 @@ function WritingEditor({ test, isFullscreen, onFullscreen }) {
           <p
             className={
               canSubmit
-                ? 'text-brand text-[10px] font-bold'
+                ? 'text-brand text-[11px] font-bold'
                 : 'text-rose-500 text-[11px] font-bold'
             }
           >

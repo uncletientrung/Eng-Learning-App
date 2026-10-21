@@ -2,20 +2,59 @@ import { useState, useRef, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 
-import { writingTests } from '../../data/writingTests'
 import LinkButton from '../../components/ui/LinkButton'
 import WritingTestHeader from '../../components/sections/writing/writing-test/WritingTestHeader'
 import WritingPrompt from '../../components/sections/writing/writing-test/WritingPrompt'
 import WritingGuide from '../../components/sections/writing/writing-test/WritingGuide'
 import WritingEditor from '../../components/sections/writing/writing-test/WritingEditor'
+import { getWritingExerciseById } from '../../services/writingAPI.js'
+import { getTopicById } from '../../services/topicAPI.js'
+
 
 function WritingTest() {
   const { id } = useParams()
   const pageRef = useRef(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
-  const test = writingTests.find(
-    (item) => item.id === Number(id)
-  )
+  const [test, setTest] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [topicName, setTopicName] = useState('Chưa có topic')
+
+   // Lấy chi tiết bài Writing theo ID trên URL
+  useEffect(() => {
+    let cancelled = false
+    async function fetchTest() {
+      try {
+        setLoading(true)
+        setError('')
+        setTest(null)
+        const data = await getWritingExerciseById(id)
+
+        if (cancelled) return
+        setTest(data)
+        setTopicName(data.topic != null ? data.topic.name :  'Chưa có topic')
+
+      } catch (err) { 
+        console.error('Lỗi tải bài Writing:', err)
+        if (!cancelled) {
+          setError('Không thể tải dữ liệu bài Writing.')
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false)
+        }
+      }
+    }
+    fetchTest()
+
+    return () => {
+      cancelled = true
+    }
+  }, [id])
+  useEffect(() => {
+    console.log('Tests hiện tại:', test);
+  }, [test]);
+
   const handleFullscreen = async () => {
     try {
       if (!document.fullscreenElement) {
@@ -47,8 +86,16 @@ function WritingTest() {
     }
   }, [])
 
+  if (loading) {
+    return <div className="p-8">Đang tải bài Writing...</div>
+  }
+
+  if (error) {
+    return <div className="p-8 text-red-600">{error}</div>
+  }
+
   if (!test) {
-    return <div>Không tìm thấy bài viết.</div>
+    return <div className="p-8">Không tìm thấy bài Writing.</div>
   }
   
 
@@ -90,7 +137,9 @@ function WritingTest() {
             Quay lại
         </LinkButton>
 
-        <WritingTestHeader test={test} />
+        <WritingTestHeader 
+          topicName = {topicName}
+        />
 
         <div
           className="
@@ -108,7 +157,9 @@ function WritingTest() {
 
             <WritingPrompt test={test} />
 
-            <WritingGuide test={test} />
+            {test.instruction?.trim() && (
+              <WritingGuide test={test} />
+            )}
 
           </div>
 

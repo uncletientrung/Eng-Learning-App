@@ -40,4 +40,20 @@ public class TopicsController : ControllerBase
 
         return Ok(topics);
     }
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var topic = await _topicService.GetTopicByIdAsync(id);
+
+        if (topic == null)
+        {
+            return NotFound(new
+            {
+                message = $"Không tìm thấy Topic có ID = {id}"
+            });
+        }
+
+        return Ok(topic);
+    }
 }

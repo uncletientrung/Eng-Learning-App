@@ -1,6 +1,8 @@
 ﻿using EnglishLearning.BLL.DTOs;
 using EnglishLearning.BLL.Interfaces;
+using EnglishLearning.DAL.Entities;
 using EnglishLearning.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace EnglishLearning.BLL.Services;
 
@@ -42,5 +44,25 @@ public class TopicService : ITopicService
             CreateBy = t.CreateBy,
             CreateByUserId = t.CreateByUserId
         }).ToList();
+    }
+
+    public async Task<TopicDto?> GetTopicByIdAsync(int id)
+    {
+        var topic = await _topicRepository.GetTopicByIdAsync(id);
+
+        if (topic == null)
+        {
+            return null;
+        }
+
+        return new TopicDto
+        {
+            Id = topic.Id,
+            Name = topic.Name,
+            Description = topic.Description,
+            ModuleType = topic.ModuleType,
+            CreateBy = topic.CreateBy,
+            CreateByUserId = topic.CreateByUserId
+        };
     }
 }

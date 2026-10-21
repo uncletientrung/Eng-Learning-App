@@ -33,4 +33,11 @@ public class TopicRepository : ITopicRepository
             .OrderBy(t => t.Id)
             .ToListAsync();
     }
+
+    public async Task<Topic?> GetTopicByIdAsync(int id)
+    {
+        return await _context.Topics
+            .AsNoTracking()
+            .FirstOrDefaultAsync(t => t.Id == id);
+    }
 }
