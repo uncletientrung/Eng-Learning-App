@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 19, 2026 at 10:25 PM
+-- Generation Time: Oct 21, 2026 at 12:58 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -213,8 +213,22 @@ CREATE TABLE `speaking_exercises` (
   `Id` int(11) NOT NULL,
   `topic_id` int(11) NOT NULL,
   `Title` varchar(255) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `speaking_type` varchar(50) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `speaking_exercises`
+--
+
+INSERT INTO `speaking_exercises` (`Id`, `topic_id`, `Title`, `created_at`, `speaking_type`) VALUES
+(1, 14, 'Hometown', '2026-10-21 10:46:31', 'INTRODUCTION_INTERVIEW'),
+(2, 15, 'Work or Study', '2026-10-21 10:46:35', 'INTRODUCTION_INTERVIEW'),
+(3, 17, 'Technology', '2026-10-21 10:46:37', 'INTRODUCTION_INTERVIEW'),
+(4, 14, 'Family member', '2026-10-21 10:16:38', 'TOPIC'),
+(5, 14, 'Your hometown', '2026-10-21 10:16:38', 'TOPIC'),
+(6, 14, 'Technology', '2026-10-21 10:16:38', 'TOPIC_DISCUSS'),
+(7, 14, 'Education', '2026-10-21 10:16:38', 'TOPIC_DISCUSS');
 
 -- --------------------------------------------------------
 
@@ -242,7 +256,6 @@ CREATE TABLE `speaking_questions` (
   `Id` int(11) NOT NULL,
   `exercise_id` int(11) NOT NULL,
   `question_number` tinyint(4) NOT NULL,
-  `speaking_type` varchar(50) NOT NULL,
   `question_text` text NOT NULL,
   `preparation_time` int(11) DEFAULT NULL,
   `response_time` int(11) DEFAULT NULL
@@ -259,7 +272,7 @@ CREATE TABLE `topics` (
   `Name` varchar(255) NOT NULL,
   `Description` text DEFAULT NULL,
   `module_type` varchar(255) NOT NULL,
-  `create_by` varchar(255) DEFAULT 'USER',
+  `create_by` varchar(255) DEFAULT NULL,
   `create_by_user_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -268,8 +281,25 @@ CREATE TABLE `topics` (
 --
 
 INSERT INTO `topics` (`Id`, `Name`, `Description`, `module_type`, `create_by`, `create_by_user_id`) VALUES
-(1, 'Problem & Solution', NULL, 'WRITING', 'ADMIN', NULL),
-(2, 'Pie Chart', NULL, 'WRITING', 'USER', NULL);
+(2, 'Pie Chart', NULL, 'WRITING', 'ADMIN', NULL),
+(3, 'Bar chart', NULL, 'WRITING', 'ADMIN', NULL),
+(4, 'Line Graph', NULL, 'WRITING', 'ADMIN', NULL),
+(5, 'Map', NULL, 'WRITING', 'ADMIN', NULL),
+(6, 'Mixed Graph', NULL, 'WRITING', 'ADMIN', NULL),
+(7, 'Process', NULL, 'WRITING', 'ADMIN', NULL),
+(8, 'Table', NULL, 'WRITING', 'ADMIN', NULL),
+(9, 'Discuss Both Views', NULL, 'WRITING', 'ADMIN', NULL),
+(10, 'Opinion Essay', NULL, 'WRITING', 'ADMIN', NULL),
+(11, 'Advantages & Disadvantages', NULL, 'WRITING', 'ADMIN', NULL),
+(12, 'Problem & Solution', NULL, 'WRITING', 'ADMIN', NULL),
+(13, 'Two-part Question', NULL, 'WRITING', 'ADMIN', NULL),
+(14, 'Bản thân & Gia đình', NULL, 'SPEAKING', 'ADMIN', NULL),
+(15, 'Học tập & Nghề nghiệp', NULL, 'SPEAKING', 'ADMIN', NULL),
+(16, 'Giải trí & Sở thích', NULL, 'SPEAKING', 'ADMIN', NULL),
+(17, 'Công nghệ & Xã hội', NULL, 'SPEAKING', 'ADMIN', NULL),
+(18, 'Lối sống & Sức khỏe', NULL, 'SPEAKING', 'ADMIN', NULL),
+(19, 'Môi trường & Du lịch', NULL, 'SPEAKING', 'ADMIN', NULL),
+(20, 'Ý tưởng & Cuộc sống', NULL, 'SPEAKING', 'ADMIN', NULL);
 
 -- --------------------------------------------------------
 
@@ -502,7 +532,7 @@ CREATE TABLE `writing_exercises` (
 --
 
 INSERT INTO `writing_exercises` (`Id`, `topic_id`, `Title`, `image_url`, `writing_type`, `question_text`, `Instruction`, `reference_answer`, `created_at`) VALUES
-(1, 1, 'Causes and Solutions for Traffic Congestion', 'writing_1.jpg', NULL, 'Traffic congestion in cities around the world is increasing. What are the causes of this? What solutions can be suggested?', NULL, NULL, '2026-10-19 18:30:00'),
+(1, 12, 'Causes and Solutions for Traffic Congestion', 'writing_1.jpg', NULL, 'Traffic congestion in cities around the world is increasing. What are the causes of this? What solutions can be suggested?', NULL, NULL, '2026-10-20 07:28:56'),
 (2, 2, 'Pie Chart: Percentage of volunteers by organisation type (2008 and 2014)', 'writing_2.jpg', NULL, 'The charts below show the percentage of volunteers by organizations in 2008 and 2014. Summarise the information by selecting and reporting the main features and make comparisons where relevant.', 'HƯỚNG DẪN VIẾT BÀI\r\nVolunteers by Organizations\r\n1. Giải thích đề\r\nHai biểu đồ tròn cho thấy tỷ lệ người tình nguyện trong sáu lĩnh vực (Environmental, Art, Sport, Health Care, Educational, Others) vào năm 2008 và 2014.\r\n\r\n→ Dạng: pie charts – so sánh 2 mốc thời gian\r\n\r\n2. Introduction (paraphrase)\r\nGiữ: participation / different organisations / two years.\r\n\r\nMẫu: The pie charts illustrate the proportions of volunteers working in six different sectors in 2008 and 2014.\r\n\r\n3. Overview (ý chính)\r\nEnvironmental và Sport tăng đáng kể, trở thành hai nhóm lớn nhất vào 2014\r\nEducational giảm rõ rệt\r\nArt và Others giảm nhẹ\r\nHealth Care tăng nhẹ, gần như ổn định\r\n4. Chia BODY\r\nBODY 1 – Nhóm tăng\r\nEnvironmental: 21% → 29% → tăng mạnh nhất, trở thành lớn nhất\r\nSport: 15% → 25% → tăng đáng kể\r\nHealth Care: 7% → 8% → tăng nhẹ\r\nBODY 2 – Nhóm giảm\r\nEducational: 24% → 17% → giảm rõ rệt\r\nArt: 18% → 12% → giảm\r\nOthers: 15% → 9% → giảm\r\n5. Gợi ý từ vựng\r\naccount for\r\nmake up\r\nincrease significantly\r\ndecline noticeably\r\nrise steadily\r\nremain relatively stable\r\novertake\r\nSample 8.0\r\nThe two pie charts compare the proportions of volunteers working in six different sectors in 2008 and 2014.\r\n\r\nOverall, environmental and sports-related volunteering increased over the period, while participation in educational activities, art, and \"other\" categories declined. The most notable change was the rise of environmental work, which became the largest sector by 2014.\r\n\r\nIn 2008, educational volunteering accounted for the largest share at 24%, followed by environmental work at 21% and art at 18%. Sport and \"other\" activities each represented 15%, while health care was the least common sector at just 7%.\r\n\r\nBy 2014, environmental volunteering had grown significantly to 29%, overtaking all other categories. Sport also increased markedly to 25%, becoming the second most popular sector. In contrast, art saw a noticeable decline to 12%, and educational activities fell to 17%. Health care rose slightly from 7% to 8%, whereas the proportion of volunteers in other activities dropped considerably to 9%.', NULL, '2026-10-19 18:30:18');
 
 -- --------------------------------------------------------
@@ -523,7 +553,10 @@ CREATE TABLE `__efmigrationshistory` (
 INSERT INTO `__efmigrationshistory` (`MigrationId`, `ProductVersion`) VALUES
 ('20261018061907_InitialCreate', '9.0.0'),
 ('20261019192042_SyncModelChanges', '9.0.0'),
-('20261019195403_SyncLatestEntityChanges', '9.0.0');
+('20261019195403_SyncLatestEntityChanges', '9.0.0'),
+('20261021021405_SyncTopicEntityChanges', '9.0.0'),
+('20261021081621_MoveSpeakingTypeToExercise', '9.0.0'),
+('20261021095510_UpdateSpeakingWritingConfig', '9.0.0');
 
 --
 -- Indexes for dumped tables
@@ -610,6 +643,7 @@ ALTER TABLE `reading_question_options`
 --
 ALTER TABLE `speaking_criterion_scores`
   ADD PRIMARY KEY (`Id`),
+  ADD UNIQUE KEY `IX_speaking_criterion_scores_grade_id_criterion_code` (`grade_id`,`criterion_code`),
   ADD KEY `IX_speaking_criterion_scores_grade_id` (`grade_id`);
 
 --
@@ -691,6 +725,7 @@ ALTER TABLE `user_reading_attempts`
 --
 ALTER TABLE `user_speaking_answers`
   ADD PRIMARY KEY (`Id`),
+  ADD UNIQUE KEY `IX_user_speaking_answers_attempt_id_question_id` (`attempt_id`,`question_id`),
   ADD KEY `IX_user_speaking_answers_attempt_id` (`attempt_id`),
   ADD KEY `IX_user_speaking_answers_question_id` (`question_id`);
 
@@ -833,7 +868,7 @@ ALTER TABLE `speaking_criterion_scores`
 -- AUTO_INCREMENT for table `speaking_exercises`
 --
 ALTER TABLE `speaking_exercises`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `speaking_grades`
@@ -851,7 +886,7 @@ ALTER TABLE `speaking_questions`
 -- AUTO_INCREMENT for table `topics`
 --
 ALTER TABLE `topics`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `translation_exercises`
@@ -1011,20 +1046,13 @@ ALTER TABLE `speaking_criterion_scores`
 -- Constraints for table `speaking_exercises`
 --
 ALTER TABLE `speaking_exercises`
-  ADD CONSTRAINT `FK_speaking_exercises_topics_topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`Id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `FK_speaking_exercises_topics_topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`Id`);
 
 --
 -- Constraints for table `speaking_grades`
 --
 ALTER TABLE `speaking_grades`
-  ADD CONSTRAINT `FK_speaking_grades_user_grader_id` FOREIGN KEY (`grader_id`) REFERENCES `user` (`Id`) ON DELETE CASCADE,
   ADD CONSTRAINT `FK_speaking_grades_user_speaking_attempts_attempt_id` FOREIGN KEY (`attempt_id`) REFERENCES `user_speaking_attempts` (`Id`) ON DELETE CASCADE;
-
---
--- Constraints for table `speaking_questions`
---
-ALTER TABLE `speaking_questions`
-  ADD CONSTRAINT `FK_speaking_questions_speaking_exercises_exercise_id` FOREIGN KEY (`exercise_id`) REFERENCES `speaking_exercises` (`Id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `topics`
@@ -1070,15 +1098,7 @@ ALTER TABLE `user_reading_attempts`
 -- Constraints for table `user_speaking_answers`
 --
 ALTER TABLE `user_speaking_answers`
-  ADD CONSTRAINT `FK_user_speaking_answers_speaking_questions_question_id` FOREIGN KEY (`question_id`) REFERENCES `speaking_questions` (`Id`) ON DELETE CASCADE,
   ADD CONSTRAINT `FK_user_speaking_answers_user_speaking_attempts_attempt_id` FOREIGN KEY (`attempt_id`) REFERENCES `user_speaking_attempts` (`Id`) ON DELETE CASCADE;
-
---
--- Constraints for table `user_speaking_attempts`
---
-ALTER TABLE `user_speaking_attempts`
-  ADD CONSTRAINT `FK_user_speaking_attempts_speaking_exercises_exercise_id` FOREIGN KEY (`exercise_id`) REFERENCES `speaking_exercises` (`Id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `FK_user_speaking_attempts_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`Id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `user_translation_attempts`
