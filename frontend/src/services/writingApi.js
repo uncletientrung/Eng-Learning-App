@@ -1,4 +1,4 @@
-const API_URL = 'https://localhost:7107/api';
+import API_URL from './apiConfig';
 
 export async function getWritingExercises() {
   const response = await fetch(

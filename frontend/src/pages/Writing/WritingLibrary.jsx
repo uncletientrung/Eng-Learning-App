@@ -8,7 +8,7 @@ import WritingPagination from '../../components/sections/writing/WritingPaginati
 import MainLayout from '../../components/layout/MainLayout'
 
 import { writingTests } from '../../data/writingTests'
-import { getWritingExercises } from '../../services/writingApi.js';
+import { getWritingExercises } from '../../services/writingAPI.js';
 
 function WritingLibrary() {
   const [activeChartFilter, setActiveChartFilter] =useState('ALL')

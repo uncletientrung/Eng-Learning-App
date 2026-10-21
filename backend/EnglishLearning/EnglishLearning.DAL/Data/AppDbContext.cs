@@ -48,6 +48,7 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        // Writing
         modelBuilder.Entity<WritingExercise>() // Cấu hình entity WritingExercise
             .HasOne(e => e.Topic) // Mỗi bài tập viết liên kết với một Topic
             .WithMany() // Một Topic có thể liên kết với nhiều bài tập viết

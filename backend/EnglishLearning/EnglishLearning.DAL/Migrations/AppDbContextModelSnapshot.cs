@@ -602,7 +602,6 @@ namespace EnglishLearning.DAL.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CreateBy")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)")
                         .HasColumnName("create_by");
@@ -612,7 +611,6 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnName("create_by_user_id");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("ModuleType")

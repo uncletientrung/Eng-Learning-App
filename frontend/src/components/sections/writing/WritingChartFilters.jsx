@@ -1,3 +1,6 @@
+import { useEffect, useState } from 'react';
+import { getTopicByModule } from '../../../services/topicAPI';
+
 const chartFilters = [
   {
     id: 'ALL',
@@ -50,12 +53,12 @@ const chartFilters = [
     icon: '✎',
   },
   {
-    id: 'ADVANTAGES_DISADVANTAGES',
+    id: 'ADVANTAGES_AND_DISADVANTAGES',
     label: 'Advantages & Disadvantages',
     icon: '⇅',  
   },
   {
-    id: 'PROBLEM_SOLUTION',
+    id: 'PROBLEM_AND_SOLUTION',
     label: 'Problem & Solution',
     icon: '⚙',
   },
@@ -134,13 +137,13 @@ const chartColors = {
     active: 'bg-fuchsia-50 text-fuchsia-700',
     hover: 'hover:bg-fuchsia-50',
   },
-  ADVANTAGES_DISADVANTAGES: {
+  ADVANTAGES_AND_DISADVANTAGES: {
     border: 'border-cyan-300',
     text: 'text-cyan-700',
     active: 'bg-cyan-50 text-cyan-700',
     hover: 'hover:bg-cyan-50',
   },
-  PROBLEM_SOLUTION: {
+  PROBLEM_AND_SOLUTION: {
     border: 'border-rose-300',
     text: 'text-rose-700',
     active: 'bg-rose-50 text-rose-700',
@@ -153,17 +156,127 @@ const chartColors = {
     hover: 'hover:bg-amber-50',
   },
 }
+const defaultColors = {
+  border: 'border-slate-300',
+  text: 'text-slate-700',
+  active: 'bg-slate-100 text-slate-800',
+  hover: 'hover:bg-slate-50',
+};
+
+// Chuyển tên API thành key dùng để tra màu.
+const normalizeTopic = (name) =>
+  name
+    .trim()
+    .toUpperCase()
+    .replace(/&/g, 'AND')
+    .replace(/[^A-Z0-9]+/g, '_')
+    .replace(/^_|_$/g, '')
+    .replace(/^BAR_CHART$/, 'BAR_CHART');
+
+const getTopicConfig = (topicName) => {
+  const topicKey = normalizeTopic(topicName);
+
+  return chartFilters.find(
+    (filter) => filter.id === topicKey
+  );
+};
 
 function WritingChartFilters({activeChartFilter, onChartFilterChange,}) {
+  const [topics, setTopics] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchTopics() {
+      try {
+        setLoading(true);
+        setError('');
+        const data = await getTopicByModule('WRITING');
+        if (!cancelled) {
+          setTopics(Array.isArray(data) ? data : []);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError('Không thể tải danh sách thể loại.');
+          console.error(err);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+    fetchTopics();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const displayFilters = [
+    {
+      id: 'ALL',
+      label: 'Tất cả',
+      icon: '◈',
+    },
+    ...topics.map((topic) => {
+      const config = getTopicConfig(topic.name);
+
+      return {
+        id: topic.id,
+        label: topic.name,
+        icon: config?.icon ?? '◈',
+        colorKey: config?.id,
+      };
+    }),
+  ];
+
+  if (loading) {
+    return (
+      <div className="mb-6 text-sm text-slate-500">
+        Đang tải danh sách thể loại...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mb-6 text-sm text-red-600">
+        {error}
+        <button
+          type="button"
+          className="ml-2 underline"
+          onClick={() => {
+            // Tải lại component bằng cách xử lý retry
+            setLoading(true);
+            setError('');
+            getTopicByModule('WRITING')
+              .then((data) => {
+                setTopics(Array.isArray(data) ? data : []);
+              })
+              .catch(() => {
+                setError('Không thể tải danh sách thể loại.');
+              })
+              .finally(() => setLoading(false));
+          }}
+        >
+          Thử lại
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="mb-6 flex flex-wrap items-center gap-2">
       <span className="mr-1 text-sm font-bold text-slate-500">
         Thể loại:
       </span>
 
-      {chartFilters.map((filter) => {
-        const isActive = activeChartFilter === filter.id
-        const colors = chartColors[filter.id]
+      {displayFilters.map((filter) => {
+        const isActive = activeChartFilter === filter.id;
+        const colors =
+          chartColors[filter.colorKey || filter.id] ||
+          defaultColors;
 
         return (
           <button
@@ -172,32 +285,20 @@ function WritingChartFilters({activeChartFilter, onChartFilterChange,}) {
             onClick={() => onChartFilterChange(filter.id)}
             className={`
               inline-flex items-center gap-1.5
-              rounded-full
-              border
-              px-4 py-1.5
-              text-sm font-bold
-              transition-all
-
+              rounded-full border px-4 py-1.5
+              text-sm font-bold transition-all
               ${colors.border}
               ${colors.text}
-
-              ${
-                isActive
-                  ? colors.active
-                  : colors.hover
-              }
+              ${isActive ? colors.active : colors.hover}
             `}
           >
-            <span className="text-xs">
-              {filter.icon}
-            </span>
-
+            <span className="text-xs">{filter.icon}</span>
             {filter.label}
           </button>
-        )
+        );
       })}
     </div>
-  )
+  );
 }
 
-export default WritingChartFilters
+export default WritingChartFilters;

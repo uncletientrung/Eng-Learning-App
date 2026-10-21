@@ -27,15 +27,6 @@ backend/
 │
 ├── EnglishLearning.API/
 │   ├── Controllers/
-│   │   ├── AuthController.cs
-│   │   ├── UserController.cs
-│   │   ├── VocabularyController.cs
-│   │   ├── GrammarController.cs
-│   │   ├── TranslationController.cs
-│   │   ├── ListeningController.cs
-│   │   ├── ReadingController.cs
-│   │   ├── WritingController.cs
-│   │   └── SpeakingController.cs
 │   │
 │   ├── Middleware/
 │   ├── Program.cs
@@ -43,40 +34,21 @@ backend/
 │
 ├── EnglishLearning.BLL/
 │   ├── Services/
-│   │   ├── AuthService.cs
-│   │   ├── UserService.cs
-│   │   ├── VocabularyService.cs
-│   │   ├── GrammarService.cs
-│   │   ├── TranslationService.cs
-│   │   ├── ListeningService.cs
-│   │   ├── ReadingService.cs
-│   │   ├── WritingService.cs
-│   │   └── SpeakingService.cs
 │   │
 │   ├── Interfaces/
 │   └── DTOs/
 │
 └── EnglishLearning.DAL/
     ├── Entities/
-    │   ├── User.cs
-    │   ├── Role.cs
-    │   ├── Vocabulary.cs
-    │   ├── GrammarSection.cs
-    │   ├── GrammarLesson.cs
-    │   ├── TranslationExercise.cs
-    │   ├── ListeningExercise.cs
-    │   ├── ReadingExercise.cs
-    │   ├── WritingExercise.cs
-    │   ├── SpeakingExercise.cs
-    │   ├── SpeakingAttempt.cs
-    │   └── SpeakingGrade.cs
     │
     ├── Data/
     │   └── AppDbContext.cs
+    │   └── DbSeeder.cs
     │
     ├── Repositories/
     ├── Configurations/
     └── Migrations/
+    └── Interfaces/
 
 
     Cách chạy : 

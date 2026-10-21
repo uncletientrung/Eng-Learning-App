@@ -16,11 +16,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<
     IWritingExerciseRepository,
     WritingExerciseRepository>();
+builder.Services.AddScoped<ITopicRepository, TopicRepository>();
+
 
 // Đăng ký Service
 builder.Services.AddScoped<
     IWritingExerciseService,
     WritingExerciseService>();
+builder.Services.AddScoped<ITopicService, TopicService>();
+
 
 // Đăng ký kết nối MySQL
 var connectionString = builder.Configuration

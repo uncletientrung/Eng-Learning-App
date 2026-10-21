@@ -41,7 +41,7 @@ frontend/.env.*
 .env.*
 !.env.example
 
-# ASP.NET User Secrets
+#   P.NET User Secrets
 **/secrets.json
 
 
