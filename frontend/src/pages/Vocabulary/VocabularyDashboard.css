@@ -362,12 +362,28 @@
   background: var(--d-surf);
 }
 
+.vocabulary-dashboard .vd-set-tab[aria-selected="true"] {
+    padding: 12px 18px;
+    border-radius: 15px;
+    background: var(--d-accent);
+    color: white;
+    font-weight: 700;
+}
+
 .vocabulary-dashboard .vd-set-tab {
-  padding: 12px 18px;
-  border-radius: 15px;
-  background: var(--d-accent);
-  color: white;
-  font-weight: 700;
+    padding: 12px 18px;
+    border-radius: 15px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: white;
+    font-weight: 700;
+    cursor: default;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+}
+
+.vocabulary-dashboard .vd-set-tab:not([aria-selected="true"]):hover {
+    background: var(--d-surf2);
+    color: var(--d-ink);
 }
 
 .vocabulary-dashboard .vd-set-tab span {
