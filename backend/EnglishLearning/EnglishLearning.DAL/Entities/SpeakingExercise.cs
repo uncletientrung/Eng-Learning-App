@@ -18,6 +18,10 @@ namespace EnglishLearning.DAL.Entities
         [Required, StringLength(255)]
         public string Title { get; set; } = string.Empty;
 
+        [Required, StringLength(50)]
+        [Column("speaking_type")]
+        public string SpeakingType { get; set; } = string.Empty;
+
         [Required, Column("created_at", TypeName = "timestamp")]
         public DateTime CreatedAt { get; set; }
 

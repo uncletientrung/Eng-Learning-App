@@ -76,5 +76,72 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<UserWritingCriterionScore>()
             .HasIndex(s => new { s.AttemptId, s.CriterionCode })
             .IsUnique();
+
+
+        // ==================== SPEAKING ====================
+        // SpeakingExercise -> Topic
+        modelBuilder.Entity<SpeakingExercise>()
+            .HasOne(e => e.Topic)
+            .WithMany()
+            .HasForeignKey(e => e.TopicId);
+
+        // SpeakingQuestion -> SpeakingExercise
+        modelBuilder.Entity<SpeakingQuestion>()
+            .HasOne(q => q.Exercise)
+            .WithMany()
+            .HasForeignKey(q => q.ExerciseId);
+
+        // UserSpeakingAttempt -> User
+        modelBuilder.Entity<UserSpeakingAttempt>()
+            .HasOne(a => a.User)
+            .WithMany()
+            .HasForeignKey(a => a.UserId);
+
+        // UserSpeakingAttempt -> SpeakingExercise
+        modelBuilder.Entity<UserSpeakingAttempt>()
+            .HasOne(a => a.Exercise)
+            .WithMany()
+            .HasForeignKey(a => a.ExerciseId);
+
+        // UserSpeakingAnswer -> UserSpeakingAttempt
+        modelBuilder.Entity<UserSpeakingAnswer>()
+            .HasOne(a => a.Attempt)
+            .WithMany()
+            .HasForeignKey(a => a.AttemptId);
+
+        // UserSpeakingAnswer -> SpeakingQuestion
+        modelBuilder.Entity<UserSpeakingAnswer>()
+            .HasOne(a => a.Question)
+            .WithMany()
+            .HasForeignKey(a => a.QuestionId);
+
+        // SpeakingGrade -> UserSpeakingAttempt
+        modelBuilder.Entity<SpeakingGrade>()
+            .HasOne(g => g.Attempt)
+            .WithMany()
+            .HasForeignKey(g => g.AttemptId);
+
+        // SpeakingGrade -> User (người chấm)
+        modelBuilder.Entity<SpeakingGrade>()
+            .HasOne(g => g.Grader)
+            .WithMany()
+            .HasForeignKey(g => g.GraderId);
+
+        // SpeakingCriterionScore -> SpeakingGrade
+        modelBuilder.Entity<SpeakingCriterionScore>()
+            .HasOne(s => s.Grade)
+            .WithMany()
+            .HasForeignKey(s => s.GradeId);
+
+        // Mỗi tiêu chí chỉ có một bản ghi trong một lần chấm
+        modelBuilder.Entity<SpeakingCriterionScore>()
+            .HasIndex(s => new { s.GradeId, s.CriterionCode })
+            .IsUnique();
+
+        // Mỗi câu hỏi chỉ có một câu trả lời trong một lần làm bài
+        modelBuilder.Entity<UserSpeakingAnswer>()
+            .HasIndex(a => new { a.AttemptId, a.QuestionId })
+            .IsUnique();
+
     }
 }

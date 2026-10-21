@@ -23,7 +23,7 @@ const partConfig = {
 function SpeakingTestCard({ test, onClick }) {
   const [expanded, setExpanded] = useState(false);
 
-  const config = partConfig[test.part] ?? {
+  const config = partConfig[test.speakingType] ?? {
     label: test.part ?? 'Speaking Practice',
     Icon: Mic,
   };

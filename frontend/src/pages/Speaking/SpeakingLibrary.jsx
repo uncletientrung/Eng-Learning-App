@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import SpeakingHeader from '../../components/sections/speaking/SpeakingHeader'
@@ -8,34 +8,68 @@ import MainLayout from '../../components/layout/MainLayout'
 
 import { speakingTests } from '../../data/speakingTests'
 import WritingPagination from '../../components/sections/writing/WritingPagination'
+import { getSpeakingExercises } from '../../services/speakingAPI.js';
+import { getTopicByModule } from '../../services/topicAPI';
 
-const PAGE_SIZE = 6
+const PAGE_SIZE = 10
 
 function SpeakingLibrary() {
   const [activeTopicGroup, setActiveTopicGroup] = useState('ALL')
   const [activePart, setActivePart] = useState('ALL')
   const [currentPage, setCurrentPage] = useState(1)
 
+  const [tests, setTests] = useState([]);
+  const [topics, setTopics] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
   const navigate = useNavigate()
+
+  useEffect(() => {
+      async function fetchData() {
+        try {
+          setLoading(true);
+          setError('');
+          const [exerciseData, topicData] = await Promise.all([
+            getSpeakingExercises(),
+            getTopicByModule('SPEAKING'),
+          ]);
+  
+          const safeExercises = Array.isArray(exerciseData) ? exerciseData.reverse() : [];
+          const safeTopics = Array.isArray(topicData) ? topicData : [];
+  
+          setTests(safeExercises);
+          setTopics(safeTopics);
+        } catch (err) {
+            console.error('Lỗi tải dữ liệu:', err);
+            setError('Không thể tải dữ liệu Writing.');
+        } finally {
+            setLoading(false);
+          }
+        }
+  
+      fetchData();
+  }, []);
 
   // Lọc bộ câu hỏi theo nhóm chủ đề và Part
   const filteredTests = useMemo(() => {
-    let result = speakingTests
+    let result = tests
 
     if (activeTopicGroup !== 'ALL') {
       result = result.filter(
-        (test) => test.categoryId === activeTopicGroup
+        (test) => Number(test.topicId) === Number(activeTopicGroup)
       )
     }
 
     if (activePart !== 'ALL') {
       result = result.filter(
-        (test) => test.part === activePart
+        (test) => test.speakingType == activePart
       )
     }
 
     return result
-  }, [activeTopicGroup, activePart])
+  }, [activeTopicGroup, activePart, tests])
 
   // Tính số trang
   const totalPages = Math.max(
@@ -70,7 +104,7 @@ function SpeakingLibrary() {
     }
 
   const handleTestClick = (test) => {
-    const part = partRoutes[test.part]
+    const part = partRoutes[test.speakingType]
     if (!part) return
     navigate(`/speaking/${part}/${test.id}`)
   }
@@ -92,6 +126,7 @@ function SpeakingLibrary() {
         />
 
         <SpeakingTopicFilters
+          topics = {topics}
           activeTopicGroup={activeTopicGroup}
           onTopicGroupChange={handleTopicGroupChange}
         />

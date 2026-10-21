@@ -17,13 +17,14 @@ builder.Services.AddScoped<
     IWritingExerciseRepository,
     WritingExerciseRepository>();
 builder.Services.AddScoped<ITopicRepository, TopicRepository>();
-
+builder.Services.AddScoped<ISpeakingExerciseRepository, SpeakingExerciseRepository>();
 
 // Đăng ký Service
 builder.Services.AddScoped<
     IWritingExerciseService,
     WritingExerciseService>();
 builder.Services.AddScoped<ITopicService, TopicService>();
+builder.Services.AddScoped<ISpeakingExerciseService, SpeakingExerciseService>();
 
 
 // Đăng ký kết nối MySQL

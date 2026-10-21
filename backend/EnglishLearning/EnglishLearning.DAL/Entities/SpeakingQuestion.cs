@@ -18,10 +18,6 @@ namespace EnglishLearning.DAL.Entities
         [Column("question_number", TypeName = "tinyint")]
         public byte QuestionNumber { get; set; }
 
-        [Required, StringLength(50)]
-        [Column("speaking_type")]
-        public string SpeakingType { get; set; } = string.Empty;
-
         [Required, Column("question_text", TypeName = "text")]
         public string QuestionText { get; set; } = string.Empty;
 

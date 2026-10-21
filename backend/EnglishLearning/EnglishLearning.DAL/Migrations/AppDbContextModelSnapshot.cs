@@ -478,7 +478,8 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GradeId");
+                    b.HasIndex("GradeId", "CriterionCode")
+                        .IsUnique();
 
                     b.ToTable("speaking_criterion_scores");
                 });
@@ -494,6 +495,12 @@ namespace EnglishLearning.DAL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp")
                         .HasColumnName("created_at");
+
+                    b.Property<string>("SpeakingType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("speaking_type");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -579,12 +586,6 @@ namespace EnglishLearning.DAL.Migrations
                     b.Property<int?>("ResponseTime")
                         .HasColumnType("int")
                         .HasColumnName("response_time");
-
-                    b.Property<string>("SpeakingType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("speaking_type");
 
                     b.HasKey("Id");
 
@@ -903,9 +904,10 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AttemptId");
-
                     b.HasIndex("QuestionId");
+
+                    b.HasIndex("AttemptId", "QuestionId")
+                        .IsUnique();
 
                     b.ToTable("user_speaking_answers");
                 });

@@ -1,12 +1,7 @@
-import { speakingTopicGroups } from '../../../data/speakingTests';
 import { Layers, Check } from 'lucide-react';
 
-function SpeakingTopicFilters({
-  activeTopicGroup,
-  onTopicGroupChange,
-}) {
+function SpeakingTopicFilters({ topics=[], activeTopicGroup,onTopicGroupChange,}) {
   const isAllActive = activeTopicGroup === 'ALL';
-
   const baseClass = `
     inline-flex shrink-0 items-center gap-1.5
     border-2 border-[#111] px-3.5 py-2
@@ -52,15 +47,15 @@ function SpeakingTopicFilters({
           Tất cả
         </button>
 
-        {speakingTopicGroups.map((group) => {
-          const isActive = activeTopicGroup === group.id;
+        {topics.map((topic) => {
+          const isActive = activeTopicGroup === topic.id;
 
           return (
             <button
-              key={group.id}
+              key={topic.id}
               type="button"
               aria-pressed={isActive}
-              onClick={() => onTopicGroupChange(group.id)}
+              onClick={() => onTopicGroupChange(topic.id)}
               className={`
                 ${baseClass}
                 ${
@@ -71,7 +66,7 @@ function SpeakingTopicFilters({
               `}
             >
               {isActive && <Check size={14} strokeWidth={3} />}
-              {group.label}
+              {topic.name}
             </button>
           );
         })}

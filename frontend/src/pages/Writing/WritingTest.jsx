@@ -8,8 +8,6 @@ import WritingPrompt from '../../components/sections/writing/writing-test/Writin
 import WritingGuide from '../../components/sections/writing/writing-test/WritingGuide'
 import WritingEditor from '../../components/sections/writing/writing-test/WritingEditor'
 import { getWritingExerciseById } from '../../services/writingAPI.js'
-import { getTopicById } from '../../services/topicAPI.js'
-
 
 function WritingTest() {
   const { id } = useParams()
