@@ -1,4 +1,5 @@
-﻿using EnglishLearning.BLL.DTOs.SpeakingExercises;
+﻿using EnglishLearning.BLL.DTOs;
+using EnglishLearning.BLL.DTOs.SpeakingExercises;
 using EnglishLearning.BLL.Interfaces;
 using EnglishLearning.DAL.Interfaces;
 
@@ -25,7 +26,15 @@ public class SpeakingExerciseService : ISpeakingExerciseService
             Title = e.Title,
             SpeakingType = e.SpeakingType,
             CreatedAt = e.CreatedAt,
-            TopicName = e.Topic?.Name
+            Topic = e.Topic == null ? null : new TopicDto
+            {
+                Id = e.Topic.Id,
+                Name = e.Topic.Name,
+                Description = e.Topic.Description,
+                ModuleType = e.Topic.ModuleType,
+                CreateBy = e.Topic.CreateBy,
+                CreateByUserId = e.Topic.CreateByUserId
+            }
         }).ToList();
     }
 
@@ -50,7 +59,15 @@ public class SpeakingExerciseService : ISpeakingExerciseService
             Title = exercise.Title,
             SpeakingType = exercise.SpeakingType,
             CreatedAt = exercise.CreatedAt,
-            TopicName = exercise.Topic?.Name
+            Topic = exercise.Topic == null ? null : new TopicDto
+            {
+                Id = exercise.Topic.Id,
+                Name = exercise.Topic.Name,
+                Description = exercise.Topic.Description,
+                ModuleType = exercise.Topic.ModuleType,
+                CreateBy = exercise.Topic.CreateBy,
+                CreateByUserId = exercise.Topic.CreateByUserId
+            }
         };
     }
 }

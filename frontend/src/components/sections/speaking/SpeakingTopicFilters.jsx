@@ -14,7 +14,7 @@ function SpeakingTopicFilters({ topics=[], activeTopicGroup,onTopicGroupChange,}
   `;
 
   return (
-    <section className="mb-6">
+    <section className="mb-8">
       {/* Section heading */}
       <div className="mb-3 flex items-center gap-2">
         <div className="flex h-8 w-8 items-center justify-center border-2 border-[#111] bg-[#ffc926]">

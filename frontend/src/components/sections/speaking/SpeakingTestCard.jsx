@@ -30,6 +30,12 @@ function SpeakingTestCard({ test, onClick }) {
 
   const Icon = config.Icon;
 
+  // Hỗ trợ cả topic dạng string và object
+  const topicName =
+    typeof test.topic === 'string'
+      ? test.topic
+      : test.topic?.name ?? '';
+
   const questions = Array.isArray(test.questions)
     ? test.questions
     : [];
@@ -42,78 +48,89 @@ function SpeakingTestCard({ test, onClick }) {
   return (
     <div className="overflow-hidden border-2 border-[#111] bg-white">
       {/* Row header */}
-      <div
-        role="button"
-        tabIndex={0}
-        aria-expanded={expanded}
-        onClick={() => setExpanded((prev) => !prev)}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            setExpanded((prev) => !prev);
-          }
-        }}
-        className="
-          flex cursor-pointer items-center justify-between gap-4
-          bg-[#f8f9fa] p-4 transition-colors
-          hover:bg-[#f1f3f5]
-        "
-      >
-        {/* Title */}
-        <div className="flex min-w-0 flex-1 items-center gap-3">
-          <div className="hidden h-10 w-10 shrink-0 items-center justify-center border-2 border-[#111] bg-white sm:flex">
-            <Icon size={19} />
-          </div>
-
-          <div className="min-w-0">
-            <h3 className="pr-2 text-sm font-black leading-snug text-[#111] sm:text-base">
-              {test.title || 'Untitled Speaking Test'}
-            </h3>
-
-            <div className="mt-1 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-600">
-              {test.topic && <span>{test.topic}</span>}
-
-              {test.topic && test.part && (
-                <span className="text-slate-400">·</span>
-              )}
-
-              <span>{config.label}</span>
-
-              {test.questionCount != null && (
-                <>
-                  <span className="text-slate-400">·</span>
-                  <span>{test.questionCount} câu hỏi</span>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex shrink-0 items-center gap-2">
-          <button
-            type="button"
-            onClick={handlePractice}
+      <div className="relative">
+        {/* Topic badge */}
+        {config.label && (
+          <div
             className="
-              flex items-center gap-1.5 rounded-xl
-              border-2 border-[#111] bg-[#ffc926]
-              px-3 py-2 text-xs font-bold text-[#111]
-              shadow-[2px_2px_0_rgba(0,0,0,0.15)]
-              transition-all hover:-translate-y-px
-              hover:bg-[#ffd84d]
+              absolute left-0 top-0 z-10 max-w-[90%]
+              truncate rounded-br-lg
+              border-b-2 border-r-2 border-[#111]
+              bg-[#ffc926] px-3 py-1
+              text-[11px] font-bold shadow-sm
             "
           >
-            <Play size={13} className="fill-current" />
-            <span className="hidden sm:inline">Luyện tập</span>
-          </button>
+            {config.label}
+          </div>
+        )}
 
-          <ChevronDown
-            size={20}
-            className={`
-              hidden shrink-0 transition-transform duration-200
-              sm:block ${expanded ? 'rotate-180' : ''}
-            `}
-          />
+        <div
+          role="button"
+          tabIndex={0}
+          aria-expanded={expanded}
+          onClick={() => setExpanded((prev) => !prev)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              setExpanded((prev) => !prev);
+            }
+          }}
+          className="
+            flex cursor-pointer items-center justify-between gap-4
+            bg-[#f8f9fa] p-4 pt-10 transition-colors
+            hover:bg-[#f1f3f5]
+          "
+        >
+          {/* Title */}
+          <div className="flex min-w-0 flex-1 items-center gap-3">
+            <div className="hidden h-10 w-10 shrink-0 items-center justify-center border-2 border-[#111] bg-white sm:flex">
+              <Icon size={19} />
+            </div>
+
+            <div className="min-w-0">
+              <h3 className="pr-2 text-sm font-black leading-snug text-[#111] sm:text-base">
+                {test.title || 'Untitled Speaking Test'}
+              </h3>
+
+              <div className="mt-1 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-600">
+                <span>{topicName}</span>
+
+                {test.questionCount != null && (
+                  <>
+                    <span className="text-slate-400">·</span>
+                    <span>{test.questionCount} câu hỏi</span>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={handlePractice}
+              className="
+                flex items-center gap-1.5 rounded-xl
+                border-2 border-[#111] bg-[#ffc926]
+                px-3 py-2 text-xs font-bold text-[#111]
+                shadow-[2px_2px_0_rgba(0,0,0,0.15)]
+                transition-all hover:-translate-y-px
+                hover:bg-[#ffd84d]
+              "
+            >
+              <Play size={13} className="fill-current" />
+              <span className="hidden sm:inline">Luyện tập</span>
+            </button>
+
+            <ChevronDown
+              size={20}
+              className={`
+                hidden shrink-0 transition-transform duration-200
+                sm:block ${expanded ? 'rotate-180' : ''}
+              `}
+            />
+          </div>
         </div>
       </div>
 

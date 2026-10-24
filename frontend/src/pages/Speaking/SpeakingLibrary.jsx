@@ -6,12 +6,11 @@ import SpeakingTopicFilters from '../../components/sections/speaking/SpeakingTop
 import SpeakingTestList from '../../components/sections/speaking/SpeakingTestList'
 import MainLayout from '../../components/layout/MainLayout'
 
-import { speakingTests } from '../../data/speakingTests'
 import WritingPagination from '../../components/sections/writing/WritingPagination'
 import { getSpeakingExercises } from '../../services/speakingAPI.js';
 import { getTopicByModule } from '../../services/topicAPI';
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 8
 
 function SpeakingLibrary() {
   const [activeTopicGroup, setActiveTopicGroup] = useState('ALL')
@@ -130,17 +129,26 @@ function SpeakingLibrary() {
           activeTopicGroup={activeTopicGroup}
           onTopicGroupChange={handleTopicGroupChange}
         />
+        {loading ? (
+            <p className="py-6 text-slate-500">
+              Đang tải dữ liệu...
+            </p>
+          ) : error ? (
+            <p className="py-6 text-red-600">{error}</p>
+          ) : (
+            <>
+              <SpeakingTestList
+                tests={paginatedTests}
+                onTestClick={handleTestClick}
+              />
 
-        <SpeakingTestList
-          tests={paginatedTests}
-          onTestClick={handleTestClick}
-        />
-
-        <WritingPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+              <WritingPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </>
+          )}
       </main>
     </MainLayout>
   )

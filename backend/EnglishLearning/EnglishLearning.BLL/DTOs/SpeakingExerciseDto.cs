@@ -13,5 +13,5 @@ public class SpeakingExerciseDto
     public DateTime CreatedAt { get; set; }
 
     // Thông tin Topic liên quan
-    public string? TopicName { get; set; }
+    public TopicDto? Topic { get; set; }
 }
