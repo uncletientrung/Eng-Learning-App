@@ -6,5 +6,7 @@ public interface ISpeakingExerciseService
 {
     Task<List<SpeakingExerciseDto>> GetAllAsync();
 
+    Task<List<SpeakingExerciseDto>> GetAllWithQuestionsAsync();
+
     Task<SpeakingExerciseDto?> GetByIdAsync(int id);
 }

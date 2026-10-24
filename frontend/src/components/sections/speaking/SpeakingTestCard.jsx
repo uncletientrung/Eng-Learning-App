@@ -148,9 +148,7 @@ function SpeakingTestCard({ test, onClick }) {
               {questions.map((question, index) => {
                 const content =
                   typeof question === 'string'
-                    ? question
-                    : question.question ?? question.text ?? '';
-
+                    ? question : question.questionText ?? 'Lỗi danh sách câu hỏi';
                 return (
                   <li
                     key={question.id ?? index}
@@ -159,7 +157,11 @@ function SpeakingTestCard({ test, onClick }) {
                     <span className="font-bold text-slate-400">
                       {index + 1}.
                     </span>
-                    <span>{content}</span>
+
+                    <span>
+                      <span className="font-bold text-[#111]">Q:</span>{' '}
+                      {content}
+                    </span>
                   </li>
                 );
               })}

@@ -12,6 +12,18 @@ export async function getSpeakingExercises() {
   return response.json();
 }
 
+export async function getSpeakingExercisesWithQuestions() {
+  const response = await fetch(
+    `${API_URL}/speaking-exercises/with-questions`
+  );
+
+  if (!response.ok) {
+    throw new Error(`Lỗi HTTP: ${response.status}`);
+  }
+
+  return response.json();
+}
+
 export async function getSpeakingExerciseById(id) {
   const response = await fetch(
     `${API_URL}/speaking-exercises/${id}`

@@ -23,11 +23,25 @@ public class SpeakingExerciseRepository : ISpeakingExerciseRepository
             .ToListAsync();
     }
 
+    public async Task<List<SpeakingExercise>> GetAllWithQuestionsAsync()
+    {
+        var exercises = await _context.SpeakingExercises
+        .AsNoTracking()
+        .Include(e => e.Topic)
+        .Include(e => e.Questions)
+        .OrderByDescending(e => e.CreatedAt)
+        .ToListAsync();
+
+        return exercises;
+
+    }
+
     public async Task<SpeakingExercise?> GetByIdAsync(int id)
     {
         return await _context.SpeakingExercises
             .AsNoTracking()
             .Include(e => e.Topic)
+            .Include(e => e.Questions)
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 }

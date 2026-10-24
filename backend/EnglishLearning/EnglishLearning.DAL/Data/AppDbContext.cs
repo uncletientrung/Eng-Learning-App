@@ -85,11 +85,12 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(e => e.TopicId);
 
-        // SpeakingQuestion -> SpeakingExercise
+        // SpeakingQuestion -> SpeakingExercise // chỉ định collection
         modelBuilder.Entity<SpeakingQuestion>()
             .HasOne(q => q.Exercise)
-            .WithMany()
-            .HasForeignKey(q => q.ExerciseId);
+            .WithMany(e => e.Questions)
+            .HasForeignKey(q => q.ExerciseId)
+            .HasPrincipalKey(e => e.Id);
 
         // UserSpeakingAttempt -> User
         modelBuilder.Entity<UserSpeakingAttempt>()

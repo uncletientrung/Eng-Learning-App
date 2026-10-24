@@ -14,4 +14,5 @@ public class SpeakingExerciseDto
 
     // Thông tin Topic liên quan
     public TopicDto? Topic { get; set; }
+    public List<SpeakingQuestionDto> Questions { get; set; } = new();
 }

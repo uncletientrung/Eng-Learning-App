@@ -23,6 +23,14 @@ public class SpeakingExercisesController : ControllerBase
         return Ok(exercises);
     }
 
+    [HttpGet("with-questions")]
+    public async Task<IActionResult> GetAllWithQuestions()
+    {
+        var exercises = await _service.GetAllWithQuestionsAsync();
+
+        return Ok(exercises);
+    }
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {

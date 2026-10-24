@@ -27,5 +27,8 @@ namespace EnglishLearning.DAL.Entities
 
         [ForeignKey(nameof(TopicId))]
         public Topic Topic { get; set; } = null!;
+
+        public ICollection<SpeakingQuestion> Questions { get; set; } = new List<SpeakingQuestion>();
+
     }
 }

@@ -1377,7 +1377,7 @@ namespace EnglishLearning.DAL.Migrations
             modelBuilder.Entity("EnglishLearning.DAL.Entities.SpeakingQuestion", b =>
                 {
                     b.HasOne("EnglishLearning.DAL.Entities.SpeakingExercise", "Exercise")
-                        .WithMany()
+                        .WithMany("Questions")
                         .HasForeignKey("ExerciseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1612,6 +1612,11 @@ namespace EnglishLearning.DAL.Migrations
             modelBuilder.Entity("EnglishLearning.DAL.Entities.GrammarCategory", b =>
                 {
                     b.Navigation("Children");
+                });
+
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.SpeakingExercise", b =>
+                {
+                    b.Navigation("Questions");
                 });
 #pragma warning restore 612, 618
         }

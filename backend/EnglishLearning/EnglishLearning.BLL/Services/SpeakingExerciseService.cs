@@ -38,6 +38,38 @@ public class SpeakingExerciseService : ISpeakingExerciseService
         }).ToList();
     }
 
+    public async Task<List<SpeakingExerciseDto>> GetAllWithQuestionsAsync()
+    {
+        var exercises = await _repository.GetAllWithQuestionsAsync();
+
+        return exercises.Select(e => new SpeakingExerciseDto
+        {
+            Id = e.Id,
+            TopicId = e.TopicId,
+            Title = e.Title,
+            SpeakingType = e.SpeakingType,
+            CreatedAt = e.CreatedAt,
+            Topic = e.Topic == null ? null : new TopicDto
+            {
+                Id = e.Topic.Id,
+                Name = e.Topic.Name,
+                Description = e.Topic.Description,
+                ModuleType = e.Topic.ModuleType,
+                CreateBy = e.Topic.CreateBy,
+                CreateByUserId = e.Topic.CreateByUserId
+            },
+            Questions = e.Questions.OrderBy(q => q.QuestionNumber).Select(q => new SpeakingQuestionDto
+            {
+                Id = q.Id,
+                ExerciseId = q.ExerciseId,
+                QuestionNumber = q.QuestionNumber,
+                QuestionText = q.QuestionText,
+                PreparationTime = q.PreparationTime,
+                ResponseTime = q.ResponseTime
+            }).ToList()
+        }).ToList();
+    }
+
     public async Task<SpeakingExerciseDto?> GetByIdAsync(int id)
     {
         if (id <= 0)
@@ -67,7 +99,16 @@ public class SpeakingExerciseService : ISpeakingExerciseService
                 ModuleType = exercise.Topic.ModuleType,
                 CreateBy = exercise.Topic.CreateBy,
                 CreateByUserId = exercise.Topic.CreateByUserId
-            }
+            },
+            Questions = exercise.Questions.OrderBy(q => q.QuestionNumber).Select(q => new SpeakingQuestionDto
+            {
+                Id = q.Id,
+                ExerciseId = q.ExerciseId,
+                QuestionNumber = q.QuestionNumber,
+                QuestionText = q.QuestionText,
+                PreparationTime = q.PreparationTime,
+                ResponseTime = q.ResponseTime
+            }).ToList()
         };
     }
 }
