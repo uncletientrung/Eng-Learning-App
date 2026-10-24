@@ -18,6 +18,8 @@ frontend/.env.*
 
 **/bin/
 # **/obj/
+**/obj/Debug/
+**/obj/Release/
 
 
 # =========================
