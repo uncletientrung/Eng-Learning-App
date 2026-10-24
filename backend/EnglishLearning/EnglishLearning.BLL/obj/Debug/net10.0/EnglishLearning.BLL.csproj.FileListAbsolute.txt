@@ -1,0 +1,16 @@
+D:\Eng-Learning-App\backend\EnglishLearning\EnglishLearning.BLL\bin\Debug\net10.0\EnglishLearning.BLL.deps.json
+D:\Eng-Learning-App\backend\EnglishLearning\EnglishLearning.BLL\bin\Debug\net10.0\EnglishLearning.BLL.dll
+D:\Eng-Learning-App\backend\EnglishLearning\EnglishLearning.BLL\bin\Debug\net10.0\EnglishLearning.BLL.pdb
+D:\Eng-Learning-App\backend\EnglishLearning\EnglishLearning.BLL\bin\Debug\net10.0\EnglishLearning.DAL.dll
+D:\Eng-Learning-App\backend\EnglishLearning\EnglishLearning.BLL\bin\Debug\net10.0\EnglishLearning.DAL.pdb
+D:\Eng-Learning-App\backend\EnglishLearning\EnglishLearning.BLL\obj\Debug\net10.0\EnglishLearning.BLL.csproj.AssemblyReference.cache
+D:\Eng-Learning-App\backend\EnglishLearning\EnglishLearning.BLL\obj\Debug\net10.0\EnglishLearning.BLL.GeneratedMSBuildEditorConfig.editorconfig
+D:\Eng-Learning-App\backend\EnglishLearning\EnglishLearning.BLL\obj\Debug\net10.0\EnglishLearning.BLL.AssemblyInfoInputs.cache
+D:\Eng-Learning-App\backend\EnglishLearning\EnglishLearning.BLL\obj\Debug\net10.0\EnglishLearning.BLL.AssemblyInfo.cs
+D:\Eng-Learning-App\backend\EnglishLearning\EnglishLearning.BLL\obj\Debug\net10.0\EnglishLearning.BLL.csproj.CoreCompileInputs.cache
+D:\Eng-Learning-App\backend\EnglishLearning\EnglishLearning.BLL\obj\Debug\net10.0\EnglishLearning.BLL.sourcelink.json
+D:\Eng-Learning-App\backend\EnglishLearning\EnglishLearning.BLL\obj\Debug\net10.0\EnglishL.C4D5267F.Up2Date
+D:\Eng-Learning-App\backend\EnglishLearning\EnglishLearning.BLL\obj\Debug\net10.0\EnglishLearning.BLL.dll
+D:\Eng-Learning-App\backend\EnglishLearning\EnglishLearning.BLL\obj\Debug\net10.0\refint\EnglishLearning.BLL.dll
+D:\Eng-Learning-App\backend\EnglishLearning\EnglishLearning.BLL\obj\Debug\net10.0\EnglishLearning.BLL.pdb
+D:\Eng-Learning-App\backend\EnglishLearning\EnglishLearning.BLL\obj\Debug\net10.0\ref\EnglishLearning.BLL.dll

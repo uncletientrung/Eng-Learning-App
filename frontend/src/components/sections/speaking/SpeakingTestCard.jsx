@@ -167,8 +167,8 @@ function SpeakingTestCard({ test, onClick }) {
               })}
             </ol>
           ) : (
-            <div className="px-4 py-5 text-sm text-slate-500">
-              Chưa có danh sách câu hỏi để hiển thị.
+            <div className="px-4 py-5 text-sm text-red-400 font-bold">
+              Bộ đề speaking này chưa có danh sách câu hỏi.
             </div>
           )}
 

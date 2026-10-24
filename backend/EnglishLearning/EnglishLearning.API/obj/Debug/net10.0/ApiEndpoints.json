@@ -1,0 +1,106 @@
+[
+  {
+    "ContainingType": "EnglishLearning.API.Controllers.SpeakingExercisesController",
+    "Method": "GetAll",
+    "RelativePath": "api/speaking-exercises",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EnglishLearning.API.Controllers.SpeakingExercisesController",
+    "Method": "GetById",
+    "RelativePath": "api/speaking-exercises/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EnglishLearning.API.Controllers.SpeakingExercisesController",
+    "Method": "GetAllWithQuestions",
+    "RelativePath": "api/speaking-exercises/with-questions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EnglishLearning.API.Controllers.TopicsController",
+    "Method": "GetAll",
+    "RelativePath": "api/topics",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EnglishLearning.API.Controllers.TopicsController",
+    "Method": "GetById",
+    "RelativePath": "api/topics/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EnglishLearning.API.Controllers.TopicsController",
+    "Method": "GetByModuleType",
+    "RelativePath": "api/topics/module/{moduleType}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "moduleType",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EnglishLearning.API.Controllers.WritingExercisesController",
+    "Method": "GetAll",
+    "RelativePath": "api/writing-exercises",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "EnglishLearning.API.Controllers.WritingExercisesController",
+    "Method": "GetById",
+    "RelativePath": "api/writing-exercises/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
