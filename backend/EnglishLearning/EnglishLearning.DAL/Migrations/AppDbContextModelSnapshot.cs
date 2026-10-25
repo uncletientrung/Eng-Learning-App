@@ -566,6 +566,14 @@ namespace EnglishLearning.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Closing")
+                        .HasColumnType("text")
+                        .HasColumnName("closing");
+
+                    b.Property<string>("Cues")
+                        .HasColumnType("json")
+                        .HasColumnName("cues");
+
                     b.Property<int>("ExerciseId")
                         .HasColumnType("int")
                         .HasColumnName("exercise_id");

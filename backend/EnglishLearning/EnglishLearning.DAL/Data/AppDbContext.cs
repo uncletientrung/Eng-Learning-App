@@ -3,6 +3,9 @@ using System.Data;
 
 namespace EnglishLearning.DAL.Data;
 using EnglishLearning.DAL.Entities;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Text.Json;
+
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options)
@@ -144,5 +147,36 @@ public class AppDbContext : DbContext
             .HasIndex(a => new { a.AttemptId, a.QuestionId })
             .IsUnique();
 
+        // SpeakingQuestion: lưu danh sách cues dưới dạng JSON
+        var cuesProperty = modelBuilder.Entity<SpeakingQuestion>() // Chuyển đổi qua lại giữa List<string> trong C# và chuỗi JSON trong DB.
+            .Property(q => q.Cues)
+            .HasColumnName("cues")
+            .HasColumnType("json")
+            .HasConversion(
+                cues => cues == null
+                    ? null
+                    : JsonSerializer.Serialize(cues, (JsonSerializerOptions?)null),
+                json => json == null
+                    ? null
+                    : JsonSerializer.Deserialize<List<string>>(
+                        json,
+                        (JsonSerializerOptions?)null) ?? new List<string>()
+            );
+
+        cuesProperty.Metadata.SetValueComparer( // Hướng dẫn EF Core so sánh, tính hash và tạo bản sao của danh sách để theo dõi thay đổi.
+            new ValueComparer<List<string>?>(
+                (a, b) => a == null
+                    ? b == null
+                    : b != null && a.SequenceEqual(b),
+                a => a == null
+                    ? 0
+                    : a.Aggregate(
+                        0,
+                        (hash, item) => HashCode.Combine(hash, item.GetHashCode())),
+                a => a == null
+                    ? null
+                    : a.ToList()
+            )
+        );
     }
 }

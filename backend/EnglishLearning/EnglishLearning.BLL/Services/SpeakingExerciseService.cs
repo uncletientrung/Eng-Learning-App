@@ -64,6 +64,8 @@ public class SpeakingExerciseService : ISpeakingExerciseService
                 ExerciseId = q.ExerciseId,
                 QuestionNumber = q.QuestionNumber,
                 QuestionText = q.QuestionText,
+                Cues = q.Cues,
+                Closing = q.Closing,
                 PreparationTime = q.PreparationTime,
                 ResponseTime = q.ResponseTime
             }).ToList()
@@ -105,6 +107,8 @@ public class SpeakingExerciseService : ISpeakingExerciseService
                 Id = q.Id,
                 ExerciseId = q.ExerciseId,
                 QuestionNumber = q.QuestionNumber,
+                Cues = q.Cues,
+                Closing = q.Closing,
                 QuestionText = q.QuestionText,
                 PreparationTime = q.PreparationTime,
                 ResponseTime = q.ResponseTime

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback  } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import SpeakingHeader from '../../components/sections/speaking/speaking-part1/SpeakingP1Header'
 import SpeakingContent from '../../components/sections/speaking/speaking-part1/SpeakingP1Content'
@@ -7,82 +7,86 @@ import SpeakingFooter from '../../components/sections/speaking/speaking-part1/Sp
 import { speak } from '../../utils/speech'
 import { getSpeakingExerciseById } from '../../services/speakingAPI'
 
-
 export default function SpeakingPart1() {
   const navigate = useNavigate()
-  const { id } = useParams()
-  const [test, setTest] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  
-  const [muted, setMuted] = useState(false) // Nút mute
-  const [voice, setVoice] = useState('British') // Giọng được chọn
-  const [voiceMenuOpen, setVoiceMenuOpen] = useState(false) // Bật tắt menu chọn giọng
+  const { id: speakingExerciseId } = useParams()
 
-  const [answer, setAnswer] = useState('')  // Nội dung người dùng đang nhập trong ô chat.
-  const [recording, setRecording] = useState(false) // Trạng thái record có đang được bật không
-  const [finished, setFinished] = useState(false) // Trạng thái đã hoàn thành bài chưa
+  const [speakingExercise, setSpeakingExercise] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState('')
 
-  const [questionIndex, setQuestionIndex] = useState(0) // Lưu vị trí câu hỏi hiện tại trong mảng questions
-  const [conversation, setConversation] = useState([]) // Lưu các cặp câu hỏi và câu trả lời đã gửi để hiển thị hội thoại tất cả trên giao diện.
+  const [isMuted, setIsMuted] = useState(false) // Nút mute
+  const [selectedVoice, setSelectedVoice] = useState('British') // Giọng được chọn
+  const [isVoiceMenuOpen, setIsVoiceMenuOpen] = useState(false) // Bật tắt menu chọn giọng
 
-  const recognitionRef = useRef(null) //  lưu tham chiếu tới đối tượng nhận diện giọng nói của trình duyệt SpeechRecognition
+  const [currentAnswer, setCurrentAnswer] = useState('') // Nội dung người dùng đang nhập trong ô chat.
+  const [isRecording, setIsRecording] = useState(false) // Trạng thái record có đang được bật không
+  const [isFinished, setIsFinished] = useState(false) // Trạng thái đã hoàn thành bài chưa
 
-  const questions = test?.questions ?? [] //  danh sách câu hỏi
-  const currentQuestion = questions[questionIndex] // câu hỏi hiện tại 
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0) // Lưu vị trí câu hỏi hiện tại trong mảng questions
+  const [conversationHistory, setConversationHistory] = useState([]) // Lưu các cặp câu hỏi và câu trả lời đã gửi để hiển thị hội thoại tất cả trên giao diện.
+
+  const speechRecognitionRef = useRef(null) //  lưu tham chiếu tới đối tượng nhận diện giọng nói của trình duyệt SpeechRecognition
+
+  const speakingQuestions = speakingExercise?.questions ?? [] //  danh sách câu hỏi
+  const currentSpeakingQuestion = speakingQuestions[currentQuestionIndex] // câu hỏi hiện tại
 
   useEffect(() => { // khi người dùng rời khỏi trang hoặc component SpeakingPart1 bị gỡ khỏi giao diện.
     return () => {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel()
       }
-      recognitionRef.current?.stop?.()
+      speechRecognitionRef.current?.stop?.()
     }
   }, [])
 
   useEffect(() => {
-    let cancelled = false
-    async function fetchTest() {
+    let isCancelled = false
+
+    async function fetchSpeakingExercise() {
       try {
-        setLoading(true)
-        setError('')
-        setTest(null)
-        const data = await getSpeakingExerciseById(id)
+        setIsLoading(true)
+        setErrorMessage('')
+        setSpeakingExercise(null)
 
-        if (cancelled) return
-        setTest(data)
+        const exerciseData = await getSpeakingExerciseById(speakingExerciseId)
 
-      } catch (err) { 
-        console.error('Lỗi tải bài Writing:', err)
-        if (!cancelled) {
-          setError('Không thể tải dữ liệu bài Writing.')
+        if (isCancelled) return
+
+        setSpeakingExercise(exerciseData)
+      } catch (error) {
+        console.error('Lỗi tải bài Speaking:', error)
+
+        if (!isCancelled) {
+          setErrorMessage('Không thể tải dữ liệu bài Speaking.')
         }
       } finally {
-        if (!cancelled) {
-          setLoading(false)
+        if (!isCancelled) {
+          setIsLoading(false)
         }
       }
     }
-    fetchTest()
+
+    fetchSpeakingExercise()
 
     return () => {
-      cancelled = true
+      isCancelled = true
     }
-  }, [id])
+  }, [speakingExerciseId])
 
   useEffect(() => {
-    console.log('Tests hiện tại:', test);
-  }, [test]);
+    console.log('Bài Speaking hiện tại:', speakingExercise)
+  }, [speakingExercise])
 
+  const handleTextToSpeech = useCallback(
+    (text) => {
+      speak(text, selectedVoice, isMuted)
+    },
+    [selectedVoice, isMuted]
+  )
 
-
-
-  const handleSpeak = useCallback((text) => {
-    speak(text, voice, muted)
-  }, [voice, muted])
-
-  const handleMic = () => {
-    const SpeechRecognition = 
+  const handleMicrophoneToggle = () => {
+    const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition // Kiểm tra trình duyệt có hỗ trợ nhận diện giọng nói không
 
     if (!SpeechRecognition) {
@@ -92,90 +96,91 @@ export default function SpeakingPart1() {
       return
     }
 
-    if (recording) { // Nếu đang ghi âm thì dừng lại
-      recognitionRef.current?.stop() // lưu đối tượng nhận diện giọng nói hiện tại và yêu cầu dừng nhận diện giọng nói.
-      setRecording(false) //  cập nhật giao diện thành trạng thái không ghi âm.
+    if (isRecording) { // Nếu đang ghi âm thì dừng lại
+      speechRecognitionRef.current?.stop() // lưu đối tượng nhận diện giọng nói hiện tại và yêu cầu dừng nhận diện giọng nói.
+      setIsRecording(false) //  cập nhật giao diện thành trạng thái không ghi âm.
       return
     }
 
-    const recognition = new SpeechRecognition() // Tạo một obj nhận diện giọng nói mới
+    const speechRecognition = new SpeechRecognition() // Tạo một obj nhận diện giọng nói mới
 
-    recognition.lang = 'en-US' // Nhận diện giọng nói theo tiếng Anh Mỹ
-    recognition.interimResults = true // Cho phép nhận kết quả tạm thời khi người dùng chưa nói xong
-    recognition.continuous = true // Cố gắng tiếp tục nhận diện qua nhiều cụm từ, thay vì chỉ một cụm
+    speechRecognition.lang = 'en-US' // Nhận diện giọng nói theo tiếng Anh Mỹ
+    speechRecognition.interimResults = true // Cho phép nhận kết quả tạm thời khi người dùng chưa nói xong
+    speechRecognition.continuous = true // Cố gắng tiếp tục nhận diện qua nhiều cụm từ, thay vì chỉ một cụm
 
-    recognition.onresult = (event) => { // Chuyển kết quả giọng nói thành văn bản trong ô chat
-              // recognition.onresult callback được gọi khi có kết quả nhận diện giọng nói
-      let transcript = ''
-      for (let i = 0; i < event.results.length; i++) { // event.results danh sách các kết quả nhận diện
-        transcript += event.results[i][0].transcript // event.results[i][0].transcript: văn bản nhận diện được ở kết quả thứ i
+    speechRecognition.onresult = (event) => { // Chuyển kết quả giọng nói thành văn bản trong ô chat
+      // speechRecognition.onresult callback được gọi khi có kết quả nhận diện giọng nói
+      let recognizedTranscript = ''
+
+      for (let resultIndex = 0; resultIndex < event.results.length; resultIndex++) { // event.results danh sách các kết quả nhận diện
+        recognizedTranscript += event.results[resultIndex][0].transcript // event.results[i][0].transcript: văn bản nhận diện được ở kết quả thứ i
       }
 
-      setAnswer(transcript)
+      setCurrentAnswer(recognizedTranscript)
     }
 
-    recognition.onerror = () => setRecording(false)
-    recognition.onend = () => setRecording(false)
+    speechRecognition.onerror = () => setIsRecording(false)
+    speechRecognition.onend = () => setIsRecording(false)
 
-    recognitionRef.current = recognition // Gán đối tượng vào recognitionRef.current để có thể dừng phiên nhận diện về sau
+    speechRecognitionRef.current = speechRecognition // Gán đối tượng vào speechRecognitionRef.current để có thể dừng phiên nhận diện về sau
 
     try {
-      recognition.start() // thực sự bắt đầu nhận diện giọng nói.
-      setRecording(true)
+      speechRecognition.start() // thực sự bắt đầu nhận diện giọng nói.
+      setIsRecording(true)
     } catch {
-      setRecording(false)
+      setIsRecording(false)
     }
   }
 
-  const handleSubmit = () => { // dùng để lưu câu trả lời hiện tại vào lịch sử luyện tập
-    const trimmedAnswer = answer.trim()
-    if (!trimmedAnswer || !currentQuestion) return
+  const handleAnswerSubmit = () => { // dùng để lưu câu trả lời hiện tại vào lịch sử luyện tập
+    const submittedAnswer = currentAnswer.trim()
 
+    if (!submittedAnswer || !currentSpeakingQuestion) return
 
-    if (recording) { // Dừng nhận diện giọng nói nếu đang ghi âm
-      recognitionRef.current?.stop()
-      setRecording(false)
+    if (isRecording) { // Dừng nhận diện giọng nói nếu đang ghi âm
+      speechRecognitionRef.current?.stop()
+      setIsRecording(false)
     }
 
     // Thêm cặp câu hỏi - câu trả lời vào lịch sử hội thoại
-    setConversation((prev) => [
-      ...prev,
+    setConversationHistory((previousHistory) => [
+      ...previousHistory,
       {
-        questionId: currentQuestion.id,
-        question: currentQuestion.questionText,
-        answer: trimmedAnswer,
+        questionId: currentSpeakingQuestion.id,
+        question: currentSpeakingQuestion.questionText,
+        answer: submittedAnswer,
       },
     ])
 
     // Chuyển sang câu tiếp theo
-    if (questionIndex < questions.length - 1) {
-      setQuestionIndex((prev) => prev + 1)
-      setAnswer('')
+    if (currentQuestionIndex < speakingQuestions.length - 1) {
+      setCurrentQuestionIndex((previousIndex) => previousIndex + 1)
+      setCurrentAnswer('')
     } else {
       // Đã hoàn thành tất cả câu hỏi
-      setFinished(true)
+      setIsFinished(true)
     }
   }
 
-  const handleRetry = () => {
-    recognitionRef.current?.stop()
+  const handleRetryPractice = () => {
+    speechRecognitionRef.current?.stop()
 
-    setAnswer('')
-    setConversation([])
-    setQuestionIndex(0)
-    setRecording(false)
-    setFinished(false)
+    setCurrentAnswer('')
+    setConversationHistory([])
+    setCurrentQuestionIndex(0)
+    setIsRecording(false)
+    setIsFinished(false)
   }
 
-  if (loading) {
+  if (isLoading) {
     return <div className="p-8">Đang tải bài Speaking...</div>
   }
 
-  if (error) {
-    return <div className="p-8 text-red-600">{error}</div>
+  if (errorMessage) {
+    return <div className="p-8 text-red-600">{errorMessage}</div>
   }
 
-  if (!test) {
+  if (!speakingExercise) {
     return <div className="p-8">Không tìm thấy bài Speaking này</div>
   }
 
@@ -191,42 +196,43 @@ export default function SpeakingPart1() {
       {/* 1. Header */}
       <SpeakingHeader
         navigate={navigate}
-        muted={muted}
-        setMuted={setMuted}
-        voice={voice}
-        setVoice={setVoice}
-        voiceMenuOpen={voiceMenuOpen}
-        setVoiceMenuOpen={setVoiceMenuOpen}
-        questionIndex={questionIndex + 1}
-        onSpeak={handleSpeak}
-        finished={finished}
-        setFinished={setFinished}
-        onFinish={() => setFinished(true)}
-        onSubmit={handleSubmit}
-        test = {test}
+        isMuted={isMuted}
+        setIsMuted={setIsMuted}
+        selectedVoice={selectedVoice}
+        setSelectedVoice={setSelectedVoice}
+        isVoiceMenuOpen={isVoiceMenuOpen}
+        setIsVoiceMenuOpen={setIsVoiceMenuOpen}
+        questionNumber={currentQuestionIndex + 1}
+        onSpeak={handleTextToSpeech}
+        isFinished={isFinished}
+        setIsFinished={setIsFinished}
+        onFinish={() => setIsFinished(true)}
+        onSubmit={handleAnswerSubmit}
+        speakingExercise={speakingExercise}
       />
 
       {/* Khu vực nội dung cuộn */}
-      <section className="min-h-0 flex-1 space-y-8 overflow-y-auto scroll-smooth p-4 md:p-10">
+      <section className="min-h-0 flex-1 space-y-8 overflow-y-auto scroll-smooth px-4 pb-4 pt-1 md:px-10 md:pb-10 md:pt-6">
         {/* Lịch sử câu hỏi và câu trả lời đã gửi */}
-        {conversation.map((item) => (
+        {conversationHistory.map((conversationItem, conversationIndex) => (
           <SpeakingContent
-            key={item.questionId}
-            question={item.question}
-            answer={item.answer}
+            key={`${conversationItem.questionId}-${conversationIndex}`}
+            question={conversationItem.question}
+            answer={conversationItem.answer}
             setShowHint={() => {}}
-            onSpeak={handleSpeak}
-            test={test}
+            onSpeak={handleTextToSpeech}
+            test={speakingExercise}
           />
         ))}
 
         {/* Câu hỏi hiện tại: chưa truyền câu trả lời đang nhập */}
-        {!finished && currentQuestion && (
+        {!isFinished && currentSpeakingQuestion && (
           <SpeakingContent
-            key={`current-${currentQuestion.id}`}
-            question={currentQuestion.questionText}
+            key={`current-${currentSpeakingQuestion.id}`}
+            question={currentSpeakingQuestion.questionText}
             answer=""
-            onSpeak={handleSpeak}
+            onSpeak={handleTextToSpeech}
+            test={speakingExercise}
           />
         )}
 
@@ -234,19 +240,19 @@ export default function SpeakingPart1() {
         {/* <SpeakingAssessment
           sample={sample}
           history={history}
-          onSpeak={handleSpeak}
-          onRetry={handleRetry}
+          onSpeak={handleTextToSpeech}
+          onRetry={handleRetryPractice}
         /> */}
       </section>
 
       {/* 4. Footer ghi âm và nhập câu trả lời */}
-      {!finished && (
+      {!isFinished && (
         <SpeakingFooter
-          answer={answer}
-          setAnswer={setAnswer}
-          recording={recording}
-          onMicClick={handleMic}
-          onSubmit={handleSubmit}
+          answer={currentAnswer}
+          setAnswer={setCurrentAnswer}
+          recording={isRecording}
+          onMicClick={handleMicrophoneToggle}
+          onSubmit={handleAnswerSubmit}
         />
       )}
     </main>

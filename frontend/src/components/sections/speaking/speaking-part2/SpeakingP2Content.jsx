@@ -1,11 +1,43 @@
-import { Volume2, Lightbulb, Quote } from 'lucide-react'
+
+import { Volume2, Quote } from 'lucide-react'
+import { useEffect, useCallback } from 'react'
 
 export default function SpeakingP2Content({
   question,
-  showHint,
-  setShowHint,
   onSpeak,
 }) {
+  
+  const handleReadCueCard = useCallback(() => {
+    if (!question) return
+
+    const speechText = [
+      question.questionText,
+      'You should say:',
+      ...(question.cues ?? []),
+      question.closing ?? '',
+    ]
+      .filter(Boolean)
+      .join('. ')
+
+    onSpeak(speechText)
+  }, [question, onSpeak])
+
+  
+  
+  
+
+  // Tự động đọc đề khi dữ liệu câu hỏi được tải
+  useEffect(() => {
+    if (question) {
+      handleReadCueCard()
+    }
+  }, [question, handleReadCueCard])
+  
+
+  if (!question) {
+    return null
+  }
+
   return (
     <div className="flex animate-in flex-col items-start fade-in slide-in-from-left-2 duration-500">
       <div className="max-w-[90%] text-left md:max-w-[75%]">
@@ -15,7 +47,7 @@ export default function SpeakingP2Content({
           </div>
 
           <p className="mb-2 text-sm font-medium leading-relaxed md:text-[17px]">
-            {question.title}
+            {question.questionText}
           </p>
 
           <p className="mb-2 text-sm font-medium leading-relaxed md:text-[17px]">
@@ -23,48 +55,27 @@ export default function SpeakingP2Content({
           </p>
 
           <ul className="my-2 list-disc space-y-1.5 pl-5 text-sm font-medium leading-relaxed md:text-[17px]">
-            {question.points.map((point, index) => (
-              <li key={index}>{point}</li>
+            {(question.cues ?? []).map((cuePoint, index) => (
+              <li key={`${index}-${cuePoint}`}>{cuePoint}</li>
             ))}
           </ul>
 
-          {question.followUp && (
+          {question.closing && (
             <p className="mb-2 text-sm font-medium leading-relaxed md:text-[17px]">
-              {question.followUp}
+              {question.closing}
             </p>
           )}
 
           <div className="mt-3 flex items-center gap-3">
             <button
-              onClick={() =>
-                onSpeak([
-                  question.title,
-                  'You should say:',
-                  ...question.points,
-                  question.followUp || '',
-                ].join('. '))
-              }
+              onClick={handleReadCueCard}
               className="flex items-center gap-1.5 text-[11px] font-bold text-[#5f6a45] hover:text-[#111] hover:underline"
             >
               <Volume2 size={13} />
               Nghe lại
             </button>
-
-            <button
-              onClick={() => setShowHint(!showHint)}
-              className="flex items-center gap-1.5 text-[11px] font-bold text-[#5f6a45] hover:text-[#111] hover:underline"
-            >
-              <Lightbulb size={13} />
-              Gợi ý
-            </button>
           </div>
 
-          {showHint && (
-            <p className="mt-3 rounded-xl border border-[#111]/20 bg-white/60 p-3 text-sm text-[#5f6a45]">
-              Hãy giới thiệu chủ đề, lần lượt phát triển từng ý trong cue card,
-              thêm ví dụ hoặc trải nghiệm cá nhân và kết thúc bằng cảm nhận của bạn.
-            </p>
-          )}
         </div>
       </div>
     </div>

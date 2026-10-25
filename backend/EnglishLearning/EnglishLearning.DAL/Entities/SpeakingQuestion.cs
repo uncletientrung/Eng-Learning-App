@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace EnglishLearning.DAL.Entities
 {
@@ -20,6 +17,12 @@ namespace EnglishLearning.DAL.Entities
 
         [Required, Column("question_text", TypeName = "text")]
         public string QuestionText { get; set; } = string.Empty;
+
+        [Column("closing", TypeName = "text")]
+        public string? Closing { get; set; }
+
+        // Danh sách cue sẽ được lưu dưới dạng JSON trong MySQL
+        public List<string>? Cues { get; set; }
 
         [Column("preparation_time")]
         public int? PreparationTime { get; set; }
