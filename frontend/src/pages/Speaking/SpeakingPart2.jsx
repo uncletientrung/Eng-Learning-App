@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import SpeakingHeader from '../../components/sections/speaking/speaking-part1/SpeakingP1Header'
 import SpeakingP2Content from '../../components/sections/speaking/speaking-part2/SpeakingP2Content'
 import SpeakingP2Footer from '../../components/sections/speaking/speaking-part2/SpeakingP2Footer'
+import { speak } from '../../utils/speech'
 
 const cueCard = {
   title: 'Describe a family member you spend the most time with',
@@ -16,27 +17,6 @@ const cueCard = {
   followUp: 'and explain why this person is important in your life',
 }
 
-function speak(text, voiceName, muted) {
-  if (
-    muted ||
-    typeof window === 'undefined' ||
-    !('speechSynthesis' in window)
-  ) return
-
-  window.speechSynthesis.cancel()
-
-  const utterance = new SpeechSynthesisUtterance(text)
-  const voices = window.speechSynthesis.getVoices()
-
-  const selected = voices.find((item) =>
-    item.name.toLowerCase().includes(voiceName.toLowerCase())
-  )
-
-  if (selected) utterance.voice = selected
-
-  utterance.lang = voiceName === 'British' ? 'en-GB' : 'en-US'
-  window.speechSynthesis.speak(utterance)
-}
 
 export default function SpeakingPart2() {
   const navigate = useNavigate()

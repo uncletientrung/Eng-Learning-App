@@ -1,105 +1,89 @@
-import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-
+import { useEffect, useRef, useState, useCallback  } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import SpeakingHeader from '../../components/sections/speaking/speaking-part1/SpeakingP1Header'
 import SpeakingContent from '../../components/sections/speaking/speaking-part1/SpeakingP1Content'
 import SpeakingAssessment from '../../components/sections/speaking/speaking-part1/SpeakingP1Assessment'
 import SpeakingFooter from '../../components/sections/speaking/speaking-part1/SpeakingP1Footer'
+import { speak } from '../../utils/speech'
+import { getSpeakingExerciseById } from '../../services/speakingAPI'
 
-const sample = {
-  question: "Let's talk about your hometown. Where is your hometown?",
-  answer: "My hometown is in the south of Vietnam. It's a coastal city and it's also a very popular tourist destination.",
-  band: 7,
-  scores: [{ label: 'FC', score: 7 }, { label: 'LR', score: 7 }, { label: 'GRA', score: 7 }, { label: 'P', score: 7 }],
-  pronunciation: "My hometown is in the south of Vietnam. It's a coastal city and it's also a very popular tourist destination.",
-  upgrade: "My hometown is located on the southern coast of Vietnam. It's a coastal city that's also a major tourist hotspot, drawing visitors from all over the world.",
-  vocabulary: [
-    { word: "a stone's throw from", meaning: 'rất gần, chỉ cách một khoảng ngắn' },
-    { word: 'bustling with tourists', meaning: 'nhộn nhịp với khách du lịch' },
-    { word: 'off the beaten track', meaning: 'nằm ngoài những tuyến du lịch phổ biến' },
-  ],
-  comment: 'Câu trả lời của bạn khá rõ ràng và đúng ngữ pháp, nhưng còn ngắn và đơn giản. Để đạt điểm cao hơn, bạn nên phát triển ý thêm, dùng từ vựng chính xác và tự nhiên hơn, đồng thời thể hiện sự lưu loát bằng cách nối câu mạch lạc hơn.',
-  modelAnswers: [
-    {
-      title: 'Bài mẫu 1',
-      answer: "My hometown is a coastal city in the south of Vietnam, and it's really taken off as a tourist destination in recent years. The beaches are stunning, and there's a vibrant nightlife that draws in crowds, especially during the summer months.",
-      words: [
-        { word: 'taken off', meaning: 'trở nên nổi tiếng và thành công nhanh chóng' },
-        { word: 'draws in', meaning: 'thu hút, lôi kéo' },
-      ],
-    },
-    {
-      title: 'Bài mẫu 2',
-      answer: "Well, my hometown sits right on the southern coast of Vietnam. It's a bustling city that's become a magnet for tourists, thanks to its beautiful coastline and rich local culture. You can easily spend days exploring the markets, temples, and seafood restaurants.",
-      words: [
-        { word: 'a magnet for', meaning: 'thu hút mạnh mẽ, như nam châm' },
-        { word: 'bustling', meaning: 'nhộn nhịp, sôi động' },
-      ],
-    },
-  ],
-}
-
-const historySample = [
-  { version: 'Bản 1', time: '09:38 10/10/2026', band: 7, answer: sample.answer },
-]
-
-
-function speak(text, voiceName, muted) {
-  if (
-    muted ||
-    typeof window === 'undefined' ||
-    !('speechSynthesis' in window)
-  ) {
-    return
-  }
-
-  window.speechSynthesis.cancel()
-
-  const utterance = new SpeechSynthesisUtterance(text)
-  const voices = window.speechSynthesis.getVoices()
-
-  const selected = voices.find((item) =>
-    item.name.toLowerCase().includes(voiceName.toLowerCase())
-  )
-
-  if (selected) utterance.voice = selected
-
-  utterance.lang = voiceName === 'British' ? 'en-GB' : 'en-US'
-  window.speechSynthesis.speak(utterance)
-}
 
 export default function SpeakingPart1() {
   const navigate = useNavigate()
+  const { id } = useParams()
+  const [test, setTest] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  
+  const [muted, setMuted] = useState(false) // Nút mute
+  const [voice, setVoice] = useState('British') // Giọng được chọn
+  const [voiceMenuOpen, setVoiceMenuOpen] = useState(false) // Bật tắt menu chọn giọng
 
-  const [muted, setMuted] = useState(false)
-  const [voice, setVoice] = useState('British')
-  const [voiceMenuOpen, setVoiceMenuOpen] = useState(false)
-  const [answer, setAnswer] = useState('')
-  const [recording, setRecording] = useState(false)
-  const [finished, setFinished] = useState(false)
-  const [showHint, setShowHint] = useState(false)
-  const [questionIndex] = useState(2)
-  const [history, setHistory] = useState(historySample)
+  const [answer, setAnswer] = useState('')  // Nội dung người dùng đang nhập trong ô chat.
+  const [recording, setRecording] = useState(false) // Trạng thái record có đang được bật không
+  const [finished, setFinished] = useState(false) // Trạng thái đã hoàn thành bài chưa
 
-  const recognitionRef = useRef(null)
+  const [questionIndex, setQuestionIndex] = useState(0) // Lưu vị trí câu hỏi hiện tại trong mảng questions
+  const [conversation, setConversation] = useState([]) // Lưu các cặp câu hỏi và câu trả lời đã gửi để hiển thị hội thoại tất cả trên giao diện.
 
-  useEffect(() => {
+  const recognitionRef = useRef(null) //  lưu tham chiếu tới đối tượng nhận diện giọng nói của trình duyệt SpeechRecognition
+
+  const questions = test?.questions ?? [] //  danh sách câu hỏi
+  const currentQuestion = questions[questionIndex] // câu hỏi hiện tại 
+
+  useEffect(() => { // khi người dùng rời khỏi trang hoặc component SpeakingPart1 bị gỡ khỏi giao diện.
     return () => {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel()
       }
-
       recognitionRef.current?.stop?.()
     }
   }, [])
 
-  const handleSpeak = (text) => {
+  useEffect(() => {
+    let cancelled = false
+    async function fetchTest() {
+      try {
+        setLoading(true)
+        setError('')
+        setTest(null)
+        const data = await getSpeakingExerciseById(id)
+
+        if (cancelled) return
+        setTest(data)
+
+      } catch (err) { 
+        console.error('Lỗi tải bài Writing:', err)
+        if (!cancelled) {
+          setError('Không thể tải dữ liệu bài Writing.')
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false)
+        }
+      }
+    }
+    fetchTest()
+
+    return () => {
+      cancelled = true
+    }
+  }, [id])
+
+  useEffect(() => {
+    console.log('Tests hiện tại:', test);
+  }, [test]);
+
+
+
+
+  const handleSpeak = useCallback((text) => {
     speak(text, voice, muted)
-  }
+  }, [voice, muted])
 
   const handleMic = () => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition
+    const SpeechRecognition = 
+      window.SpeechRecognition || window.webkitSpeechRecognition // Kiểm tra trình duyệt có hỗ trợ nhận diện giọng nói không
 
     if (!SpeechRecognition) {
       window.alert(
@@ -108,23 +92,23 @@ export default function SpeakingPart1() {
       return
     }
 
-    if (recording) {
-      recognitionRef.current?.stop()
-      setRecording(false)
+    if (recording) { // Nếu đang ghi âm thì dừng lại
+      recognitionRef.current?.stop() // lưu đối tượng nhận diện giọng nói hiện tại và yêu cầu dừng nhận diện giọng nói.
+      setRecording(false) //  cập nhật giao diện thành trạng thái không ghi âm.
       return
     }
 
-    const recognition = new SpeechRecognition()
+    const recognition = new SpeechRecognition() // Tạo một obj nhận diện giọng nói mới
 
-    recognition.lang = 'en-US'
-    recognition.interimResults = true
-    recognition.continuous = true
+    recognition.lang = 'en-US' // Nhận diện giọng nói theo tiếng Anh Mỹ
+    recognition.interimResults = true // Cho phép nhận kết quả tạm thời khi người dùng chưa nói xong
+    recognition.continuous = true // Cố gắng tiếp tục nhận diện qua nhiều cụm từ, thay vì chỉ một cụm
 
-    recognition.onresult = (event) => {
+    recognition.onresult = (event) => { // Chuyển kết quả giọng nói thành văn bản trong ô chat
+              // recognition.onresult callback được gọi khi có kết quả nhận diện giọng nói
       let transcript = ''
-
-      for (let i = 0; i < event.results.length; i++) {
-        transcript += event.results[i][0].transcript
+      for (let i = 0; i < event.results.length; i++) { // event.results danh sách các kết quả nhận diện
+        transcript += event.results[i][0].transcript // event.results[i][0].transcript: văn bản nhận diện được ở kết quả thứ i
       }
 
       setAnswer(transcript)
@@ -133,45 +117,66 @@ export default function SpeakingPart1() {
     recognition.onerror = () => setRecording(false)
     recognition.onend = () => setRecording(false)
 
-    recognitionRef.current = recognition
+    recognitionRef.current = recognition // Gán đối tượng vào recognitionRef.current để có thể dừng phiên nhận diện về sau
 
     try {
-      recognition.start()
+      recognition.start() // thực sự bắt đầu nhận diện giọng nói.
       setRecording(true)
     } catch {
       setRecording(false)
     }
   }
 
-  const handleSubmit = () => {
-    if (!answer.trim()) return
+  const handleSubmit = () => { // dùng để lưu câu trả lời hiện tại vào lịch sử luyện tập
+    const trimmedAnswer = answer.trim()
+    if (!trimmedAnswer || !currentQuestion) return
 
-    if (recording) {
+
+    if (recording) { // Dừng nhận diện giọng nói nếu đang ghi âm
       recognitionRef.current?.stop()
       setRecording(false)
     }
 
-    setHistory((current) => [
+    // Thêm cặp câu hỏi - câu trả lời vào lịch sử hội thoại
+    setConversation((prev) => [
+      ...prev,
       {
-        version: `Bản ${current.length + 1}`,
-        time: new Date().toLocaleString('vi-VN'),
-        band: '—',
-        answer: answer.trim(),
+        questionId: currentQuestion.id,
+        question: currentQuestion.questionText,
+        answer: trimmedAnswer,
       },
-      ...current,
     ])
 
-    setFinished(false)
+    // Chuyển sang câu tiếp theo
+    if (questionIndex < questions.length - 1) {
+      setQuestionIndex((prev) => prev + 1)
+      setAnswer('')
+    } else {
+      // Đã hoàn thành tất cả câu hỏi
+      setFinished(true)
+    }
   }
 
   const handleRetry = () => {
-    if (recording) {
-      recognitionRef.current?.stop()
-    }
+    recognitionRef.current?.stop()
 
     setAnswer('')
+    setConversation([])
+    setQuestionIndex(0)
     setRecording(false)
     setFinished(false)
+  }
+
+  if (loading) {
+    return <div className="p-8">Đang tải bài Speaking...</div>
+  }
+
+  if (error) {
+    return <div className="p-8 text-red-600">{error}</div>
+  }
+
+  if (!test) {
+    return <div className="p-8">Không tìm thấy bài Speaking này</div>
   }
 
   return (
@@ -192,24 +197,38 @@ export default function SpeakingPart1() {
         setVoice={setVoice}
         voiceMenuOpen={voiceMenuOpen}
         setVoiceMenuOpen={setVoiceMenuOpen}
-        questionIndex={questionIndex}
+        questionIndex={questionIndex + 1}
         onSpeak={handleSpeak}
         finished={finished}
         setFinished={setFinished}
         onFinish={() => setFinished(true)}
         onSubmit={handleSubmit}
+        test = {test}
       />
 
       {/* Khu vực nội dung cuộn */}
       <section className="min-h-0 flex-1 space-y-8 overflow-y-auto scroll-smooth p-4 md:p-10">
-        {/* 2. Câu hỏi và câu trả lời */}
-        <SpeakingContent
-          question={sample.question}
-          answer={sample.answer}
-          showHint={showHint}
-          setShowHint={setShowHint}
-          onSpeak={handleSpeak}
-        />
+        {/* Lịch sử câu hỏi và câu trả lời đã gửi */}
+        {conversation.map((item) => (
+          <SpeakingContent
+            key={item.questionId}
+            question={item.question}
+            answer={item.answer}
+            setShowHint={() => {}}
+            onSpeak={handleSpeak}
+            test={test}
+          />
+        ))}
+
+        {/* Câu hỏi hiện tại: chưa truyền câu trả lời đang nhập */}
+        {!finished && currentQuestion && (
+          <SpeakingContent
+            key={`current-${currentQuestion.id}`}
+            question={currentQuestion.questionText}
+            answer=""
+            onSpeak={handleSpeak}
+          />
+        )}
 
         {/* 3. Kết quả đánh giá */}
         {/* <SpeakingAssessment
@@ -221,13 +240,15 @@ export default function SpeakingPart1() {
       </section>
 
       {/* 4. Footer ghi âm và nhập câu trả lời */}
-      <SpeakingFooter
-        answer={answer}
-        setAnswer={setAnswer}
-        recording={recording}
-        onMicClick={handleMic}
-        onSubmit={handleSubmit}
-      />
+      {!finished && (
+        <SpeakingFooter
+          answer={answer}
+          setAnswer={setAnswer}
+          recording={recording}
+          onMicClick={handleMic}
+          onSubmit={handleSubmit}
+        />
+      )}
     </main>
   )
 }

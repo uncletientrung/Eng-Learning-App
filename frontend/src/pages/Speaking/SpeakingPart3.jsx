@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import SpeakingP3Header from '../../components/sections/speaking/speaking-part3/SpeakingP3Header'
 import SpeakingP3Content from '../../components/sections/speaking/speaking-part3/SpeakingP3Content'
 import SpeakingP3Footer from '../../components/sections/speaking/speaking-part3/SpeakingP3Footer'
+import { speak } from '../../utils/speech'
 
 const sample = {
   question: "In many societies, the role of the family has changed significantly over the past few decades. What do you think are the most important reasons for this shift?",
@@ -42,30 +43,6 @@ const historySample = [
   { version: 'Bản 1', time: '09:38 10/10/2026', band: 7, answer: sample.answer },
 ]
 
-
-function speak(text, voiceName, muted) {
-  if (
-    muted ||
-    typeof window === 'undefined' ||
-    !('speechSynthesis' in window)
-  ) {
-    return
-  }
-
-  window.speechSynthesis.cancel()
-
-  const utterance = new SpeechSynthesisUtterance(text)
-  const voices = window.speechSynthesis.getVoices()
-
-  const selected = voices.find((item) =>
-    item.name.toLowerCase().includes(voiceName.toLowerCase())
-  )
-
-  if (selected) utterance.voice = selected
-
-  utterance.lang = voiceName === 'British' ? 'en-GB' : 'en-US'
-  window.speechSynthesis.speak(utterance)
-}
 
 export default function SpeakingPart1() {
   const navigate = useNavigate()
