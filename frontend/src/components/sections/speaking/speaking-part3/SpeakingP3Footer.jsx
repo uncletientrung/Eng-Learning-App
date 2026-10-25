@@ -1,6 +1,6 @@
 import { Mic } from 'lucide-react'
 
-export default function SpeakingP3Footer({
+export default function SpeakingFooter({
   answer,
   setAnswer,
   recording,
@@ -41,6 +41,12 @@ export default function SpeakingP3Footer({
             <textarea
               value={answer}
               onChange={(event) => setAnswer(event.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
+                  e.preventDefault()
+                  onSubmit()
+                }
+              }}
               placeholder="Nhập câu trả lời hoặc bấm Mic..."
               rows={1}
               className="block w-full resize-none rounded-xl border-[3px] border-[#111] bg-[#fffdf5] px-3 py-2 text-sm font-medium leading-5 text-[#111] outline-none transition-all focus:shadow-[3px_3px_0_#ffc926] md:px-4"
