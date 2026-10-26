@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Oct 21, 2026 at 12:58 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Máy chủ: 127.0.0.1
+-- Thời gian đã tạo: Th10 26, 2026 lúc 03:20 PM
+-- Phiên bản máy phục vụ: 10.4.32-MariaDB
+-- Phiên bản PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `englearning`
+-- Cơ sở dữ liệu: `englearning`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `grammar_categories`
+-- Cấu trúc bảng cho bảng `grammar_categories`
 --
 
 CREATE TABLE `grammar_categories` (
@@ -38,7 +38,7 @@ CREATE TABLE `grammar_categories` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `grammar_sections`
+-- Cấu trúc bảng cho bảng `grammar_sections`
 --
 
 CREATE TABLE `grammar_sections` (
@@ -52,7 +52,7 @@ CREATE TABLE `grammar_sections` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `idioms`
+-- Cấu trúc bảng cho bảng `idioms`
 --
 
 CREATE TABLE `idioms` (
@@ -69,7 +69,7 @@ CREATE TABLE `idioms` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `listening_exercises`
+-- Cấu trúc bảng cho bảng `listening_exercises`
 --
 
 CREATE TABLE `listening_exercises` (
@@ -87,7 +87,7 @@ CREATE TABLE `listening_exercises` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `listening_fill_blank_answers`
+-- Cấu trúc bảng cho bảng `listening_fill_blank_answers`
 --
 
 CREATE TABLE `listening_fill_blank_answers` (
@@ -100,7 +100,7 @@ CREATE TABLE `listening_fill_blank_answers` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `listening_questions`
+-- Cấu trúc bảng cho bảng `listening_questions`
 --
 
 CREATE TABLE `listening_questions` (
@@ -116,7 +116,7 @@ CREATE TABLE `listening_questions` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `listening_question_options`
+-- Cấu trúc bảng cho bảng `listening_question_options`
 --
 
 CREATE TABLE `listening_question_options` (
@@ -130,7 +130,7 @@ CREATE TABLE `listening_question_options` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `reading_exercises`
+-- Cấu trúc bảng cho bảng `reading_exercises`
 --
 
 CREATE TABLE `reading_exercises` (
@@ -146,7 +146,7 @@ CREATE TABLE `reading_exercises` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `reading_fill_blank_answers`
+-- Cấu trúc bảng cho bảng `reading_fill_blank_answers`
 --
 
 CREATE TABLE `reading_fill_blank_answers` (
@@ -159,7 +159,7 @@ CREATE TABLE `reading_fill_blank_answers` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `reading_questions`
+-- Cấu trúc bảng cho bảng `reading_questions`
 --
 
 CREATE TABLE `reading_questions` (
@@ -175,7 +175,7 @@ CREATE TABLE `reading_questions` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `reading_question_options`
+-- Cấu trúc bảng cho bảng `reading_question_options`
 --
 
 CREATE TABLE `reading_question_options` (
@@ -189,7 +189,7 @@ CREATE TABLE `reading_question_options` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `speaking_criterion_scores`
+-- Cấu trúc bảng cho bảng `speaking_criterion_scores`
 --
 
 CREATE TABLE `speaking_criterion_scores` (
@@ -206,7 +206,7 @@ CREATE TABLE `speaking_criterion_scores` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `speaking_exercises`
+-- Cấu trúc bảng cho bảng `speaking_exercises`
 --
 
 CREATE TABLE `speaking_exercises` (
@@ -218,7 +218,7 @@ CREATE TABLE `speaking_exercises` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `speaking_exercises`
+-- Đang đổ dữ liệu cho bảng `speaking_exercises`
 --
 
 INSERT INTO `speaking_exercises` (`Id`, `topic_id`, `Title`, `created_at`, `speaking_type`) VALUES
@@ -227,13 +227,13 @@ INSERT INTO `speaking_exercises` (`Id`, `topic_id`, `Title`, `created_at`, `spea
 (3, 17, 'Technology', '2026-10-21 10:46:37', 'INTRODUCTION_INTERVIEW'),
 (4, 14, 'Family member', '2026-10-21 10:16:38', 'TOPIC'),
 (5, 14, 'Your hometown', '2026-10-21 10:16:38', 'TOPIC'),
-(6, 14, 'Technology', '2026-10-21 10:16:38', 'TOPIC_DISCUSS'),
-(7, 14, 'Education', '2026-10-21 10:16:38', 'TOPIC_DISCUSS');
+(6, 17, 'Technology in daily life', '2026-10-25 16:00:03', 'TOPIC_DISCUSS'),
+(7, 15, 'Education', '2026-10-24 01:40:44', 'TOPIC_DISCUSS');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `speaking_grades`
+-- Cấu trúc bảng cho bảng `speaking_grades`
 --
 
 CREATE TABLE `speaking_grades` (
@@ -249,7 +249,7 @@ CREATE TABLE `speaking_grades` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `speaking_questions`
+-- Cấu trúc bảng cho bảng `speaking_questions`
 --
 
 CREATE TABLE `speaking_questions` (
@@ -258,13 +258,30 @@ CREATE TABLE `speaking_questions` (
   `question_number` tinyint(4) NOT NULL,
   `question_text` text NOT NULL,
   `preparation_time` int(11) DEFAULT NULL,
-  `response_time` int(11) DEFAULT NULL
+  `response_time` int(11) DEFAULT NULL,
+  `closing` text DEFAULT NULL,
+  `cues` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`cues`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `speaking_questions`
+--
+
+INSERT INTO `speaking_questions` (`Id`, `exercise_id`, `question_number`, `question_text`, `preparation_time`, `response_time`, `closing`, `cues`) VALUES
+(1, 1, 1, 'Let\'s talk about your hometown. Where is your hometown?', 0, 300, NULL, NULL),
+(2, 1, 2, 'What do you like most about your hometown?', 0, 300, NULL, NULL),
+(3, 1, 3, 'Has your hometown changed much in recent years?', 0, 300, NULL, NULL),
+(4, 1, 4, 'Would you say your hometown is a good place for young people to live?', 0, 300, NULL, NULL),
+(5, 1, 5, 'Do you think you will live in your hometown in the future?', 0, 300, NULL, NULL),
+(6, 4, 1, 'Describe a family member you are closest to.', 60, 120, 'and explain why you feel especially close to this person.', '[\"who this person is\", \"what they are like\", \"what you usually do together\", \"how long you have been close\"]'),
+(7, 6, 1, 'How has technology changed people\'s daily lives?', 0, 300, NULL, NULL),
+(8, 6, 2, 'Do you think people rely too much on technology?', 0, 300, NULL, NULL),
+(9, 6, 3, 'What are the advantages and disadvantages of using smartphones?', 0, 300, NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `topics`
+-- Cấu trúc bảng cho bảng `topics`
 --
 
 CREATE TABLE `topics` (
@@ -277,7 +294,7 @@ CREATE TABLE `topics` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `topics`
+-- Đang đổ dữ liệu cho bảng `topics`
 --
 
 INSERT INTO `topics` (`Id`, `Name`, `Description`, `module_type`, `create_by`, `create_by_user_id`) VALUES
@@ -304,7 +321,7 @@ INSERT INTO `topics` (`Id`, `Name`, `Description`, `module_type`, `create_by`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `translation_exercises`
+-- Cấu trúc bảng cho bảng `translation_exercises`
 --
 
 CREATE TABLE `translation_exercises` (
@@ -320,7 +337,7 @@ CREATE TABLE `translation_exercises` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- Cấu trúc bảng cho bảng `user`
 --
 
 CREATE TABLE `user` (
@@ -334,10 +351,17 @@ CREATE TABLE `user` (
   `Status` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `user`
+--
+
+INSERT INTO `user` (`Id`, `Name`, `Role`, `Username`, `Password`, `Email`, `Phone`, `Status`) VALUES
+(1, 'test1', 'ADMIN', 'a', 'AQAAAAIAAYagAAAAEDnG6IBcS7dN59XlrketOc3GcncfNBXOWDkCrXKpe2n1c8G4ro5SiUShSJZGFkopHA==', 'test@gmail.com', '0352447642', 1);
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_listening_answers`
+-- Cấu trúc bảng cho bảng `user_listening_answers`
 --
 
 CREATE TABLE `user_listening_answers` (
@@ -351,7 +375,7 @@ CREATE TABLE `user_listening_answers` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_listening_attempts`
+-- Cấu trúc bảng cho bảng `user_listening_attempts`
 --
 
 CREATE TABLE `user_listening_attempts` (
@@ -368,7 +392,7 @@ CREATE TABLE `user_listening_attempts` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_reading_answers`
+-- Cấu trúc bảng cho bảng `user_reading_answers`
 --
 
 CREATE TABLE `user_reading_answers` (
@@ -382,7 +406,7 @@ CREATE TABLE `user_reading_answers` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_reading_attempts`
+-- Cấu trúc bảng cho bảng `user_reading_attempts`
 --
 
 CREATE TABLE `user_reading_attempts` (
@@ -399,7 +423,7 @@ CREATE TABLE `user_reading_attempts` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_speaking_answers`
+-- Cấu trúc bảng cho bảng `user_speaking_answers`
 --
 
 CREATE TABLE `user_speaking_answers` (
@@ -413,7 +437,7 @@ CREATE TABLE `user_speaking_answers` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_speaking_attempts`
+-- Cấu trúc bảng cho bảng `user_speaking_attempts`
 --
 
 CREATE TABLE `user_speaking_attempts` (
@@ -429,7 +453,7 @@ CREATE TABLE `user_speaking_attempts` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_translation_attempts`
+-- Cấu trúc bảng cho bảng `user_translation_attempts`
 --
 
 CREATE TABLE `user_translation_attempts` (
@@ -445,7 +469,7 @@ CREATE TABLE `user_translation_attempts` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_word_progress`
+-- Cấu trúc bảng cho bảng `user_word_progress`
 --
 
 CREATE TABLE `user_word_progress` (
@@ -461,7 +485,7 @@ CREATE TABLE `user_word_progress` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_writing_attempts`
+-- Cấu trúc bảng cho bảng `user_writing_attempts`
 --
 
 CREATE TABLE `user_writing_attempts` (
@@ -478,7 +502,7 @@ CREATE TABLE `user_writing_attempts` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_writing_criterion_scores`
+-- Cấu trúc bảng cho bảng `user_writing_criterion_scores`
 --
 
 CREATE TABLE `user_writing_criterion_scores` (
@@ -496,7 +520,7 @@ CREATE TABLE `user_writing_criterion_scores` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `words`
+-- Cấu trúc bảng cho bảng `words`
 --
 
 CREATE TABLE `words` (
@@ -512,7 +536,7 @@ CREATE TABLE `words` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `writing_exercises`
+-- Cấu trúc bảng cho bảng `writing_exercises`
 --
 
 CREATE TABLE `writing_exercises` (
@@ -528,7 +552,7 @@ CREATE TABLE `writing_exercises` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `writing_exercises`
+-- Đang đổ dữ liệu cho bảng `writing_exercises`
 --
 
 INSERT INTO `writing_exercises` (`Id`, `topic_id`, `Title`, `image_url`, `writing_type`, `question_text`, `Instruction`, `reference_answer`, `created_at`) VALUES
@@ -538,7 +562,7 @@ INSERT INTO `writing_exercises` (`Id`, `topic_id`, `Title`, `image_url`, `writin
 -- --------------------------------------------------------
 
 --
--- Table structure for table `__efmigrationshistory`
+-- Cấu trúc bảng cho bảng `__efmigrationshistory`
 --
 
 CREATE TABLE `__efmigrationshistory` (
@@ -547,7 +571,7 @@ CREATE TABLE `__efmigrationshistory` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `__efmigrationshistory`
+-- Đang đổ dữ liệu cho bảng `__efmigrationshistory`
 --
 
 INSERT INTO `__efmigrationshistory` (`MigrationId`, `ProductVersion`) VALUES
@@ -556,90 +580,93 @@ INSERT INTO `__efmigrationshistory` (`MigrationId`, `ProductVersion`) VALUES
 ('20261019195403_SyncLatestEntityChanges', '9.0.0'),
 ('20261021021405_SyncTopicEntityChanges', '9.0.0'),
 ('20261021081621_MoveSpeakingTypeToExercise', '9.0.0'),
-('20261021095510_UpdateSpeakingWritingConfig', '9.0.0');
+('20261021095510_UpdateSpeakingWritingConfig', '9.0.0'),
+('20261024030952_AddSpeakingQuestionsRelationship', '9.0.0'),
+('20261024035621_AddSpeakingQuestionsRelationship2', '9.0.0'),
+('20261025121926_AddSpeakingQuestionCuesAndClosing', '9.0.0');
 
 --
--- Indexes for dumped tables
+-- Chỉ mục cho các bảng đã đổ
 --
 
 --
--- Indexes for table `grammar_categories`
+-- Chỉ mục cho bảng `grammar_categories`
 --
 ALTER TABLE `grammar_categories`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `IX_grammar_categories_parent_id` (`parent_id`);
 
 --
--- Indexes for table `grammar_sections`
+-- Chỉ mục cho bảng `grammar_sections`
 --
 ALTER TABLE `grammar_sections`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `IX_grammar_sections_category_id` (`category_id`);
 
 --
--- Indexes for table `idioms`
+-- Chỉ mục cho bảng `idioms`
 --
 ALTER TABLE `idioms`
   ADD PRIMARY KEY (`Id`);
 
 --
--- Indexes for table `listening_exercises`
+-- Chỉ mục cho bảng `listening_exercises`
 --
 ALTER TABLE `listening_exercises`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `IX_listening_exercises_topic_id` (`topic_id`);
 
 --
--- Indexes for table `listening_fill_blank_answers`
+-- Chỉ mục cho bảng `listening_fill_blank_answers`
 --
 ALTER TABLE `listening_fill_blank_answers`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `IX_listening_fill_blank_answers_question_id` (`question_id`);
 
 --
--- Indexes for table `listening_questions`
+-- Chỉ mục cho bảng `listening_questions`
 --
 ALTER TABLE `listening_questions`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `IX_listening_questions_exercise_id` (`exercise_id`);
 
 --
--- Indexes for table `listening_question_options`
+-- Chỉ mục cho bảng `listening_question_options`
 --
 ALTER TABLE `listening_question_options`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `IX_listening_question_options_question_id` (`question_id`);
 
 --
--- Indexes for table `reading_exercises`
+-- Chỉ mục cho bảng `reading_exercises`
 --
 ALTER TABLE `reading_exercises`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `IX_reading_exercises_topic_id` (`topic_id`);
 
 --
--- Indexes for table `reading_fill_blank_answers`
+-- Chỉ mục cho bảng `reading_fill_blank_answers`
 --
 ALTER TABLE `reading_fill_blank_answers`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `IX_reading_fill_blank_answers_question_id` (`question_id`);
 
 --
--- Indexes for table `reading_questions`
+-- Chỉ mục cho bảng `reading_questions`
 --
 ALTER TABLE `reading_questions`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `IX_reading_questions_exercise_id` (`exercise_id`);
 
 --
--- Indexes for table `reading_question_options`
+-- Chỉ mục cho bảng `reading_question_options`
 --
 ALTER TABLE `reading_question_options`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `IX_reading_question_options_question_id` (`question_id`);
 
 --
--- Indexes for table `speaking_criterion_scores`
+-- Chỉ mục cho bảng `speaking_criterion_scores`
 --
 ALTER TABLE `speaking_criterion_scores`
   ADD PRIMARY KEY (`Id`),
@@ -647,14 +674,14 @@ ALTER TABLE `speaking_criterion_scores`
   ADD KEY `IX_speaking_criterion_scores_grade_id` (`grade_id`);
 
 --
--- Indexes for table `speaking_exercises`
+-- Chỉ mục cho bảng `speaking_exercises`
 --
 ALTER TABLE `speaking_exercises`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `IX_speaking_exercises_topic_id` (`topic_id`);
 
 --
--- Indexes for table `speaking_grades`
+-- Chỉ mục cho bảng `speaking_grades`
 --
 ALTER TABLE `speaking_grades`
   ADD PRIMARY KEY (`Id`),
@@ -662,34 +689,34 @@ ALTER TABLE `speaking_grades`
   ADD KEY `IX_speaking_grades_grader_id` (`grader_id`);
 
 --
--- Indexes for table `speaking_questions`
+-- Chỉ mục cho bảng `speaking_questions`
 --
 ALTER TABLE `speaking_questions`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `IX_speaking_questions_exercise_id` (`exercise_id`);
 
 --
--- Indexes for table `topics`
+-- Chỉ mục cho bảng `topics`
 --
 ALTER TABLE `topics`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `IX_topics_create_by_user_id` (`create_by_user_id`);
 
 --
--- Indexes for table `translation_exercises`
+-- Chỉ mục cho bảng `translation_exercises`
 --
 ALTER TABLE `translation_exercises`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `IX_translation_exercises_topic_id` (`topic_id`);
 
 --
--- Indexes for table `user`
+-- Chỉ mục cho bảng `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`Id`);
 
 --
--- Indexes for table `user_listening_answers`
+-- Chỉ mục cho bảng `user_listening_answers`
 --
 ALTER TABLE `user_listening_answers`
   ADD PRIMARY KEY (`Id`),
@@ -697,7 +724,7 @@ ALTER TABLE `user_listening_answers`
   ADD KEY `IX_user_listening_answers_question_id` (`question_id`);
 
 --
--- Indexes for table `user_listening_attempts`
+-- Chỉ mục cho bảng `user_listening_attempts`
 --
 ALTER TABLE `user_listening_attempts`
   ADD PRIMARY KEY (`Id`),
@@ -705,7 +732,7 @@ ALTER TABLE `user_listening_attempts`
   ADD KEY `IX_user_listening_attempts_user_id` (`user_id`);
 
 --
--- Indexes for table `user_reading_answers`
+-- Chỉ mục cho bảng `user_reading_answers`
 --
 ALTER TABLE `user_reading_answers`
   ADD PRIMARY KEY (`Id`),
@@ -713,7 +740,7 @@ ALTER TABLE `user_reading_answers`
   ADD KEY `IX_user_reading_answers_question_id` (`question_id`);
 
 --
--- Indexes for table `user_reading_attempts`
+-- Chỉ mục cho bảng `user_reading_attempts`
 --
 ALTER TABLE `user_reading_attempts`
   ADD PRIMARY KEY (`Id`),
@@ -721,7 +748,7 @@ ALTER TABLE `user_reading_attempts`
   ADD KEY `IX_user_reading_attempts_user_id` (`user_id`);
 
 --
--- Indexes for table `user_speaking_answers`
+-- Chỉ mục cho bảng `user_speaking_answers`
 --
 ALTER TABLE `user_speaking_answers`
   ADD PRIMARY KEY (`Id`),
@@ -730,7 +757,7 @@ ALTER TABLE `user_speaking_answers`
   ADD KEY `IX_user_speaking_answers_question_id` (`question_id`);
 
 --
--- Indexes for table `user_speaking_attempts`
+-- Chỉ mục cho bảng `user_speaking_attempts`
 --
 ALTER TABLE `user_speaking_attempts`
   ADD PRIMARY KEY (`Id`),
@@ -738,7 +765,7 @@ ALTER TABLE `user_speaking_attempts`
   ADD KEY `IX_user_speaking_attempts_user_id` (`user_id`);
 
 --
--- Indexes for table `user_translation_attempts`
+-- Chỉ mục cho bảng `user_translation_attempts`
 --
 ALTER TABLE `user_translation_attempts`
   ADD PRIMARY KEY (`Id`),
@@ -746,7 +773,7 @@ ALTER TABLE `user_translation_attempts`
   ADD KEY `IX_user_translation_attempts_user_id` (`user_id`);
 
 --
--- Indexes for table `user_word_progress`
+-- Chỉ mục cho bảng `user_word_progress`
 --
 ALTER TABLE `user_word_progress`
   ADD PRIMARY KEY (`Id`),
@@ -754,7 +781,7 @@ ALTER TABLE `user_word_progress`
   ADD KEY `IX_user_word_progress_word_id` (`word_id`);
 
 --
--- Indexes for table `user_writing_attempts`
+-- Chỉ mục cho bảng `user_writing_attempts`
 --
 ALTER TABLE `user_writing_attempts`
   ADD PRIMARY KEY (`Id`),
@@ -762,379 +789,379 @@ ALTER TABLE `user_writing_attempts`
   ADD KEY `IX_user_writing_attempts_user_id` (`user_id`);
 
 --
--- Indexes for table `user_writing_criterion_scores`
+-- Chỉ mục cho bảng `user_writing_criterion_scores`
 --
 ALTER TABLE `user_writing_criterion_scores`
   ADD PRIMARY KEY (`Id`),
   ADD UNIQUE KEY `IX_user_writing_criterion_scores_attempt_id_criterion_code` (`attempt_id`,`criterion_code`);
 
 --
--- Indexes for table `words`
+-- Chỉ mục cho bảng `words`
 --
 ALTER TABLE `words`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `IX_words_topic_id` (`topic_id`);
 
 --
--- Indexes for table `writing_exercises`
+-- Chỉ mục cho bảng `writing_exercises`
 --
 ALTER TABLE `writing_exercises`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `IX_writing_exercises_topic_id` (`topic_id`);
 
 --
--- Indexes for table `__efmigrationshistory`
+-- Chỉ mục cho bảng `__efmigrationshistory`
 --
 ALTER TABLE `__efmigrationshistory`
   ADD PRIMARY KEY (`MigrationId`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT cho các bảng đã đổ
 --
 
 --
--- AUTO_INCREMENT for table `grammar_categories`
+-- AUTO_INCREMENT cho bảng `grammar_categories`
 --
 ALTER TABLE `grammar_categories`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `grammar_sections`
+-- AUTO_INCREMENT cho bảng `grammar_sections`
 --
 ALTER TABLE `grammar_sections`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `idioms`
+-- AUTO_INCREMENT cho bảng `idioms`
 --
 ALTER TABLE `idioms`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `listening_exercises`
+-- AUTO_INCREMENT cho bảng `listening_exercises`
 --
 ALTER TABLE `listening_exercises`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `listening_fill_blank_answers`
+-- AUTO_INCREMENT cho bảng `listening_fill_blank_answers`
 --
 ALTER TABLE `listening_fill_blank_answers`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `listening_questions`
+-- AUTO_INCREMENT cho bảng `listening_questions`
 --
 ALTER TABLE `listening_questions`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `listening_question_options`
+-- AUTO_INCREMENT cho bảng `listening_question_options`
 --
 ALTER TABLE `listening_question_options`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `reading_exercises`
+-- AUTO_INCREMENT cho bảng `reading_exercises`
 --
 ALTER TABLE `reading_exercises`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `reading_fill_blank_answers`
+-- AUTO_INCREMENT cho bảng `reading_fill_blank_answers`
 --
 ALTER TABLE `reading_fill_blank_answers`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `reading_questions`
+-- AUTO_INCREMENT cho bảng `reading_questions`
 --
 ALTER TABLE `reading_questions`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `reading_question_options`
+-- AUTO_INCREMENT cho bảng `reading_question_options`
 --
 ALTER TABLE `reading_question_options`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `speaking_criterion_scores`
+-- AUTO_INCREMENT cho bảng `speaking_criterion_scores`
 --
 ALTER TABLE `speaking_criterion_scores`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `speaking_exercises`
+-- AUTO_INCREMENT cho bảng `speaking_exercises`
 --
 ALTER TABLE `speaking_exercises`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT for table `speaking_grades`
+-- AUTO_INCREMENT cho bảng `speaking_grades`
 --
 ALTER TABLE `speaking_grades`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `speaking_questions`
+-- AUTO_INCREMENT cho bảng `speaking_questions`
 --
 ALTER TABLE `speaking_questions`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT for table `topics`
+-- AUTO_INCREMENT cho bảng `topics`
 --
 ALTER TABLE `topics`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
--- AUTO_INCREMENT for table `translation_exercises`
+-- AUTO_INCREMENT cho bảng `translation_exercises`
 --
 ALTER TABLE `translation_exercises`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `user`
+-- AUTO_INCREMENT cho bảng `user`
 --
 ALTER TABLE `user`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `user_listening_answers`
+-- AUTO_INCREMENT cho bảng `user_listening_answers`
 --
 ALTER TABLE `user_listening_answers`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `user_listening_attempts`
+-- AUTO_INCREMENT cho bảng `user_listening_attempts`
 --
 ALTER TABLE `user_listening_attempts`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `user_reading_answers`
+-- AUTO_INCREMENT cho bảng `user_reading_answers`
 --
 ALTER TABLE `user_reading_answers`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `user_reading_attempts`
+-- AUTO_INCREMENT cho bảng `user_reading_attempts`
 --
 ALTER TABLE `user_reading_attempts`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `user_speaking_answers`
+-- AUTO_INCREMENT cho bảng `user_speaking_answers`
 --
 ALTER TABLE `user_speaking_answers`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `user_speaking_attempts`
+-- AUTO_INCREMENT cho bảng `user_speaking_attempts`
 --
 ALTER TABLE `user_speaking_attempts`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `user_translation_attempts`
+-- AUTO_INCREMENT cho bảng `user_translation_attempts`
 --
 ALTER TABLE `user_translation_attempts`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `user_word_progress`
+-- AUTO_INCREMENT cho bảng `user_word_progress`
 --
 ALTER TABLE `user_word_progress`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `user_writing_attempts`
+-- AUTO_INCREMENT cho bảng `user_writing_attempts`
 --
 ALTER TABLE `user_writing_attempts`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `user_writing_criterion_scores`
+-- AUTO_INCREMENT cho bảng `user_writing_criterion_scores`
 --
 ALTER TABLE `user_writing_criterion_scores`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `words`
+-- AUTO_INCREMENT cho bảng `words`
 --
 ALTER TABLE `words`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `writing_exercises`
+-- AUTO_INCREMENT cho bảng `writing_exercises`
 --
 ALTER TABLE `writing_exercises`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- Constraints for dumped tables
+-- Các ràng buộc cho các bảng đã đổ
 --
 
 --
--- Constraints for table `grammar_categories`
+-- Các ràng buộc cho bảng `grammar_categories`
 --
 ALTER TABLE `grammar_categories`
   ADD CONSTRAINT `FK_grammar_categories_grammar_categories_parent_id` FOREIGN KEY (`parent_id`) REFERENCES `grammar_categories` (`Id`);
 
 --
--- Constraints for table `grammar_sections`
+-- Các ràng buộc cho bảng `grammar_sections`
 --
 ALTER TABLE `grammar_sections`
   ADD CONSTRAINT `FK_grammar_sections_grammar_categories_category_id` FOREIGN KEY (`category_id`) REFERENCES `grammar_categories` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `listening_exercises`
+-- Các ràng buộc cho bảng `listening_exercises`
 --
 ALTER TABLE `listening_exercises`
   ADD CONSTRAINT `FK_listening_exercises_topics_topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `listening_fill_blank_answers`
+-- Các ràng buộc cho bảng `listening_fill_blank_answers`
 --
 ALTER TABLE `listening_fill_blank_answers`
   ADD CONSTRAINT `FK_listening_fill_blank_answers_listening_questions_question_id` FOREIGN KEY (`question_id`) REFERENCES `listening_questions` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `listening_questions`
+-- Các ràng buộc cho bảng `listening_questions`
 --
 ALTER TABLE `listening_questions`
   ADD CONSTRAINT `FK_listening_questions_listening_exercises_exercise_id` FOREIGN KEY (`exercise_id`) REFERENCES `listening_exercises` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `listening_question_options`
+-- Các ràng buộc cho bảng `listening_question_options`
 --
 ALTER TABLE `listening_question_options`
   ADD CONSTRAINT `FK_listening_question_options_listening_questions_question_id` FOREIGN KEY (`question_id`) REFERENCES `listening_questions` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `reading_exercises`
+-- Các ràng buộc cho bảng `reading_exercises`
 --
 ALTER TABLE `reading_exercises`
   ADD CONSTRAINT `FK_reading_exercises_topics_topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `reading_fill_blank_answers`
+-- Các ràng buộc cho bảng `reading_fill_blank_answers`
 --
 ALTER TABLE `reading_fill_blank_answers`
   ADD CONSTRAINT `FK_reading_fill_blank_answers_reading_questions_question_id` FOREIGN KEY (`question_id`) REFERENCES `reading_questions` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `reading_questions`
+-- Các ràng buộc cho bảng `reading_questions`
 --
 ALTER TABLE `reading_questions`
   ADD CONSTRAINT `FK_reading_questions_reading_exercises_exercise_id` FOREIGN KEY (`exercise_id`) REFERENCES `reading_exercises` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `reading_question_options`
+-- Các ràng buộc cho bảng `reading_question_options`
 --
 ALTER TABLE `reading_question_options`
   ADD CONSTRAINT `FK_reading_question_options_reading_questions_question_id` FOREIGN KEY (`question_id`) REFERENCES `reading_questions` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `speaking_criterion_scores`
+-- Các ràng buộc cho bảng `speaking_criterion_scores`
 --
 ALTER TABLE `speaking_criterion_scores`
   ADD CONSTRAINT `FK_speaking_criterion_scores_speaking_grades_grade_id` FOREIGN KEY (`grade_id`) REFERENCES `speaking_grades` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `speaking_exercises`
+-- Các ràng buộc cho bảng `speaking_exercises`
 --
 ALTER TABLE `speaking_exercises`
   ADD CONSTRAINT `FK_speaking_exercises_topics_topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`Id`);
 
 --
--- Constraints for table `speaking_grades`
+-- Các ràng buộc cho bảng `speaking_grades`
 --
 ALTER TABLE `speaking_grades`
   ADD CONSTRAINT `FK_speaking_grades_user_speaking_attempts_attempt_id` FOREIGN KEY (`attempt_id`) REFERENCES `user_speaking_attempts` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `topics`
+-- Các ràng buộc cho bảng `topics`
 --
 ALTER TABLE `topics`
   ADD CONSTRAINT `FK_topics_user_create_by_user_id` FOREIGN KEY (`create_by_user_id`) REFERENCES `user` (`Id`);
 
 --
--- Constraints for table `translation_exercises`
+-- Các ràng buộc cho bảng `translation_exercises`
 --
 ALTER TABLE `translation_exercises`
   ADD CONSTRAINT `FK_translation_exercises_topics_topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `user_listening_answers`
+-- Các ràng buộc cho bảng `user_listening_answers`
 --
 ALTER TABLE `user_listening_answers`
   ADD CONSTRAINT `FK_user_listening_answers_listening_questions_question_id` FOREIGN KEY (`question_id`) REFERENCES `listening_questions` (`Id`) ON DELETE CASCADE,
   ADD CONSTRAINT `FK_user_listening_answers_user_listening_attempts_attempt_id` FOREIGN KEY (`attempt_id`) REFERENCES `user_listening_attempts` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `user_listening_attempts`
+-- Các ràng buộc cho bảng `user_listening_attempts`
 --
 ALTER TABLE `user_listening_attempts`
   ADD CONSTRAINT `FK_user_listening_attempts_listening_exercises_exercise_id` FOREIGN KEY (`exercise_id`) REFERENCES `listening_exercises` (`Id`) ON DELETE CASCADE,
   ADD CONSTRAINT `FK_user_listening_attempts_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `user_reading_answers`
+-- Các ràng buộc cho bảng `user_reading_answers`
 --
 ALTER TABLE `user_reading_answers`
   ADD CONSTRAINT `FK_user_reading_answers_reading_questions_question_id` FOREIGN KEY (`question_id`) REFERENCES `reading_questions` (`Id`) ON DELETE CASCADE,
   ADD CONSTRAINT `FK_user_reading_answers_user_reading_attempts_attempt_id` FOREIGN KEY (`attempt_id`) REFERENCES `user_reading_attempts` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `user_reading_attempts`
+-- Các ràng buộc cho bảng `user_reading_attempts`
 --
 ALTER TABLE `user_reading_attempts`
   ADD CONSTRAINT `FK_user_reading_attempts_reading_exercises_exercise_id` FOREIGN KEY (`exercise_id`) REFERENCES `reading_exercises` (`Id`) ON DELETE CASCADE,
   ADD CONSTRAINT `FK_user_reading_attempts_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `user_speaking_answers`
+-- Các ràng buộc cho bảng `user_speaking_answers`
 --
 ALTER TABLE `user_speaking_answers`
   ADD CONSTRAINT `FK_user_speaking_answers_user_speaking_attempts_attempt_id` FOREIGN KEY (`attempt_id`) REFERENCES `user_speaking_attempts` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `user_translation_attempts`
+-- Các ràng buộc cho bảng `user_translation_attempts`
 --
 ALTER TABLE `user_translation_attempts`
   ADD CONSTRAINT `FK_user_translation_attempts_translation_exercises_exercise_id` FOREIGN KEY (`exercise_id`) REFERENCES `translation_exercises` (`Id`) ON DELETE CASCADE,
   ADD CONSTRAINT `FK_user_translation_attempts_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `user_word_progress`
+-- Các ràng buộc cho bảng `user_word_progress`
 --
 ALTER TABLE `user_word_progress`
   ADD CONSTRAINT `FK_user_word_progress_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`Id`) ON DELETE CASCADE,
   ADD CONSTRAINT `FK_user_word_progress_words_word_id` FOREIGN KEY (`word_id`) REFERENCES `words` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `user_writing_attempts`
+-- Các ràng buộc cho bảng `user_writing_attempts`
 --
 ALTER TABLE `user_writing_attempts`
   ADD CONSTRAINT `FK_user_writing_attempts_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`Id`),
   ADD CONSTRAINT `FK_user_writing_attempts_writing_exercises_exercise_id` FOREIGN KEY (`exercise_id`) REFERENCES `writing_exercises` (`Id`);
 
 --
--- Constraints for table `user_writing_criterion_scores`
+-- Các ràng buộc cho bảng `user_writing_criterion_scores`
 --
 ALTER TABLE `user_writing_criterion_scores`
   ADD CONSTRAINT `FK_user_writing_criterion_scores_user_writing_attempts_attempt_~` FOREIGN KEY (`attempt_id`) REFERENCES `user_writing_attempts` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `words`
+-- Các ràng buộc cho bảng `words`
 --
 ALTER TABLE `words`
   ADD CONSTRAINT `FK_words_topics_topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`Id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `writing_exercises`
+-- Các ràng buộc cho bảng `writing_exercises`
 --
 ALTER TABLE `writing_exercises`
   ADD CONSTRAINT `FK_writing_exercises_topics_topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`Id`);
