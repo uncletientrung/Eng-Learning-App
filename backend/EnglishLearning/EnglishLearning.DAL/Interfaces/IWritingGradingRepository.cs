@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using EnglishLearning.DAL.Entities;
 
-namespace EnglishLearning.DAL.Interfaces
+namespace EnglishLearning.DAL.Interfaces;
+
+public interface IWritingGradingRepository
 {
-    internal interface IWritingGradingRepository
-    {
-    }
+    Task SaveAsync(
+        UserWritingAttempt attempt,
+        List<UserWritingCriterionScore> scores,
+        CancellationToken cancellationToken = default);
 }

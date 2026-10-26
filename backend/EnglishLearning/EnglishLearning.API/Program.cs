@@ -8,7 +8,7 @@ using EnglishLearning.DAL.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-
+builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -25,6 +25,12 @@ builder.Services.AddScoped<
     WritingExerciseService>();
 builder.Services.AddScoped<ITopicService, TopicService>();
 builder.Services.AddScoped<ISpeakingExerciseService, SpeakingExerciseService>();
+
+builder.Services.AddScoped<IWritingGradingService, WritingGradingService>();
+builder.Services.AddHttpClient<ILlmGradingService, GeminiGradingService>();
+builder.Services.AddScoped<IWritingGradingRepository, WritingGradingRepository>();
+
+
 
 
 // Đăng ký kết nối MySQL

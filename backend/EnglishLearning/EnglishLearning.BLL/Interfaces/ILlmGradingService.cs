@@ -1,10 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using EnglishLearning.BLL.DTOs.WritingGrading;
 
-namespace EnglishLearning.BLL.Interfaces
+namespace EnglishLearning.BLL.Interfaces;
+
+public interface ILlmGradingService
 {
-    internal interface ILlmGradingService
-    {
-    }
+    Task<(GeminiGradingResultDto Result, string RawJson)>
+        GradeAsync(
+            string title,
+            string questionText,
+            string? instruction,
+            string? writingType,
+            string userResponse,
+            CancellationToken cancellationToken = default);
 }

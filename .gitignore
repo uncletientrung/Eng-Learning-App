@@ -17,9 +17,7 @@ frontend/.env.*
 # =========================
 
 **/bin/
-# **/obj/
-**/obj/Debug/
-**/obj/Release/
+**/obj/
 **/Migrations/
 
 
