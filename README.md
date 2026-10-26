@@ -55,3 +55,22 @@ backend/
     Nếu chưa có migrations: dotnet ef migrations add InitialCreate --project EnglishLearning.DAL --startup-project EnglishLearning.API --context    AppDbContext
     donet build
     dotnet ef database update --project EnglishLearning.DAL --startup-project EnglishLearning.API --context AppDbContext
+
+## Đăng nhập và access token
+
+Backend phát JWT tại `POST /api/auth/login` sau khi xác thực email/mật khẩu
+trong bảng `user`. Trước khi chạy API, cấu hình khóa ký bí mật (tối thiểu 32
+byte) bằng .NET User Secrets hoặc biến môi trường `Jwt__SigningKey`; không
+đưa khóa này vào `appsettings.json` hay frontend.
+
+Ví dụ chạy trong thư mục `backend/EnglishLearning/EnglishLearning.API`:
+
+```powershell
+dotnet user-secrets set "Jwt:SigningKey" "replace-with-a-random-secret-of-at-least-32-bytes"
+```
+
+Frontend lưu `accessToken` và thông tin user trong `sessionStorage`, chỉ tồn
+tại trong tab hiện tại và bị xóa khi tab đóng. API chấm Writing gửi token bằng
+header `Authorization: Bearer <accessToken>`. `sessionStorage` vẫn có thể bị
+đọc bởi JavaScript cùng nguồn, vì vậy cần tránh XSS; ứng dụng production nên
+cân nhắc cookie `HttpOnly; Secure; SameSite` qua backend-for-frontend.

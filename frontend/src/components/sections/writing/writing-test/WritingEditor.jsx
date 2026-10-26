@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import WritingToolbar from "./WritingToolbar";
 import {
   normalizeTopic,
@@ -149,6 +150,11 @@ function WritingEditor({
           className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
         >
           {error}
+          {!token && (
+            <Link to="/login" className="ml-2 font-bold underline">
+              Đăng nhập
+            </Link>
+          )}
         </div>
       )}
 

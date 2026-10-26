@@ -1,8 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { login } from '../../services/authApi';
 
 const LoginPage = () => {
     const [isLogin, setIsLogin] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+    const location = useLocation();
     const mascotRef = useRef(null);
     const faceGroupRef = useRef(null);
     const eyePathRef = useRef(null);
@@ -111,13 +116,26 @@ const LoginPage = () => {
         };
     }, []);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
         if (!isLogin) {
-            alert("Đăng ký thành công! Vui lòng đăng nhập lại.");
-            setIsLogin(true);
-        } else {
-            alert("Đăng nhập thành công!");
+            setError("Chức năng đăng ký chưa được kết nối với backend.");
+            return;
+        }
+
+        const formData = new FormData(e.currentTarget);
+        setSubmitting(true);
+        try {
+            await login(
+                formData.get('email'),
+                formData.get('password')
+            );
+            navigate(location.state?.from || '/', { replace: true });
+        } catch (err) {
+            setError(err.message || "Đăng nhập thất bại. Vui lòng thử lại.");
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -291,8 +309,13 @@ const LoginPage = () => {
                             )}
 
                             <div className="pt-2">
-                                <button type="submit" className="w-full bg-[#5a6d38] hover:bg-[#1e3006] text-white font-black py-4 rounded-2xl shadow-lg shadow-[#5a6d38]/20 flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-70 text-sm uppercase tracking-widest h-[52px]">
-                                    {isLogin ? 'Đăng nhập ngay' : 'Đăng ký ngay'}
+                                {error && (
+                                    <p role="alert" className="mb-3 text-sm font-semibold text-red-600">
+                                        {error}
+                                    </p>
+                                )}
+                                <button type="submit" disabled={submitting} className="w-full bg-[#5a6d38] hover:bg-[#1e3006] text-white font-black py-4 rounded-2xl shadow-lg shadow-[#5a6d38]/20 flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-70 text-sm uppercase tracking-widest h-[52px]">
+                                    {submitting ? 'Đang đăng nhập...' : isLogin ? 'Đăng nhập ngay' : 'Đăng ký ngay'}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right" aria-hidden="true">
                                         <path d="M5 12h14"></path>
                                         <path d="m12 5 7 7-7 7"></path>

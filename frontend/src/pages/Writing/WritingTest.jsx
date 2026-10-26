@@ -8,6 +8,7 @@ import WritingPrompt from '../../components/sections/writing/writing-test/Writin
 import WritingGuide from '../../components/sections/writing/writing-test/WritingGuide'
 import WritingEditor from '../../components/sections/writing/writing-test/WritingEditor'
 import { getWritingExerciseById } from '../../services/writingAPI.js'
+import { getAccessToken } from '../../services/authApi.js'
 
 function WritingTest() {
   const { id } = useParams()
@@ -166,6 +167,7 @@ function WritingTest() {
             test={test}
             isFullscreen={isFullscreen}
             onFullscreen={handleFullscreen}
+            token={getAccessToken()}
           />
 
         </div>

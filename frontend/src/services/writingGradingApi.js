@@ -1,11 +1,11 @@
-const API_URL = "http://localhost:5167/api/writing-grading";
+import API_URL from "../constant/apiConfig";
 
 export async function gradeWriting(exerciseId, userResponse, token) {
-  const response = await fetch(API_URL, {
+  const response = await fetch(`${API_URL}/writing-grading`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: ["Bearer", token].join(" "),
     },
     body: JSON.stringify({
       exerciseId,
