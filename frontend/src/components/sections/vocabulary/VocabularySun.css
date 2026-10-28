@@ -1,0 +1,35 @@
+.vocabulary-sun {
+  position: absolute;
+  width: 550px;
+  height: 550px;
+  right: -100px;
+  bottom: -170px;
+  transform-origin: 50% 100%;
+}
+
+.vocabulary-sun-eye-closed {
+  visibility: hidden;
+}
+
+.is-winking .vocabulary-sun-eye-open {
+  visibility: hidden;
+}
+
+.is-winking .vocabulary-sun-eye-closed {
+  visibility: visible;
+}
+
+@media (max-width: 767px) {
+  .vocabulary-sun {
+    width: 400px;
+    height: 400px;
+    right: -85px;
+    bottom: -130px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vocabulary-sun-face {
+    transition: none;
+  }
+}

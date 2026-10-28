@@ -22,7 +22,7 @@ function Footer() {
 
             <ul className="space-y-3 text-sm text-white/60">
               <li>
-                <a href="/vocabulary" className="hover:text-white">
+                <a href="/vocabulary/dashboard?tab=notebook" className="hover:text-white">
                   Sổ từ vựng
                 </a>
               </li>

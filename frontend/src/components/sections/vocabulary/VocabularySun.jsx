@@ -1,6 +1,7 @@
 ﻿import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import sunImage from "../../../assets/vocabulary/sun.svg";
+import "./VocabularySun.css";
 
 export default function VocabularySun() {
   const sunRef = useRef(null);

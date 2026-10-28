@@ -2,8 +2,6 @@ import MainLayout from '../components/layout/MainLayout'
 
 import Hero from '../components/sections/Hero'
 import SkillCards from '../components/sections/SkillCards'
-import JourneySection from '../components/sections/JourneySection'
-import ConsultationSection from '../components/sections/ConsultationSection'
 import ReadingSelectionModal from '../components/sections/ReadingSelectionModal'
 import Footer from '../components/layout/Footer'
 
@@ -23,10 +21,6 @@ function Home() {
         onOpenReadingModal={() => setIsReadingModalOpen(true)}
         onMascotSmile={setIsMascotSmiling}
       />
-
-      <JourneySection />
-
-      <ConsultationSection />
 
       {isReadingModalOpen && (
         <ReadingSelectionModal

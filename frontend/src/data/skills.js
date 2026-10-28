@@ -54,7 +54,7 @@ export const skills = [
       'Xây dựng vốn từ vựng IELTS hiệu quả.',
     image: '/assets/vocabulary-card.webp',
     icon: BookMarked,
-    path: '/vocabulary',
+    path: '/vocabulary/dashboard',
     badge: 'FREE',
     action: 'navigate',
   },
