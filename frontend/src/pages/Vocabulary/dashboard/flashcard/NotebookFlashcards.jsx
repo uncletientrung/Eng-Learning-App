@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowRight, BarChart3, Frown, Meh, Moon, Pencil, RotateCcw, Sparkles, Volume2 } from "lucide-react";
 import { useNotebookFolders } from "../notebook/notebookStorage";
-import { getDictionaryAudioUrl } from "../notebook/dictionaryApi";
+import { speak } from "../../../../utils/speech";
 import PartOfSpeechBadge from "../notebook/PartOfSpeechBadge";
 import WordActionDialog from "../notebook/WordActionDialog";
 import FlashcardStatsDialog from "./FlashcardStatsDialog";
@@ -35,7 +35,6 @@ function FlashcardSession({ folder }) {
   const [editing, setEditing] = useState(false);
   const [message, setMessage] = useState("");
   const touchStart = useRef(null);
-  const audioRef = useRef(null);
   const [audioError, setAudioError] = useState("");
   const wordsById = new Map(folder.words.map((word) => [word.id, word]));
   const ids = studyIds.filter((id) => wordsById.has(id));
@@ -45,31 +44,26 @@ function FlashcardSession({ folder }) {
   const remembered = folder.words.filter((item) => progress[item.id]?.grade >= 3);
   const unseen = folder.words.filter((item) => !(progress[item.id]?.grade >= 3));
   const folderLink = `/vocabulary/dashboard?tab=notebook&folder=${encodeURIComponent(folder.id)}`;
-  const audioUrl = getDictionaryAudioUrl(word.word, word.audio);
   const showingWordList = Boolean(wordList);
 
   const stopAudio = useCallback(() => {
-    const audio = audioRef.current;
-    audioRef.current = null;
-    if (audio) {
-      audio.pause();
-      audio.removeAttribute("src");
-      audio.load();
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
     }
   }, []);
 
   const playAudio = useCallback(() => {
-    stopAudio();
     setAudioError("");
-    const audio = new Audio(audioUrl);
-    audioRef.current = audio;
-    audio.play().catch((error) => {
-      if (audioRef.current !== audio) return;
-      setAudioError(error.name === "NotAllowedError"
-        ? "Bấm nút loa để nghe phát âm. Trình duyệt chưa cho phép tự phát audio."
-        : "Không phát được audio. Bạn bấm nút loa để thử lại nhé.");
-    });
-  }, [audioUrl, stopAudio]);
+    if (!("speechSynthesis" in window)) {
+      setAudioError("Trình duyệt chưa hỗ trợ đọc văn bản thành giọng nói.");
+      return;
+    }
+    try {
+      speak(word.word, "US", false);
+    } catch {
+      setAudioError("Không đọc được từ. Bạn bấm nút loa để thử lại nhé.");
+    }
+  }, [word.word]);
 
   useEffect(() => {
     if (completed || showingWordList) return;
