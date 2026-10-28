@@ -1,5 +1,6 @@
+import ReviewNotifications from "./ReviewNotifications";
 import { Link } from "react-router-dom";
-import { Bell, History, Layers, LayoutGrid, LibraryBig, LogOut, Moon, PanelLeftClose, PanelLeftOpen, Sun, TrendingUp, X } from "lucide-react";
+import { History, Layers, LayoutGrid, LibraryBig, LogOut, Moon, PanelLeftClose, PanelLeftOpen, Sun, TrendingUp, X } from "lucide-react";
 
 const items = [
   { label: "Tổng quan", icon: LayoutGrid, view: "overview" },
@@ -14,7 +15,7 @@ export function DashboardThemeButton({ dark, onToggle }) {
   return <button type="button" title="Chế độ sáng / tối" aria-label="Chế độ sáng / tối" onClick={onToggle} className="vd-theme-button"><Icon size={17} /></button>;
 }
 
-export default function DashboardSidebar({ expanded, onToggleExpanded, mobileOpen, onCloseMobile, dark, onToggleTheme, view, onNavigate, onNotice }) {
+export default function DashboardSidebar({ expanded, onToggleExpanded, mobileOpen, onCloseMobile, dark, onToggleTheme, view, onNavigate }) {
   return (
     <>
       {mobileOpen && <button type="button" aria-label="Đóng menu" className="vd-menu-backdrop" onClick={onCloseMobile} />}
@@ -35,7 +36,7 @@ export default function DashboardSidebar({ expanded, onToggleExpanded, mobileOpe
         </nav>
         <div className="vd-sidebar-bottom">
           <div className="vd-divider" />
-          <div className="vd-account"><div className="vd-avatar" aria-hidden="true">B</div><span>Bạn học</span><button type="button" title="Thông báo" aria-label="Thông báo" className="vd-icon-button" onClick={() => onNotice("Thông báo", "Bạn chưa có thông báo mới.")}><Bell size={18} /></button></div>
+          <div className="vd-account"><div className="vd-avatar" aria-hidden="true">B</div><span>Bạn học</span><ReviewNotifications /></div>
           <button type="button" title="Đăng xuất" aria-label="Đăng xuất" disabled className="vd-nav-item vd-exit"><LogOut size={20} /><span>Đăng xuất</span></button>
         </div>
       </aside>

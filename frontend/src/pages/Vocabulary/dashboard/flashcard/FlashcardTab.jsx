@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+import { useDueFolders, dueFolderLink } from "./useDueFolders";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import VocabularySun from "../../../../components/sections/vocabulary/VocabularySun";
 import "./FlashcardTab.css";
@@ -9,9 +11,11 @@ const badgePoints = Array.from({ length: 32 }, (_, index) => {
 }).join(" ");
 
 export default function FlashcardTab({ onChooseSet }) {
+  const dueFolders = useDueFolders();
   return (
     <div className="vd-flashcard-layout">
-      <section className="td-pop vd-flashcard-empty" aria-labelledby="vd-flashcard-title">
+      {dueFolders.length > 0 && <section className="vr-due-sets"><h2>Cần ôn tập</h2>{dueFolders.map((folder) => <Link key={folder.id} to={dueFolderLink(folder.id)}><strong>{folder.name}</strong><span>{folder.dueWords.length} từ đến hạn</span></Link>)}<button type="button" className="vf-list-back" onClick={onChooseSet}>Xem tất cả bộ từ</button></section>}
+      {dueFolders.length === 0 && <section className="td-pop vd-flashcard-empty" aria-labelledby="vd-flashcard-title">
         <div className="vd-flashcard-halo" aria-hidden="true" />
         <div className="vd-flashcard-tape" aria-hidden="true" />
         <svg className="vd-flashcard-moon td-bob" viewBox="0 0 48 48" aria-hidden="true">
@@ -34,7 +38,7 @@ export default function FlashcardTab({ onChooseSet }) {
           <p>Vui lòng chọn 1 bộ từ bạn muốn ôn tập ở trang cá nhân nhé</p>
           <button type="button" onClick={onChooseSet}><ArrowLeft size={18} />Chọn bộ từ</button>
         </div>
-      </section>
+      </section>}
     </div>
   );
 }

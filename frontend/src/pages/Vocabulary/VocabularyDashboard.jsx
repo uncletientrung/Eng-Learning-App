@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Bell, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import DashboardSidebar, { DashboardThemeButton } from "./dashboard/DashboardSidebar";
 import OverviewTab from "./dashboard/overview/OverviewTab";
@@ -7,6 +7,7 @@ import WordSetsTab from "./dashboard/word-sets/WordSetsTab";
 import FlashcardTab from "./dashboard/flashcard/FlashcardTab";
 import NotebookTab from "./dashboard/notebook/NotebookTab";
 import NotebookFlashcards from "./dashboard/flashcard/NotebookFlashcards";
+import ReviewNotifications from "./dashboard/ReviewNotifications";
 import DashboardDialog from "./dashboard/DashboardDialog";
 import "./dashboard/dashboard-sample.css";
 import "./VocabularyDashboard.css";
@@ -110,14 +111,14 @@ export default function VocabularyDashboard({ flashcardPage = false }) {
         <header className="vd-mobile-header">
           <button type="button" aria-label="Mở menu" aria-expanded={mobileOpen} className="vd-icon-button" onClick={() => setMobileOpen(true)}><Menu size={20} /></button>
           <div className="min-w-0 flex-1"><p className="truncate text-[10px] font-extrabold tracking-widest text-d-mute">{view === "overview" ? "TỔNG QUAN · TIẾN ĐỘ LUYỆN ĐỀ" : view === "flashcard" ? "FLASHCARD · IELTS" : view === "notebook" ? "BỘ TỪ CỦA BẢN THÂN" : "BỘ TỪ VỰNG · IELTS"}</p><p className="truncate text-sm font-bold">{view === "overview" ? "Chào bạn, hôm nay luyện đề nhé!" : view === "flashcard" ? (folderId ? "Lật thẻ, nhớ từ lâu hơn" : "Chọn bộ từ để bắt đầu ôn tập") : view === "notebook" ? "Thư mục của bạn." : "Chọn bộ từ để bắt đầu học"}</p></div>
-          <button type="button" aria-label="Thông báo" className="vd-icon-button" onClick={() => showNotice("Thông báo", "Bạn chưa có thông báo mới.")}><Bell size={18} /></button>
+          <ReviewNotifications />
           <DashboardThemeButton dark={preferences.dark} onToggle={toggleTheme} />
         </header>
         <main ref={contentRef} className={`vd-main${view === "flashcard" && folderId ? " vd-main-study" : ""}`} onClick={handleAction}>
           {view === "overview"
             ? <OverviewTab preferences={preferences} onBandChange={changeBand} onExamDateChange={(examDate) => setPreferences((previous) => ({ ...previous, examDate }))} today={today} />
             : view === "flashcard"
-              ? folderId ? <NotebookFlashcards key={folderId} folderId={folderId} /> : <FlashcardTab onChooseSet={() => navigateView("sets")} />
+              ? folderId ? <NotebookFlashcards key={`${folderId}:${searchParams.get("review") || ""}`} folderId={folderId} /> : <FlashcardTab onChooseSet={() => navigateView("sets")} />
               : view === "notebook"
                 ? <NotebookTab onBack={() => navigateView("sets")} />
                 : <WordSetsTab key={view} />}

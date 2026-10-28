@@ -3,11 +3,15 @@ import {
   BookOpen,
   History,
   Crown,
+  X,
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useDueFolders, dueFolderLink } from '../../pages/Vocabulary/dashboard/flashcard/useDueFolders'
 
 function Navbar({ transparentOnTop = false }) {
+  const dueFolders = useDueFolders()
+  const dueWordCount = dueFolders.reduce((count, folder) => count + folder.dueWords.length, 0)
   const [isScrolled, setIsScrolled] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const notificationsRef = useRef(null)
@@ -115,22 +119,34 @@ function Navbar({ transparentOnTop = false }) {
               onClick={() => setNotificationsOpen((open) => !open)}
             >
               <Bell size={20} aria-hidden="true" />
+              {dueWordCount > 0 && <span aria-label="Có từ đến hạn ôn tập" className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full border-2 border-white bg-rose-500" />}
             </button>
 
             {notificationsOpen && (
               <section
                 id="navbar-notifications"
                 aria-labelledby="navbar-notifications-title"
-                className="absolute right-0 top-full mt-3 w-80 max-w-[calc(100vw-3rem)] rounded-2xl border border-slate-100 bg-white text-slate-900 shadow-xl"
+                className="fixed left-6 right-6 top-[88px] overflow-hidden rounded-2xl border border-slate-100 bg-white text-slate-900 shadow-xl sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-3 sm:w-[465px] sm:max-w-[calc(100vw-3rem)]"
               >
-                <div className="border-b border-slate-100 px-5 py-4">
-                  <h2 id="navbar-notifications-title" className="font-bold">Thông báo</h2>
+                <div className="flex items-center justify-between px-6 py-4">
+                  <h2 id="navbar-notifications-title" className="text-[22px] font-bold">Thông báo</h2>
+                  <button type="button" aria-label="Đóng thông báo" className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100" onClick={() => { setNotificationsOpen(false); notificationButtonRef.current?.focus() }}><X size={19} /></button>
                 </div>
-                <div className="flex flex-col items-center px-5 py-8 text-center">
+                {dueWordCount > 0 ? <Link
+                  to={dueFolderLink(dueFolders[0].id)}
+                  onClick={() => setNotificationsOpen(false)}
+                  className="flex gap-4 bg-[#fffdec] px-6 py-5 transition-colors hover:bg-[#fff8d4]"
+                >
+                  <span aria-hidden="true" className="pt-0.5 text-[23px]">📚</span>
+                  <div className="min-w-0">
+                    <p className="text-[17px] font-bold text-[#526236]">Đến giờ ôn từ vựng</p>
+                    <p className="mt-0.5 text-sm font-medium text-[#6b7e9d]">Có {dueFolders.length} bộ từ cần ôn tập — Ôn ngay →</p>
+                  </div>
+                </Link> : <div className="flex flex-col items-center px-5 py-8 text-center">
                   <Bell size={28} className="mb-3 text-slate-400" aria-hidden="true" />
                   <p className="text-sm font-semibold">Bạn chưa có thông báo mới</p>
                   <p className="mt-1 text-xs text-slate-500">Thông báo của bạn sẽ hiển thị tại đây.</p>
-                </div>
+                </div>}
               </section>
             )}
           </div>

@@ -1,0 +1,27 @@
+.vocabulary-dashboard .vr-notifications { position: relative; flex-shrink: 0; }
+.vocabulary-dashboard .vr-bell { position: relative; cursor: pointer; }
+.vocabulary-dashboard .vr-badge { position: absolute; top: -5px; right: -5px; min-width: 19px; height: 19px; padding: 0 4px; border-radius: 20px; background: #dc382c; color: white; font-size: 11px; display: grid; place-items: center; }
+.vocabulary-dashboard .vr-panel { position: fixed; z-index: 150; left: 88px; bottom: 24px; width: 450px; max-width: calc(100vw - 32px); background: var(--d-surf, #191c23); color: var(--d-ink, #eee); border: 1px solid #858b992e; border-radius: 26px; box-shadow: 0 16px 60px #0004; overflow: hidden; text-align: left; }
+.vocabulary-dashboard .vr-panel header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid #858b992e; }
+.vocabulary-dashboard .vr-panel h2 { margin: 0; font-size: 21px; font-weight: 800; }
+.vocabulary-dashboard .vr-panel button { cursor: pointer; }
+.vocabulary-dashboard .vr-panel header button { padding: 8px; border-radius: 50%; background: #858b9926; }
+.vocabulary-dashboard .vr-items { max-height: min(55vh, 460px); overflow-y: auto; }
+.vocabulary-dashboard .vr-item { display: flex; gap: 15px; padding: 20px 22px; border-bottom: 1px solid #858b992e; background: #db382c0d; }
+.vocabulary-dashboard .vr-icon { background: #dc382c; color: white; border-radius: 12px; width: 42px; height: 42px; display: grid; place-items: center; flex-shrink: 0; }
+.vocabulary-dashboard .vr-item p { margin: 0 0 4px; font-weight: 700; line-height: 1.5; }
+.vocabulary-dashboard .vr-item strong { color: #e45b4b; }
+.vocabulary-dashboard .vr-item small { opacity: .7; }
+.vocabulary-dashboard .vr-actions { display: flex; gap: 10px; margin-top: 12px; }
+.vocabulary-dashboard .vr-actions a, .vocabulary-dashboard .vr-actions button { padding: 8px 15px; border-radius: 12px; font-weight: 800; }
+.vocabulary-dashboard .vr-actions a { background: #dc382c; color: white; }
+.vocabulary-dashboard .vr-actions button { background: #858b9926; }
+.vocabulary-dashboard .vr-all { display: block; text-align: center; padding: 16px; color: #657dff; font-size: 13px; font-weight: 800; letter-spacing: .06em; }
+.vocabulary-dashboard .vr-empty { padding: 30px 20px; text-align: center; opacity: .7; }
+.vocabulary-dashboard .vr-due-sets { padding: 24px; display: grid; gap: 12px; }
+.vocabulary-dashboard .vr-due-sets h2 { font-size: 24px; font-weight: 800; }
+.vocabulary-dashboard .vr-due-sets a { display: flex; justify-content: space-between; gap: 16px; padding: 18px; border: 1px solid #858b9940; border-radius: 16px; }
+.vocabulary-dashboard .vf-list-study:disabled { opacity: .45; cursor: default; }
+@media (min-width: 1024px) { .vocabulary-dashboard .vd-shell:has(.is-expanded) .vr-panel { left: 272px; } }
+@media (max-width: 1023px) { .vocabulary-dashboard .vr-panel { left: auto; right: 16px; top: 76px; bottom: auto; } }
+.vocabulary-dashboard .vr-due-sets { width: 100%; max-width: 960px; align-self: start; }
