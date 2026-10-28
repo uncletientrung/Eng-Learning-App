@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight, BarChart3, Frown, Meh, Moon, Pencil, RotateCcw, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, BarChart3, Frown, Meh, Moon, Pencil, RotateCcw, Sparkles, Volume2 } from "lucide-react";
 import { useNotebookFolders } from "../notebook/notebookStorage";
+import { getDictionaryAudioUrl } from "../notebook/dictionaryApi";
 import PartOfSpeechBadge from "../notebook/PartOfSpeechBadge";
 import WordActionDialog from "../notebook/WordActionDialog";
 import FlashcardStatsDialog from "./FlashcardStatsDialog";
@@ -34,6 +35,8 @@ function FlashcardSession({ folder }) {
   const [editing, setEditing] = useState(false);
   const [message, setMessage] = useState("");
   const touchStart = useRef(null);
+  const audioRef = useRef(null);
+  const [audioError, setAudioError] = useState("");
   const wordsById = new Map(folder.words.map((word) => [word.id, word]));
   const ids = studyIds.filter((id) => wordsById.has(id));
   const index = Math.min(position, ids.length - 1);
@@ -42,6 +45,40 @@ function FlashcardSession({ folder }) {
   const remembered = folder.words.filter((item) => progress[item.id]?.grade >= 3);
   const unseen = folder.words.filter((item) => !(progress[item.id]?.grade >= 3));
   const folderLink = `/vocabulary/dashboard?tab=notebook&folder=${encodeURIComponent(folder.id)}`;
+  const audioUrl = getDictionaryAudioUrl(word.word, word.audio);
+  const showingWordList = Boolean(wordList);
+
+  const stopAudio = useCallback(() => {
+    const audio = audioRef.current;
+    audioRef.current = null;
+    if (audio) {
+      audio.pause();
+      audio.removeAttribute("src");
+      audio.load();
+    }
+  }, []);
+
+  const playAudio = useCallback(() => {
+    stopAudio();
+    setAudioError("");
+    const audio = new Audio(audioUrl);
+    audioRef.current = audio;
+    audio.play().catch((error) => {
+      if (audioRef.current !== audio) return;
+      setAudioError(error.name === "NotAllowedError"
+        ? "Bấm nút loa để nghe phát âm. Trình duyệt chưa cho phép tự phát audio."
+        : "Không phát được audio. Bạn bấm nút loa để thử lại nhé.");
+    });
+  }, [audioUrl, stopAudio]);
+
+  useEffect(() => {
+    if (completed || showingWordList) return;
+    // Defer playback so StrictMode's initial cleanup cannot play the word twice.
+    const timer = window.setTimeout(playAudio, 0);
+    return () => { window.clearTimeout(timer); stopAudio(); };
+  }, [word.id, completed, showingWordList, playAudio, stopAudio]);
+
+  const speakerButton = <button type="button" className="vf-audio" aria-label={`Nghe phát âm ${word.word}`} title="Nghe phát âm" onClick={playAudio}><Volume2 size={19} aria-hidden="true" /></button>;
 
   const go = (step) => {
     setPosition((index + step + ids.length) % ids.length);
@@ -101,12 +138,12 @@ function FlashcardSession({ folder }) {
             <span className="vf-paper vf-paper-one" aria-hidden="true" /><span className="vf-paper vf-paper-two" aria-hidden="true" />
             <div className={`vf-card ${flipped ? "is-flipped" : ""}`}>
               <div className="vf-card-face vf-card-front" inert={flipped} aria-hidden={flipped} onClick={(event) => { if (!event.target.closest("button")) setFlipped(true); }}>
-                <div className="vf-card-face-heading"><span>TIẾNG ANH</span></div>
+                <div className="vf-card-face-heading"><span>TIẾNG ANH</span>{speakerButton}</div>
                 <button type="button" className="vf-card-flip-target" aria-label="Lật thẻ để xem đáp án" onClick={() => setFlipped(true)}><strong>{word.word}</strong>{word.phonetic && <span className="vf-ipa">{word.phonetic}</span>}<small><RotateCcw size={15} />Bấm thẻ hoặc Space để lật</small></button>
                 <div className="vf-card-tags"><span>{folder.name}</span><PartOfSpeechBadge type={word.type} /></div><span className="vf-card-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
               </div>
               <div className="vf-card-face vf-card-back" inert={!flipped} aria-hidden={!flipped} onClick={(event) => { if (!event.target.closest("button")) setFlipped(false); }}>
-                <div className="vf-card-face-heading"><span>NGHĨA TIẾNG VIỆT</span><button type="button" className="vf-edit" onClick={() => setEditing(true)}><Pencil size={15} />Sửa</button></div>
+                <div className="vf-card-face-heading"><span>NGHĨA TIẾNG VIỆT</span><button type="button" className="vf-edit" onClick={() => setEditing(true)}><Pencil size={15} />Sửa</button>{speakerButton}</div>
                 <button type="button" className="vf-card-flip-target is-definition" aria-label="Lật lại mặt trước" onClick={() => setFlipped(false)}><strong>{word.meaning}</strong>{word.example && <span className="vf-example"><small>VÍ DỤ</small><em>“{word.example}”</em></span>}<small>↺ Chạm để lật lại</small></button>
               </div>
             </div>
@@ -123,6 +160,7 @@ function FlashcardSession({ folder }) {
       </section>
     </div>
     {message && !completed && <p className="vf-message" role="status">{message}</p>}
+    {audioError && !completed && <p className="vf-message" role="status">{audioError}</p>}
     {editing && <WordActionDialog mode="edit" word={word} folderId={folder.id} onClose={() => setEditing(false)} onSuccess={setMessage} />}
     {stats && <FlashcardStatsDialog title={stats} words={statsWords} onClose={() => setStats(null)} onSelect={(id) => { if (!ids.includes(id)) { setStudyIds(folder.words.map((item) => item.id)); setReviewed([]); setPosition(folder.words.findIndex((item) => item.id === id)); } else setPosition(ids.indexOf(id)); setFlipped(false); setCompleted(false); }} />}
   </div>;

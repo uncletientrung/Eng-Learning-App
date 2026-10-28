@@ -1,7 +1,7 @@
 const cache = new Map();
 const pending = new Map();
 const notFoundCache = new Map();
-const CACHE_KEY = "vocabulary-dictionary-cache-minhqnd-en-vi-v2";
+const CACHE_KEY = "vocabulary-dictionary-cache-minhqnd-en-vi-v3";
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const NOT_FOUND_TTL_MS = 20_000;
 const MAX_CACHE_ENTRIES = 100;
@@ -15,6 +15,20 @@ let cacheLoaded = false;
 const configuredBase = import.meta.env?.VITE_DICTIONARY_API_BASE_URL?.trim();
 const dictionaryBase = (configuredBase || (import.meta.env?.DEV ? "/api/vocabulary/dictionary" : "https://dict.minhqnd.com/api/v1/lookup")).replace(/\/+$/, "");
 const normalize = (query) => query.trim().replace(/\s+/g, " ").toLowerCase();
+
+// Audio paths belong to the dictionary service, not the frontend's origin.
+const dictionaryOrigin = configuredBase && /^https?:\/\//i.test(configuredBase)
+  ? new URL(configuredBase).origin : "https://dict.minhqnd.com";
+
+export function getDictionaryAudioUrl(word, audio) {
+  if (typeof audio === "string" && audio.trim()) {
+    try {
+      const url = new URL(audio.trim(), dictionaryOrigin);
+      if (["https:", "http:"].includes(url.protocol)) return url.href;
+    } catch { /* Use the same TTS endpoint for words saved without audio. */ }
+  }
+  return `${dictionaryOrigin}/api/v1/tts?${new URLSearchParams({ word: word.trim(), lang: "en" })}`;
+}
 
 function loadCache() {
   if (cacheLoaded) return;
@@ -165,6 +179,7 @@ export function parseDictionaryEntries(entries, query) {
         meaning: definition,
         example: typeof item.example === "string" ? item.example.trim() : "",
         phonetic,
+        audio: getDictionaryAudioUrl(word, entry.audio),
         source: typeof item.source === "string" ? item.source.trim() : "",
         sourceUrl: "",
       });

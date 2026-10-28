@@ -80,6 +80,7 @@ export function updateNotebookWord(folderId, wordId, changes) {
   const word = folder?.words.find((item) => item.id === wordId);
   if (!word) return { error: "Từ vựng không còn trong thư mục này." };
   const next = { ...word, word: changes.word.trim(), type: changes.type.trim(), meaning: changes.meaning.trim(), example: changes.example.trim() };
+  if (next.word !== word.word) delete next.audio;
   if (!next.word || !next.type || !next.meaning) return { error: "Vui lòng nhập từ, loại từ và định nghĩa." };
   if (folder.words.some((item) => item.id !== wordId && getWordIdentity(item) === getWordIdentity(next))) return { error: "Từ và nghĩa này đã có trong thư mục." };
   return commitWordChanges(folders.map((item) => item.id === folderId ? { ...item, words: item.words.map((entry) => entry.id === wordId ? next : entry) } : item), { updated: true });
