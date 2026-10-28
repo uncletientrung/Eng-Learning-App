@@ -1,16 +1,39 @@
 import {
-  Globe,
-  MessageSquare,
   Bell,
   BookOpen,
   History,
   Crown,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 function Navbar({ transparentOnTop = false }) {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const notificationsRef = useRef(null)
+  const notificationButtonRef = useRef(null)
+
+  useEffect(() => {
+    if (!notificationsOpen) return
+
+    const handlePointerDown = (event) => {
+      if (!notificationsRef.current?.contains(event.target)) {
+        setNotificationsOpen(false)
+      }
+    }
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setNotificationsOpen(false)
+        notificationButtonRef.current?.focus()
+      }
+    }
+    document.addEventListener('pointerdown', handlePointerDown)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [notificationsOpen])
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0)
@@ -80,49 +103,36 @@ function Navbar({ transparentOnTop = false }) {
         {/* Right actions */}
         <div className="flex gap-2 items-center">
 
-          {/* Language */}
-          <div className="relative">
-            <button
-              aria-label="Ngôn ngữ"
-              className="relative h-10 rounded-full px-2.5 flex items-center justify-center gap-1 transition-all bg-white/30 hover:bg-white/50 text-slate-800"
-            >
-              <Globe size={18} aria-hidden="true" />
-
-              <span className="text-[10px] font-black uppercase tracking-wider leading-none">
-                VI
-              </span>
-            </button>
-          </div>
-
-          {/* Community */}
-          <a
-            className="relative h-10 px-3.5 rounded-full flex items-center gap-1.5 text-xs font-black transition-all bg-white/30 hover:bg-white/50 text-slate-800"
-            href="/practice/community"
-            title="Cộng đồng"
-          >
-            <MessageSquare
-              size={16}
-              aria-hidden="true"
-              className="text-herb-600"
-            />
-
-            <span className="hidden sm:inline">
-              Cộng đồng
-            </span>
-          </a>
-
           {/* Notification */}
-          <div className="relative">
+          <div className="relative" ref={notificationsRef}>
             <button
-              className="relative w-10 h-10 rounded-full flex items-center justify-center transition-all bg-white/30 hover:bg-white/50 text-slate-800"
+              ref={notificationButtonRef}
+              type="button"
+              className="relative w-10 h-10 cursor-pointer rounded-full flex items-center justify-center transition-all bg-white/30 hover:bg-white/50 text-slate-800"
               aria-label="Thông báo"
+              aria-expanded={notificationsOpen}
+              aria-controls="navbar-notifications"
+              onClick={() => setNotificationsOpen((open) => !open)}
             >
               <Bell size={20} aria-hidden="true" />
-
-              <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-rose-500 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-lg shadow-rose-500/30 animate-pulse">
-                1
-              </span>
             </button>
+
+            {notificationsOpen && (
+              <section
+                id="navbar-notifications"
+                aria-labelledby="navbar-notifications-title"
+                className="absolute right-0 top-full mt-3 w-80 max-w-[calc(100vw-3rem)] rounded-2xl border border-slate-100 bg-white text-slate-900 shadow-xl"
+              >
+                <div className="border-b border-slate-100 px-5 py-4">
+                  <h2 id="navbar-notifications-title" className="font-bold">Thông báo</h2>
+                </div>
+                <div className="flex flex-col items-center px-5 py-8 text-center">
+                  <Bell size={28} className="mb-3 text-slate-400" aria-hidden="true" />
+                  <p className="text-sm font-semibold">Bạn chưa có thông báo mới</p>
+                  <p className="mt-1 text-xs text-slate-500">Thông báo của bạn sẽ hiển thị tại đây.</p>
+                </div>
+              </section>
+            )}
           </div>
 
           {/* User */}

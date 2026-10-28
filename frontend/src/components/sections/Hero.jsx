@@ -1,4 +1,3 @@
-import { ArrowRight } from 'lucide-react'
 import HeroMascot from './HeroMascot'
 
 function Hero( { isMascotSmiling } ) {
@@ -116,34 +115,6 @@ function Hero( { isMascotSmiling } ) {
             </p>
           </div>
 
-          <a
-            href="/about"
-            className="
-              inline-flex items-center
-              justify-center gap-2
-              rounded-full
-              bg-white
-              px-8 py-3.5
-              text-[14px] font-black
-              bg-brand
-              shadow-2xl
-              transition-all
-              hover:-translate-y-0.5
-              hover:bg-slate-50
-              active:scale-95
-              md:text-base
-            "
-          >
-            chương trình học cam kết đầu ra tại TID
-
-            <ArrowRight
-              size={20}
-              className="
-                transition-transform
-                group-hover:translate-x-1
-              "
-            />
-          </a>
         </div>
       </main>
 
