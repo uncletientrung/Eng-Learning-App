@@ -12,8 +12,8 @@ namespace EnglishLearning.DAL.Entities
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Column("grade_id")]
-        public int GradeId { get; set; }
+        [Column("attempt_id")]
+        public int AttemptId { get; set; }
 
         [Required, StringLength(50)]
         [Column("criterion_code")]
@@ -34,7 +34,10 @@ namespace EnglishLearning.DAL.Entities
         [Column(TypeName = "text")]
         public string? Suggestions { get; set; }
 
-        [ForeignKey(nameof(GradeId))]
-        public SpeakingGrade Grade { get; set; } = null!;
+        [Required, Column(TypeName = "longtext")]
+        public string Issues { get; set; } = "[]";
+
+        [ForeignKey(nameof(AttemptId))]
+        public UserSpeakingAttempt Attempt { get; set; } = null!;
     }
 }

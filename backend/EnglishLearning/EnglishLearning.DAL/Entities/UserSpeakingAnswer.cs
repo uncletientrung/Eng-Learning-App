@@ -22,6 +22,9 @@ namespace EnglishLearning.DAL.Entities
         [Column("audio_url")]
         public string AudioUrl { get; set; } = string.Empty;
 
+        [Column("transcript", TypeName = "text")]
+        public string? Transcript { get; set; }
+
         [Required, Column("submitted_at", TypeName = "timestamp")]
         public DateTime SubmittedAt { get; set; }
 

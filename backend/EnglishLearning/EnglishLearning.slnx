@@ -2,4 +2,5 @@
   <Project Path="EnglishLearning.API/EnglishLearning.API.csproj" />
   <Project Path="EnglishLearning.BLL/EnglishLearning.BLL.csproj" />
   <Project Path="EnglishLearning.DAL/EnglishLearning.DAL.csproj" />
+  <Project Path="EnglishLearning.Tests/EnglishLearning.Tests.csproj" />
 </Solution>

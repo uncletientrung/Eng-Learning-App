@@ -5,6 +5,7 @@ using EnglishLearning.BLL.Interfaces;
 using EnglishLearning.BLL.Services;
 using EnglishLearning.DAL.Interfaces;
 using EnglishLearning.DAL.Repositories;
+using EnglishLearning.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -76,6 +77,16 @@ builder.Services.AddHttpClient<ILlmGradingService, GeminiGradingService>(
     client => client.Timeout = TimeSpan.FromSeconds(geminiTimeoutSeconds));
 builder.Services.AddScoped<IWritingGradingRepository, WritingGradingRepository>();
 
+builder.Services.AddScoped<ISpeakingAssessmentService, SpeakingAssessmentService>();
+builder.Services.AddScoped<
+    ISpeakingAssessmentRepository,
+    SpeakingAssessmentRepository>();
+builder.Services.AddHttpClient<
+    ISpeakingGradingLlmService,
+    GeminiGradingSpeakingService>(
+    client => client.Timeout = TimeSpan.FromSeconds(geminiTimeoutSeconds));
+builder.Services.AddSingleton<SpeakingGradingQueue>();
+builder.Services.AddHostedService<SpeakingGradingWorker>();
 
 
 

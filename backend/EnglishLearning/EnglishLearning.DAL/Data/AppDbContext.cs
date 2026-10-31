@@ -27,7 +27,6 @@ public class AppDbContext : DbContext
     public DbSet<ReadingQuestionOption> ReadingQuestionOptions => Set<ReadingQuestionOption>();
     public DbSet<SpeakingCriterionScore> SpeakingCriterionScores => Set<SpeakingCriterionScore>();
     public DbSet<SpeakingExercise> SpeakingExercises => Set<SpeakingExercise>();
-    public DbSet<SpeakingGrade> SpeakingGrades => Set<SpeakingGrade>();
     public DbSet<SpeakingQuestion> SpeakingQuestions => Set<SpeakingQuestion>();
     public DbSet<Topic> Topics => Set<Topic>();
     public DbSet<TranslationExercise> TranslationExercises => Set<TranslationExercise>();
@@ -72,7 +71,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<UserWritingCriterionScore>()
             .HasOne(s => s.Attempt)
-            .WithMany()
+            .WithMany(a => a.CriterionScores)
             .HasForeignKey(s => s.AttemptId)
             .OnDelete(DeleteBehavior.Cascade); // Khi xóa bản ghi cha, tự động xóa các bản ghi con liên quan.
 
@@ -110,7 +109,7 @@ public class AppDbContext : DbContext
         // UserSpeakingAnswer -> UserSpeakingAttempt
         modelBuilder.Entity<UserSpeakingAnswer>()
             .HasOne(a => a.Attempt)
-            .WithMany()
+            .WithMany(a => a.UserSpeakingAnswers)
             .HasForeignKey(a => a.AttemptId);
 
         // UserSpeakingAnswer -> SpeakingQuestion
@@ -119,27 +118,14 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(a => a.QuestionId);
 
-        // SpeakingGrade -> UserSpeakingAttempt
-        modelBuilder.Entity<SpeakingGrade>()
-            .HasOne(g => g.Attempt)
-            .WithMany()
-            .HasForeignKey(g => g.AttemptId);
-
-        // SpeakingGrade -> User (người chấm)
-        modelBuilder.Entity<SpeakingGrade>()
-            .HasOne(g => g.Grader)
-            .WithMany()
-            .HasForeignKey(g => g.GraderId);
-
-        // SpeakingCriterionScore -> SpeakingGrade
         modelBuilder.Entity<SpeakingCriterionScore>()
-            .HasOne(s => s.Grade)
-            .WithMany()
-            .HasForeignKey(s => s.GradeId);
+            .HasOne(s => s.Attempt)
+            .WithMany(a => a.CriterionScores)
+            .HasForeignKey(s => s.AttemptId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        // Mỗi tiêu chí chỉ có một bản ghi trong một lần chấm
         modelBuilder.Entity<SpeakingCriterionScore>()
-            .HasIndex(s => new { s.GradeId, s.CriterionCode })
+            .HasIndex(s => new { s.AttemptId, s.CriterionCode })
             .IsUnique();
 
         // Mỗi câu hỏi chỉ có một câu trả lời trong một lần làm bài

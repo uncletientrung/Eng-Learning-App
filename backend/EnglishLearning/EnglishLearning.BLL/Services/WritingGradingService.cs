@@ -8,6 +8,11 @@ namespace EnglishLearning.BLL.Services;
 
 public class WritingGradingService : IWritingGradingService
 {
+    private static readonly JsonSerializerOptions HistoryJsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     private readonly IWritingExerciseRepository _exerciseRepository;
     private readonly IWritingGradingRepository _gradingRepository;
     private readonly ILlmGradingService _llm;
@@ -95,5 +100,112 @@ public class WritingGradingService : IWritingGradingService
             ImprovedVersion = result.ImprovedVersion,
             Criteria = result.Criteria
         };
+    }
+
+    public async Task<List<WritingAttemptSummaryDto>> GetHistoryAsync(
+        int userId,
+        CancellationToken cancellationToken = default)
+    {
+        var attempts = await _gradingRepository.GetHistoryByUserIdAsync(
+            userId,
+            cancellationToken);
+
+        return attempts.Select(attempt => new WritingAttemptSummaryDto
+        {
+            AttemptId = attempt.Id,
+            ExerciseId = attempt.ExerciseId,
+            TopicId = attempt.Exercise.TopicId,
+            ExerciseTitle = attempt.Exercise.Title,
+            TopicName = attempt.Exercise.Topic.Name,
+            ImageUrl = attempt.Exercise.ImageUrl,
+            QuestionText = attempt.Exercise.QuestionText,
+            OverallScore = attempt.OverallScore,
+            CompletedAt = attempt.CompletedAt
+        }).ToList();
+    }
+
+    public async Task<WritingAttemptHistoryDto?> GetHistoryAttemptAsync(
+        int userId,
+        int attemptId,
+        CancellationToken cancellationToken = default)
+    {
+        var attempt = await _gradingRepository.GetHistoryAttemptAsync(
+            userId,
+            attemptId,
+            cancellationToken);
+
+        if (attempt == null)
+            return null;
+
+        var savedResult = JsonSerializer.Deserialize<GeminiGradingResultDto>(
+            attempt.LlmRawResponse,
+            HistoryJsonOptions)
+            ?? throw new InvalidOperationException(
+                "Không đọc được kết quả chấm đã lưu.");
+
+        var criteria = attempt.CriterionScores
+            .Select(score => new CriterionResultDto
+            {
+                CriterionCode = score.CriterionCode,
+                Score = score.Score,
+                Feedback = score.Feedback,
+                Strengths = score.Strengths,
+                Weaknesses = score.Weaknesses,
+                Suggestions = score.Suggestions,
+                Issues = JsonSerializer.Deserialize<List<WritingIssueDto>>(
+                    score.Issues,
+                    HistoryJsonOptions) ?? []
+            })
+            .ToList();
+
+        return new WritingAttemptHistoryDto
+        {
+            AttemptId = attempt.Id,
+            ExerciseId = attempt.ExerciseId,
+            TopicId = attempt.Exercise.TopicId,
+            ExerciseTitle = attempt.Exercise.Title,
+            TopicName = attempt.Exercise.Topic.Name,
+            ImageUrl = attempt.Exercise.ImageUrl,
+            QuestionText = attempt.Exercise.QuestionText,
+            OverallScore = attempt.OverallScore,
+            CompletedAt = attempt.CompletedAt,
+            UserResponse = attempt.UserResponse,
+            Result = new WritingGradingResultDto
+            {
+                AttemptId = attempt.Id,
+                OverallScore = attempt.OverallScore,
+                OverallFeedback = savedResult.OverallFeedback,
+                ImprovedVersion = savedResult.ImprovedVersion,
+                Criteria = criteria
+            }
+        };
+    }
+
+    public Task<List<int>> GetUnattemptedExerciseIdsAsync(
+        int userId,
+        CancellationToken cancellationToken = default)
+    {
+        if (userId <= 0)
+            throw new ArgumentException("User ID không hợp lệ.");
+
+        return _gradingRepository.GetUnattemptedExerciseIdsAsync(
+            userId,
+            cancellationToken);
+    }
+
+    public Task<bool> DeleteHistoryAttemptAsync(
+        int userId,
+        int attemptId,
+        CancellationToken cancellationToken = default)
+    {
+        if (userId <= 0)
+            throw new ArgumentException("User ID không hợp lệ.");
+        if (attemptId <= 0)
+            throw new ArgumentException("ID lượt làm không hợp lệ.");
+
+        return _gradingRepository.DeleteHistoryAttemptAsync(
+            userId,
+            attemptId,
+            cancellationToken);
     }
 }

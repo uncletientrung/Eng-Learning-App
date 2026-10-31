@@ -59,4 +59,81 @@ public class WritingGradingRepository : IWritingGradingRepository
             throw;
         }
     }
+
+    public Task<List<UserWritingAttempt>> GetHistoryByUserIdAsync(
+        int userId,
+        CancellationToken cancellationToken = default)
+    {
+        return _context.UserWritingAttempts
+            .AsNoTracking()
+            .Where(attempt => attempt.UserId == userId)
+            .OrderByDescending(attempt => attempt.CompletedAt)
+            .ThenByDescending(attempt => attempt.Id)
+            .Select(attempt => new UserWritingAttempt
+            {
+                Id = attempt.Id,
+                ExerciseId = attempt.ExerciseId,
+                Exercise = new WritingExercise
+                {
+                    Id = attempt.Exercise.Id,
+                    TopicId = attempt.Exercise.TopicId,
+                    Title = attempt.Exercise.Title,
+                    ImageUrl = attempt.Exercise.ImageUrl,
+                    QuestionText = attempt.Exercise.QuestionText,
+                    Topic = new Topic
+                    {
+                        Name = attempt.Exercise.Topic.Name
+                    }
+                },
+                OverallScore = attempt.OverallScore,
+                CompletedAt = attempt.CompletedAt,
+            })
+            .ToListAsync(cancellationToken);
+    }
+
+    public Task<UserWritingAttempt?> GetHistoryAttemptAsync(
+        int userId,
+        int attemptId,
+        CancellationToken cancellationToken = default)
+    {
+        return _context.UserWritingAttempts
+            .AsNoTracking()
+            .Include(attempt => attempt.Exercise)
+                .ThenInclude(exercise => exercise.Topic)
+            .Include(attempt => attempt.CriterionScores)
+            .SingleOrDefaultAsync(
+                attempt => attempt.UserId == userId && attempt.Id == attemptId,
+                cancellationToken);
+    }
+
+    public Task<List<int>> GetUnattemptedExerciseIdsAsync(
+        int userId,
+        CancellationToken cancellationToken = default)
+    {
+        return _context.WritingExercises
+            .AsNoTracking()
+            .Where(exercise => !_context.UserWritingAttempts.Any(
+                attempt => attempt.UserId == userId &&
+                    attempt.ExerciseId == exercise.Id))
+            .Select(exercise => exercise.Id)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<bool> DeleteHistoryAttemptAsync(
+        int userId,
+        int attemptId,
+        CancellationToken cancellationToken = default)
+    {
+        var attempt = await _context.UserWritingAttempts
+            .SingleOrDefaultAsync(
+                item => item.UserId == userId && item.Id == attemptId,
+                cancellationToken);
+
+        if (attempt == null)
+            return false;
+
+        _context.UserWritingAttempts.Remove(attempt);
+        await _context.SaveChangesAsync(cancellationToken);
+        return true;
+    }
 }

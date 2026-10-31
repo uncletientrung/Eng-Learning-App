@@ -451,6 +451,10 @@ namespace EnglishLearning.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AttemptId")
+                        .HasColumnType("int")
+                        .HasColumnName("attempt_id");
+
                     b.Property<string>("CriterionCode")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -460,9 +464,9 @@ namespace EnglishLearning.DAL.Migrations
                     b.Property<string>("Feedback")
                         .HasColumnType("text");
 
-                    b.Property<int>("GradeId")
-                        .HasColumnType("int")
-                        .HasColumnName("grade_id");
+                    b.Property<string>("Issues")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<decimal>("Score")
                         .HasColumnType("decimal(3,1)");
@@ -478,7 +482,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GradeId", "CriterionCode")
+                    b.HasIndex("AttemptId", "CriterionCode")
                         .IsUnique();
 
                     b.ToTable("speaking_criterion_scores");
@@ -516,46 +520,6 @@ namespace EnglishLearning.DAL.Migrations
                     b.HasIndex("TopicId");
 
                     b.ToTable("speaking_exercises");
-                });
-
-            modelBuilder.Entity("EnglishLearning.DAL.Entities.SpeakingGrade", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AttemptId")
-                        .HasColumnType("int")
-                        .HasColumnName("attempt_id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("Feedback")
-                        .HasColumnType("text");
-
-                    b.Property<int>("GraderId")
-                        .HasColumnType("int")
-                        .HasColumnName("grader_id");
-
-                    b.Property<decimal?>("OverallScore")
-                        .HasColumnType("decimal(3,1)")
-                        .HasColumnName("overall_score");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AttemptId");
-
-                    b.HasIndex("GraderId");
-
-                    b.ToTable("speaking_grades");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.SpeakingQuestion", b =>
@@ -910,6 +874,10 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("submitted_at");
 
+                    b.Property<string>("Transcript")
+                        .HasColumnType("text")
+                        .HasColumnName("transcript");
+
                     b.HasKey("Id");
 
                     b.HasIndex("QuestionId");
@@ -935,6 +903,10 @@ namespace EnglishLearning.DAL.Migrations
                     b.Property<int>("ExerciseId")
                         .HasColumnType("int")
                         .HasColumnName("exercise_id");
+
+                    b.Property<string>("GradingResult")
+                        .HasColumnType("longtext")
+                        .HasColumnName("grading_result");
 
                     b.Property<decimal?>("OverallScore")
                         .HasColumnType("decimal(3,1)")
@@ -1343,13 +1315,13 @@ namespace EnglishLearning.DAL.Migrations
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.SpeakingCriterionScore", b =>
                 {
-                    b.HasOne("EnglishLearning.DAL.Entities.SpeakingGrade", "Grade")
-                        .WithMany()
-                        .HasForeignKey("GradeId")
+                    b.HasOne("EnglishLearning.DAL.Entities.UserSpeakingAttempt", "Attempt")
+                        .WithMany("CriterionScores")
+                        .HasForeignKey("AttemptId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Grade");
+                    b.Navigation("Attempt");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.SpeakingExercise", b =>
@@ -1361,25 +1333,6 @@ namespace EnglishLearning.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Topic");
-                });
-
-            modelBuilder.Entity("EnglishLearning.DAL.Entities.SpeakingGrade", b =>
-                {
-                    b.HasOne("EnglishLearning.DAL.Entities.UserSpeakingAttempt", "Attempt")
-                        .WithMany()
-                        .HasForeignKey("AttemptId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EnglishLearning.DAL.Entities.User", "Grader")
-                        .WithMany()
-                        .HasForeignKey("GraderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Attempt");
-
-                    b.Navigation("Grader");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.SpeakingQuestion", b =>
@@ -1492,7 +1445,7 @@ namespace EnglishLearning.DAL.Migrations
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserSpeakingAnswer", b =>
                 {
                     b.HasOne("EnglishLearning.DAL.Entities.UserSpeakingAttempt", "Attempt")
-                        .WithMany()
+                        .WithMany("UserSpeakingAnswers")
                         .HasForeignKey("AttemptId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1587,7 +1540,7 @@ namespace EnglishLearning.DAL.Migrations
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserWritingCriterionScore", b =>
                 {
                     b.HasOne("EnglishLearning.DAL.Entities.UserWritingAttempt", "Attempt")
-                        .WithMany()
+                        .WithMany("CriterionScores")
                         .HasForeignKey("AttemptId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1625,6 +1578,18 @@ namespace EnglishLearning.DAL.Migrations
             modelBuilder.Entity("EnglishLearning.DAL.Entities.SpeakingExercise", b =>
                 {
                     b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.UserSpeakingAttempt", b =>
+                {
+                    b.Navigation("CriterionScores");
+
+                    b.Navigation("UserSpeakingAnswers");
+                });
+
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.UserWritingAttempt", b =>
+                {
+                    b.Navigation("CriterionScores");
                 });
 #pragma warning restore 612, 618
         }

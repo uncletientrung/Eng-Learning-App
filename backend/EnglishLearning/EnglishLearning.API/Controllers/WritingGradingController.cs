@@ -149,4 +149,71 @@ public class WritingGradingController : ControllerBase
             });
         }
     }
+
+    [HttpGet("history")]
+    public async Task<IActionResult> GetHistory(
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(out var userId))
+            return Unauthorized(new { message = "Không xác định được người dùng." });
+
+        var history = await _service.GetHistoryAsync(userId, cancellationToken);
+        return Ok(history);
+    }
+
+    [HttpGet("history/{attemptId:int}")]
+    public async Task<IActionResult> GetHistoryAttempt(
+        int attemptId,
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(out var userId))
+            return Unauthorized(new { message = "Không xác định được người dùng." });
+
+        var attempt = await _service.GetHistoryAttemptAsync(
+            userId,
+            attemptId,
+            cancellationToken);
+
+        return attempt == null
+            ? NotFound(new { message = "Không tìm thấy lượt làm Writing." })
+            : Ok(attempt);
+    }
+
+    [HttpGet("unattempted-exercise-ids")]
+    public async Task<IActionResult> GetUnattemptedExerciseIds(
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(out var userId))
+            return Unauthorized(new { message = "Không xác định được người dùng." });
+
+        var exerciseIds = await _service.GetUnattemptedExerciseIdsAsync(
+            userId,
+            cancellationToken);
+        return Ok(exerciseIds);
+    }
+
+    [HttpDelete("history/{attemptId:int}")]
+    public async Task<IActionResult> DeleteHistoryAttempt(
+        int attemptId,
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(out var userId))
+            return Unauthorized(new { message = "Không xác định được người dùng." });
+
+        var deleted = await _service.DeleteHistoryAttemptAsync(
+            userId,
+            attemptId,
+            cancellationToken);
+
+        return deleted
+            ? NoContent()
+            : NotFound(new { message = "Không tìm thấy lượt làm Writing." });
+    }
+
+    private bool TryGetUserId(out int userId)
+    {
+        return int.TryParse(
+            User.FindFirstValue(ClaimTypes.NameIdentifier),
+            out userId);
+    }
 }

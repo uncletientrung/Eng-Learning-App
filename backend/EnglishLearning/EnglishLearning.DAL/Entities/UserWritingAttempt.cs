@@ -38,5 +38,8 @@ namespace EnglishLearning.DAL.Entities
 
         [ForeignKey(nameof(ExerciseId))]
         public WritingExercise Exercise { get; set; } = null!;
+
+        public ICollection<UserWritingCriterionScore> CriterionScores { get; set; } =
+            new List<UserWritingCriterionScore>();
     }
 }

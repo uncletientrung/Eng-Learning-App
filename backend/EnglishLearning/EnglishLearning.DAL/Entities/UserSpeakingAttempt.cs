@@ -24,6 +24,9 @@ namespace EnglishLearning.DAL.Entities
         [Column("overall_score", TypeName = "decimal(3,1)")]
         public decimal? OverallScore { get; set; }
 
+        [Column("grading_result", TypeName = "longtext")]
+        public string? GradingResult { get; set; }
+
         [Required, Column("started_at", TypeName = "timestamp")]
         public DateTime StartedAt { get; set; }
 
@@ -35,5 +38,11 @@ namespace EnglishLearning.DAL.Entities
 
         [ForeignKey(nameof(ExerciseId))]
         public SpeakingExercise Exercise { get; set; } = null!;
+
+        public ICollection<UserSpeakingAnswer> UserSpeakingAnswers { get; set; }
+            = new List<UserSpeakingAnswer>();
+
+        public ICollection<SpeakingCriterionScore> CriterionScores { get; set; }
+            = new List<SpeakingCriterionScore>();
     }
 }
