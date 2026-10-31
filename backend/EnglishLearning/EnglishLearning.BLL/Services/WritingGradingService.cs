@@ -33,8 +33,7 @@ public class WritingGradingService : IWritingGradingService
         if (string.IsNullOrWhiteSpace(request.UserResponse))
             throw new ArgumentException("Bạn chưa nhập bài viết.");
 
-        var exercise = await _exerciseRepository.GetByIdAsync(
-            request.ExerciseId);
+        var exercise = await _exerciseRepository.GetByIdAsync(request.ExerciseId);
 
         if (exercise == null)
             throw new KeyNotFoundException(

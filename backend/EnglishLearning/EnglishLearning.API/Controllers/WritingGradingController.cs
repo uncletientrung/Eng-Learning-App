@@ -3,6 +3,8 @@ using EnglishLearning.BLL.DTOs.WritingGrading;
 using EnglishLearning.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Diagnostics;
 
 namespace EnglishLearning.API.Controllers;
 
@@ -12,10 +14,14 @@ namespace EnglishLearning.API.Controllers;
 public class WritingGradingController : ControllerBase
 {
     private readonly IWritingGradingService _service;
+    private readonly ILogger<WritingGradingController> _logger;
 
-    public WritingGradingController(IWritingGradingService service)
+    public WritingGradingController(
+        IWritingGradingService service,
+        ILogger<WritingGradingController> logger)
     {
         _service = service;
+        _logger = logger;
     }
 
     [HttpPost]
@@ -24,8 +30,7 @@ public class WritingGradingController : ControllerBase
         CancellationToken cancellationToken)
     {
         // ID người dùng lấy từ claims do hệ thống xác thực cung cấp.
-        var userIdClaim = User.FindFirstValue(
-            ClaimTypes.NameIdentifier);
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (!int.TryParse(userIdClaim, out var userId))
             return Unauthorized(new
@@ -33,11 +38,10 @@ public class WritingGradingController : ControllerBase
                 message = "Không xác định được người dùng."
             });
 
+        var stopwatch = Stopwatch.StartNew();
         try
         {
-            var result = await _service.GradeAsync(
-                userId, request, cancellationToken);
-
+            var result = await _service.GradeAsync(userId, request, cancellationToken);
             return Ok(result);
         }
         catch (KeyNotFoundException ex)
@@ -48,11 +52,88 @@ public class WritingGradingController : ControllerBase
         {
             return BadRequest(new { message = ex.Message });
         }
-        catch (HttpRequestException)
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
+            _logger.LogWarning("Gemini grading request timed out.");
+
+            return StatusCode(504, new
+            {
+                message = "Gemini xử lý quá thời gian chờ. Bài chưa được chấm hoặc lưu; vui lòng thử lại sau."
+            });
+        }
+        catch (HttpRequestException ex)
+        {
+            if (ex.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
+            {
+                _logger.LogError(
+                    "Gemini rejected the configured API key with HTTP {StatusCode}.",
+                    (int)ex.StatusCode.Value);
+
+                return StatusCode(502, new
+                {
+                    message = "Gemini từ chối API key (HTTP " +
+                        $"{(int)ex.StatusCode.Value}). Hãy kiểm tra Gemini:ApiKey."
+                });
+            }
+
+            if (ex.StatusCode == HttpStatusCode.TooManyRequests)
+            {
+                _logger.LogWarning(
+                    "Gemini quota or rate limit reached (HTTP {StatusCode}).",
+                    (int)ex.StatusCode.Value);
+
+                return StatusCode(502, new
+                {
+                    message = "Gemini đã hết quota hoặc đang giới hạn yêu cầu (HTTP 429)."
+                });
+            }
+
+            if (ex.StatusCode == HttpStatusCode.ServiceUnavailable)
+            {
+                _logger.LogWarning(
+                    "Gemini is temporarily unavailable after retrying.");
+
+                return StatusCode(503, new
+                {
+                    message = "Gemini hiện đang quá tải hoặc tạm thời không khả dụng. " +
+                        "Hệ thống đã tự thử lại; vui lòng đợi một chút rồi thử lại."
+                });
+            }
+
+            if (ex.StatusCode == HttpStatusCode.BadRequest)
+            {
+                _logger.LogError(
+                    "Gemini rejected the grading request with HTTP {StatusCode}.",
+                    (int)ex.StatusCode.Value);
+
+                return StatusCode(502, new
+                {
+                    message = "Gemini từ chối request (HTTP 400). Hãy kiểm tra tên model và cấu hình request."
+                });
+            }
+
+            if (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                _logger.LogError(
+                    "Gemini model or API endpoint was not found: {ProviderError}",
+                    ex.Message);
+
+                return StatusCode(502, new
+                {
+                    message = "Gemini trả về 404: " + ex.Message +
+                        " Kiểm tra Gemini:Model có hỗ trợ generateContent."
+                });
+            }
+
+            _logger.LogError(
+                "Gemini request failed with HTTP {StatusCode}.",
+                ex.StatusCode is null ? null : (int)ex.StatusCode.Value);
+
             return StatusCode(502, new
             {
-                message = "Không thể kết nối dịch vụ chấm bài."
+                message = ex.StatusCode is null
+                    ? "Không thể kết nối tới Gemini. Hãy kiểm tra mạng, DNS hoặc firewall backend."
+                    : $"Gemini trả về lỗi HTTP {(int)ex.StatusCode.Value}."
             });
         }
         catch (System.Text.Json.JsonException)
@@ -68,6 +149,15 @@ public class WritingGradingController : ControllerBase
             {
                 message = "Không thể xử lý kết quả chấm bài."
             });
+        }
+        finally
+        {
+            stopwatch.Stop();
+            Response.Headers["X-Writing-Grading-Duration-Ms"] =
+                stopwatch.ElapsedMilliseconds.ToString();
+            _logger.LogInformation(
+                "Writing grading request completed in {ElapsedMilliseconds} ms.",
+                stopwatch.ElapsedMilliseconds);
         }
     }
 }

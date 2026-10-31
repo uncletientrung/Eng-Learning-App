@@ -1,4 +1,4 @@
-﻿using EnglishLearning.DAL.Data;
+﻿ using EnglishLearning.DAL.Data;
 using EnglishLearning.DAL.Entities;
 using EnglishLearning.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -27,23 +27,17 @@ public class WritingGradingRepository : IWritingGradingRepository
             throw new InvalidOperationException(
                 "Không tìm thấy người dùng.");
 
-        var exerciseExists = await _context.WritingExercises
-            .AnyAsync(
-                e => e.Id == attempt.ExerciseId,
-                cancellationToken);
+        var exerciseExists = await _context.WritingExercises.AnyAsync(e => e.Id == attempt.ExerciseId, cancellationToken);
 
         if (!exerciseExists)
             throw new InvalidOperationException(
                 "Không tìm thấy bài Writing.");
 
-        await using var transaction =
-            await _context.Database.BeginTransactionAsync(
-                cancellationToken);
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 
         try
         {
-            await _context.UserWritingAttempts.AddAsync(
-                attempt, cancellationToken);
+            await _context.UserWritingAttempts.AddAsync(attempt, cancellationToken);
 
             // Lưu lần làm bài trước để lấy ID tự tăng.
             await _context.SaveChangesAsync(cancellationToken);
@@ -53,8 +47,7 @@ public class WritingGradingRepository : IWritingGradingRepository
                 score.AttemptId = attempt.Id;
             }
 
-            await _context.UserWritingCriterionScores.AddRangeAsync(
-                scores, cancellationToken);
+            await _context.UserWritingCriterionScores.AddRangeAsync(scores, cancellationToken);
 
             await _context.SaveChangesAsync(cancellationToken);
 

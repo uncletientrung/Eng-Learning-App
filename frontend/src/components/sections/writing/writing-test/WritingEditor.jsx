@@ -6,6 +6,7 @@ import {
   WRITING_TYPE_CONFIG,
 } from "../../../../constant/writingConstant";
 import { gradeWriting } from "../../../../services/writingGradingApi";
+import WritingScoreSummary from "./WritingScoreSummary";
 
 function WritingEditor({
   test,
@@ -20,6 +21,7 @@ function WritingEditor({
   // Trạng thái chấm bài
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [needsLogin, setNeedsLogin] = useState(false);
   const [result, setResult] = useState(null);
 
   const topicKey = normalizeTopic(test?.topic?.name ?? "");
@@ -48,6 +50,7 @@ function WritingEditor({
 
     setLoading(true);
     setError("");
+    setNeedsLogin(false);
     setResult(null);
 
     try {
@@ -60,6 +63,7 @@ function WritingEditor({
       setResult(data);
     } catch (err) {
       setError(err.message || "Không thể chấm bài. Vui lòng thử lại.");
+      setNeedsLogin(err.status === 401);
     } finally {
       setLoading(false);
     }
@@ -150,7 +154,7 @@ function WritingEditor({
           className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
         >
           {error}
-          {!token && (
+          {(!token || needsLogin) && (
             <Link to="/login" className="ml-2 font-bold underline">
               Đăng nhập
             </Link>
@@ -161,14 +165,13 @@ function WritingEditor({
       {/* Kết quả chấm bài */}
       {result && (
         <div className="mt-6 space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm overflow-y-auto">
-          <div>
-            <p className="text-sm text-slate-500">
-              Điểm IELTS Writing ước lượng
-            </p>
-            <p className="mt-1 text-4xl font-bold text-brand">
-              {result.overallScore}
-            </p>
-            <p className="mt-3 text-slate-700">
+          <WritingScoreSummary result={result} />
+
+          <div className="rounded-2xl border border-slate-200 bg-[#fbfcf8] p-5">
+            <h3 className="text-lg font-bold text-slate-800">
+              Nhận xét tổng quan
+            </h3>
+            <p className="mt-2 text-sm leading-7 text-slate-700">
               {result.overallFeedback}
             </p>
           </div>
@@ -176,7 +179,7 @@ function WritingEditor({
           <hr />
 
           <h3 className="text-lg font-bold text-slate-800">
-            Đánh giá theo tiêu chí
+            Phân tích chi tiết từng tiêu chí
           </h3>
 
           {result.criteria?.map((criterion) => (
@@ -278,6 +281,11 @@ function WritingEditor({
             Đây là điểm đánh giá tham khảo từ AI, không phải điểm IELTS
             chính thức.
           </p>
+          {result.processingTimeMs != null && (
+            <p className="text-xs font-medium text-slate-400">
+              Thời gian chấm: {(result.processingTimeMs / 1000).toFixed(1)} giây
+            </p>
+          )}
         </div>
       )}
     </div>
