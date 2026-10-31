@@ -78,9 +78,7 @@ cân nhắc cookie `HttpOnly; Secure; SameSite` qua backend-for-frontend.
 ## Gemini Writing grading
 
 Gemini grading dùng `generateContent` với JSON response schema để giữ đầu ra
-đúng cấu trúc, model `gemini-3.8-flash`, reasoning mức thấp và tối đa 3 lỗi
-quan trọng cho mỗi tiêu chí. `Gemini:TimeoutSeconds` trong `appsettings.json`
-đặt bằng `0` để chờ không giới hạn trong lúc đo thời gian (giá trị dương sẽ
-giới hạn request theo giây). Thời gian hoàn tất được ghi trong backend log và
-response header `X-Writing-Grading-Duration-Ms`; frontend cũng hiển thị sau khi
-chấm xong. Request tự retry tối đa 3 lần cho HTTP 429/503.
+đúng cấu trúc, model được cấu hình tại `Gemini:Model`, reasoning mức thấp và
+tối đa 3 lỗi quan trọng cho mỗi tiêu chí. `Gemini:TimeoutSeconds` đặt giới hạn
+thời gian chờ (mặc định 60 giây). Request tự retry tối đa 3 lần cho HTTP
+429/503.

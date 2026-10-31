@@ -65,17 +65,15 @@ builder.Services.AddScoped<ISpeakingExerciseService, SpeakingExerciseService>();
 builder.Services.AddScoped<IWritingGradingService, WritingGradingService>();
 var geminiTimeoutSeconds = builder.Configuration.GetValue(
     "Gemini:TimeoutSeconds",
-    0);
-if (geminiTimeoutSeconds < 0)
+    60);
+if (geminiTimeoutSeconds <= 0)
 {
     throw new InvalidOperationException(
-        "Gemini:TimeoutSeconds không được nhỏ hơn 0.");
+        "Gemini:TimeoutSeconds phải lớn hơn 0.");
 }
 
 builder.Services.AddHttpClient<ILlmGradingService, GeminiGradingService>(
-    client => client.Timeout = geminiTimeoutSeconds == 0
-        ? Timeout.InfiniteTimeSpan
-        : TimeSpan.FromSeconds(geminiTimeoutSeconds));
+    client => client.Timeout = TimeSpan.FromSeconds(geminiTimeoutSeconds));
 builder.Services.AddScoped<IWritingGradingRepository, WritingGradingRepository>();
 
 
@@ -100,7 +98,6 @@ builder.Services.AddCors(options =>
     {
         policy
             .WithOrigins("http://localhost:5173")
-            .WithExposedHeaders("X-Writing-Grading-Duration-Ms")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

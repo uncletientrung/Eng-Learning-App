@@ -29,10 +29,5 @@ export async function gradeWriting(exerciseId, userResponse, token) {
     throw new Error(data?.message || `Lỗi HTTP: ${response.status}`);
   }
 
-  return {
-    ...data,
-    processingTimeMs: Number(
-      response.headers.get("X-Writing-Grading-Duration-Ms")
-    ) || null,
-  };
+  return data;
 }

@@ -107,6 +107,10 @@ public class GeminiGradingService : ILlmGradingService
 
             Evaluate exactly these four criteria, with no duplicates:
             TASK_RESPONSE, COHERENCE_COHESION, LEXICAL_RESOURCE, and GRAMMAR.
+            Write all feedback and explanations in Vietnamese, including
+            overallFeedback, criterion feedback, strengths, weaknesses,
+            suggestions, issue explanations, and issue categories. Keep the
+            student's original text and corrections in English.
             Give each criterion a score from 0 to 9 in 0.5 increments.
             Give an overall estimated band from 0 to 9 in 0.5 increments.
             Keep each feedback, strengths, weaknesses, and suggestions field

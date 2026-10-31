@@ -4,7 +4,6 @@ using EnglishLearning.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using System.Diagnostics;
 
 namespace EnglishLearning.API.Controllers;
 
@@ -38,7 +37,6 @@ public class WritingGradingController : ControllerBase
                 message = "Không xác định được người dùng."
             });
 
-        var stopwatch = Stopwatch.StartNew();
         try
         {
             var result = await _service.GradeAsync(userId, request, cancellationToken);
@@ -149,15 +147,6 @@ public class WritingGradingController : ControllerBase
             {
                 message = "Không thể xử lý kết quả chấm bài."
             });
-        }
-        finally
-        {
-            stopwatch.Stop();
-            Response.Headers["X-Writing-Grading-Duration-Ms"] =
-                stopwatch.ElapsedMilliseconds.ToString();
-            _logger.LogInformation(
-                "Writing grading request completed in {ElapsedMilliseconds} ms.",
-                stopwatch.ElapsedMilliseconds);
         }
     }
 }

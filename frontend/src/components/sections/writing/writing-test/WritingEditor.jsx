@@ -23,13 +23,15 @@ function WritingEditor({
   const [error, setError] = useState("");
   const [needsLogin, setNeedsLogin] = useState(false);
   const [result, setResult] = useState(null);
+  const [showEssay, setShowEssay] = useState(false);
 
   const topicKey = normalizeTopic(test?.topic?.name ?? "");
   const recommend = WRITING_TYPE_CONFIG[topicKey];
 
   const minimumWords = recommend?.minimumWords ?? 50;
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
-  const canSubmit = wordCount >= minimumWords && !loading;
+  const meetsMinimumWords = wordCount >= minimumWords;
+  const canSubmit = meetsMinimumWords && !loading;
 
   // Xử lý khi người dùng nhấn Chấm bài
   const handleGrade = async () => {
@@ -71,100 +73,16 @@ function WritingEditor({
 
   return (
     <div className="flex flex-col sticky top-6 h-[calc(100vh-3rem)] z-10">
-      <div className="bg-[#fdfcf9] rounded-2xl shadow-sm border border-[#e5e0d5] flex flex-col relative overflow-hidden flex-1 min-h-0">
-
-        {/* Header */}
-        <div className="flex flex-wrap justify-between items-center gap-y-2 px-8 py-5 border-b border-slate-100 shrink-0">
-          <h2 className="text-xl font-bold text-slate-800">
-            Bài làm
-          </h2>
-
-          <div className="flex items-center gap-4 text-xs font-medium">
-            <span
-              className={
-                wordCount >= minimumWords
-                  ? "font-bold text-emerald-500"
-                  : "font-bold text-rose-500"
-              }
-            >
-              {wordCount} / {minimumWords} từ
-            </span>
-
-            <button
-              type="button"
-              onClick={onFullscreen}
-              className="px-3 py-1.5 rounded-lg bg-slate-800 text-white font-bold hover:bg-slate-700"
-            >
-              {isFullscreen
-                ? "Thoát toàn màn hình"
-                : "Toàn màn hình"}
-            </button>
-          </div>
-        </div>
-
-        {/* Toolbar */}
-        <WritingToolbar
-          fontSize={fontSize}
-          onFontSizeChange={setFontSize}
-          fontFamily={fontFamily}
-          onFontFamilyChange={setFontFamily}
-        />
-
-        {/* Editor */}
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Write your answer here..."
-          className="flex-1 w-full resize-none outline-none border-0 bg-[#fdfcf9] px-8 py-6 text-slate-800 leading-relaxed"
-          style={{
-            fontSize: `${fontSize}px`,
-            fontFamily,
-          }}
-        />
-
-        {/* Submit */}
-        <div className="mt-4 flex items-center justify-between gap-4 px-8 pb-5 shrink-0">
-          <p
-            className={
-              canSubmit
-                ? "text-brand text-[11px] font-bold"
-                : "text-rose-500 text-[11px] font-bold"
-            }
-          >
-            {canSubmit
-              ? "Kiểm tra kỹ trước khi nộp bài"
-              : `Cần ít nhất ${minimumWords} từ để chấm bài (${wordCount}/${minimumWords})`}
-          </p>
-
+      {result && !showEssay ? (
+        <div className="flex-1 min-h-0 space-y-5 overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <button
             type="button"
-            disabled={!canSubmit}
-            onClick={handleGrade}
-            className="bg-brand text-white font-bold px-8 py-3 rounded-xl hover:bg-brand/90 transition-all shadow-md disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+            onClick={() => setShowEssay(true)}
+            className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-brand hover:text-brand"
           >
-            {loading ? "Đang chấm bài..." : "Chấm bài"}
+            Quay lại bài viết
           </button>
-        </div>
-      </div>
 
-      {/* Lỗi khi gọi API */}
-      {error && (
-        <div
-          role="alert"
-          className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
-        >
-          {error}
-          {(!token || needsLogin) && (
-            <Link to="/login" className="ml-2 font-bold underline">
-              Đăng nhập
-            </Link>
-          )}
-        </div>
-      )}
-
-      {/* Kết quả chấm bài */}
-      {result && (
-        <div className="mt-6 space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm overflow-y-auto">
           <WritingScoreSummary result={result} />
 
           <div className="rounded-2xl border border-slate-200 bg-[#fbfcf8] p-5">
@@ -175,8 +93,6 @@ function WritingEditor({
               {result.overallFeedback}
             </p>
           </div>
-
-          <hr />
 
           <h3 className="text-lg font-bold text-slate-800">
             Phân tích chi tiết từng tiêu chí
@@ -281,10 +197,119 @@ function WritingEditor({
             Đây là điểm đánh giá tham khảo từ AI, không phải điểm IELTS
             chính thức.
           </p>
-          {result.processingTimeMs != null && (
-            <p className="text-xs font-medium text-slate-400">
-              Thời gian chấm: {(result.processingTimeMs / 1000).toFixed(1)} giây
-            </p>
+        </div>
+      ) : (
+        <div className="flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl border border-[#e5e0d5] bg-[#fdfcf9] shadow-sm">
+          <div className="flex flex-wrap justify-between items-center gap-y-2 border-b border-slate-100 px-8 py-5">
+            <h2 className="text-xl font-bold text-slate-800">
+              {showEssay ? "Bài viết của bạn" : "Bài làm"}
+            </h2>
+
+            <div className="flex items-center gap-4 text-xs font-medium">
+              <span
+                className={
+                  meetsMinimumWords
+                    ? "font-bold text-emerald-500"
+                    : "font-bold text-rose-500"
+                }
+              >
+                {wordCount} / {minimumWords} từ
+              </span>
+
+              <button
+                type="button"
+                onClick={onFullscreen}
+                className="rounded-lg bg-slate-800 px-3 py-1.5 font-bold text-white hover:bg-slate-700"
+              >
+                {isFullscreen
+                  ? "Thoát toàn màn hình"
+                  : "Toàn màn hình"}
+              </button>
+            </div>
+          </div>
+
+          {showEssay ? (
+            <>
+              <div
+                aria-label="Bài viết đã nộp, chỉ đọc"
+                className="flex-1 overflow-y-auto whitespace-pre-wrap bg-[#fdfcf9] px-8 py-6 leading-relaxed text-slate-800"
+                style={{
+                  fontSize: `${fontSize}px`,
+                  fontFamily,
+                }}
+              >
+                {content}
+              </div>
+              <div className="flex justify-end border-t border-slate-100 px-8 py-5">
+                <button
+                  type="button"
+                  onClick={() => setShowEssay(false)}
+                  className="rounded-xl bg-brand px-6 py-3 font-bold text-white shadow-md transition hover:bg-brand/90"
+                >
+                  Quay lại kết quả
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <WritingToolbar
+                fontSize={fontSize}
+                onFontSizeChange={setFontSize}
+                fontFamily={fontFamily}
+                onFontFamilyChange={setFontFamily}
+              />
+
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Write your answer here..."
+                className="flex-1 w-full resize-none border-0 bg-[#fdfcf9] px-8 py-6 leading-relaxed text-slate-800 outline-none"
+                style={{
+                  fontSize: `${fontSize}px`,
+                  fontFamily,
+                }}
+              />
+
+              <div className="flex shrink-0 items-center justify-between gap-4 px-8 pb-5 pt-4">
+                <p
+                  className={
+                    meetsMinimumWords
+                      ? "text-brand text-[11px] font-bold"
+                      : "text-rose-500 text-[11px] font-bold"
+                  }
+                >
+                  {!meetsMinimumWords
+                    ? `Cần ít nhất ${minimumWords} từ để chấm bài (${wordCount}/${minimumWords})`
+                    : loading
+                      ? "Đang chấm bài, vui lòng chờ..."
+                      : "Kiểm tra kỹ trước khi nộp bài"}
+                </p>
+
+                <button
+                  type="button"
+                  disabled={!canSubmit}
+                  onClick={handleGrade}
+                  className="whitespace-nowrap rounded-xl bg-brand px-8 py-3 font-bold text-white shadow-md transition-all hover:bg-brand/90 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  {loading ? "Đang chấm bài..." : "Chấm bài"}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Lỗi khi gọi API */}
+      {error && (
+        <div
+          role="alert"
+          className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+        >
+          {error}
+          {(!token || needsLogin) && (
+            <Link to="/login" className="ml-2 font-bold underline">
+              Đăng nhập
+            </Link>
           )}
         </div>
       )}

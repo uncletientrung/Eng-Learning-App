@@ -100,11 +100,6 @@ function WritingScoreSummary({ result }) {
                 Thang điểm IELTS từ 0 đến 9
               </p>
             </div>
-            {result.attemptId && (
-              <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-white/70">
-                Lượt chấm #{result.attemptId}
-              </span>
-            )}
           </div>
 
           <div className="relative mt-8 px-1">
