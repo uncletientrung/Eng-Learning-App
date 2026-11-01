@@ -1,17 +1,36 @@
-import { IconArrowLeft, IconMaximize } from "./icons";
+
+import { useState, useEffect } from "react";
+import { IconArrowLeft, IconMaximize, IconMinimize } from "./icons";
 import AudioPlayer from "./AudioPlayer";
 import PartNavigation from "../../sections/reading/reading-test/PartNavigation.jsx";
 
 const ListeningHeader = ({
-                    answers,
-                    fontSize,
-                    setFontSize,
-                    timeSeconds,
-                    audioSrc,
-                    currentPart,
-                    onPartChange, onSubmit,
-                    parts = [] // Mảng cấu hình các part
-                }) => {
+                             answers,
+                             fontSize,
+                             setFontSize,
+                             timeSeconds,
+                             audioSrc,
+                             currentPart,
+                             onPartChange,
+                             onSubmit,
+                             parts = [], // Mảng cấu hình các part
+                         }) => {
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
+    useEffect(() => {
+        const onChange = () => setIsFullscreen(!!document.fullscreenElement);
+        document.addEventListener("fullscreenchange", onChange);
+        return () => document.removeEventListener("fullscreenchange", onChange);
+    }, []);
+
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen?.();
+        } else {
+            document.exitFullscreen?.();
+        }
+    };
+
     const formatTime = (secs) => {
         const m = Math.floor(secs / 60);
         const s = Math.floor(secs % 60);
@@ -30,15 +49,13 @@ const ListeningHeader = ({
                     <IconArrowLeft />
                 </a>
 
-                {/* SỬ DỤNG PARTNAVIGATION Ở ĐÂY */}
+                {/* PARTNAVIGATION */}
                 <div className="order-last w-full lg:order-none lg:w-auto lg:flex-1 min-w-0 flex items-center gap-1.5 overflow-x-auto py-[3px]">
                     {parts.map((part, index) => {
-                        // Tính xem part này đã làm được bao nhiêu câu
                         let answeredCount = 0;
                         for (let i = 0; i < part.questionCount; i++) {
                             const qId = part.startQ + i;
                             const ans = answers[qId];
-                            // Hỗ trợ cả String (Part 1) và Array (Part 2 Multiple Choice)
                             if (Array.isArray(ans) ? ans.length > 0 : (ans && String(ans).trim())) {
                                 answeredCount++;
                             }
@@ -46,7 +63,6 @@ const ListeningHeader = ({
 
                         return (
                             <div key={part.id} className="flex items-center gap-1 shrink-0">
-                                {/* Vạch ngăn cách giữa các part */}
                                 {index > 0 && (
                                     <span className="shrink-0 w-[2px] h-[22px] mx-0.5 rounded-full bg-[rgba(26,26,18,0.3)]"></span>
                                 )}
@@ -54,12 +70,11 @@ const ListeningHeader = ({
                                 <PartNavigation
                                     partNumber={part.id}
                                     questionCount={part.questionCount}
-                                    startNumber={part.startQ} // Truyền số bắt đầu (VD: Part 2 là 11)
+                                    startNumber={part.startQ}
                                     answeredCount={answeredCount}
                                     isActive={currentPart === part.id}
                                     onPartClick={() => onPartChange(part.id)}
                                     onQuestionClick={(n) => {
-                                        // Cuộn xuống đúng câu hỏi khi bấm vào số
                                         const el = document.getElementById(`question-${n}`);
                                         if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
                                     }}
@@ -69,7 +84,7 @@ const ListeningHeader = ({
                     })}
                 </div>
 
-                {/* Tools (Cỡ chữ, đồng hồ, kiểm tra) */}
+                {/* Tools (Cỡ chữ, fullscreen, đồng hồ, kiểm tra) */}
                 <div className="flex flex-1 lg:flex-none min-w-0 items-center gap-2 overflow-x-auto ml-auto">
                     <select
                         value={fontSize}
@@ -81,8 +96,12 @@ const ListeningHeader = ({
                         ))}
                     </select>
 
-                    <button className="hidden md:flex w-[32px] h-[32px] shrink-0 items-center justify-center rounded-[9px] bg-white hover:bg-[#e8b13a] transition-colors border-[2.5px] border-[#1a1a12]">
-                        <IconMaximize />
+                    <button
+                        onClick={toggleFullscreen}
+                        title={isFullscreen ? "Thoát toàn màn hình" : "Toàn màn hình"}
+                        className="hidden md:flex w-[32px] h-[32px] shrink-0 items-center justify-center rounded-[9px] bg-white hover:bg-[#e8b13a] transition-colors border-[2.5px] border-[#1a1a12]"
+                    >
+                        {isFullscreen ? <IconMinimize /> : <IconMaximize />}
                     </button>
 
                     <div className="flex shrink-0 items-center gap-1.5 text-[12px] font-semibold bg-white rounded-[9px] px-2.5 py-[5px] whitespace-nowrap border-[2.5px] border-[#1a1a12]">

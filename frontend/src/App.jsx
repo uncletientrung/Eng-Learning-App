@@ -17,6 +17,9 @@ import ExamPage from "./components/sections/reading/reading-test/ExamPage.jsx";
 import {ReadingResultPage} from "./components/sections/reading/Result/index.js";
 import ReviewPage from "./pages/Reading/ReviewPage.jsx";
 import ListeningExam from "./pages/Listening/ListeningExam.jsx";
+import ListeningResultPage from "./components/sections/listening/Result/ListeningResultPage.jsx";
+import PartSelectionPage from "./components/sections/PartSelectionPage.jsx";
+import ListeningExamPage from "./pages/Listening/ListeningExamPage.jsx";
 
 const VocabularyDashboard = lazy(() => import('./pages/Vocabulary/VocabularyDashboard'))
 
@@ -46,12 +49,17 @@ function App() {
       <Route path="/vocabulary/dashboard" element={<Suspense fallback={<div className="min-h-screen bg-[#0e1014]" role="status" aria-label="Đang tải dashboard" />}><VocabularyDashboard /></Suspense>} />
       <Route path="/vocabulary/flashcard" element={<Suspense fallback={<div className="min-h-screen bg-[#0e1014]" role="status" aria-label="Đang tải flashcard" />}><VocabularyDashboard flashcardPage /></Suspense>} />
       <Route path="/grammar" element={<GrammarLandingPage />}/>
+
       <Route path="/reading" element={<ReadingLibrary />} />
       <Route path="/reading/exam" element={<ExamPage />} />
       <Route path="/reading/exam/result" element={<ReadingResultPage />} />
       <Route path="/reading/exam/result/review" element={<ReviewPage />} />
+
       <Route path="/listening" element={<ListeningLibrary/>}/>
-      <Route path="/listening/exam" element={<ListeningExam />} />
+      <Route path="/listening/exam/:examid" element={<ListeningExamPage />} />
+
+
+        <Route path="/listening/result/:submissionid" element={<ListeningResultPage/>} />
     </Routes>
   )
 }

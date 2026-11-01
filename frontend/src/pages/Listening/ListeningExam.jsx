@@ -4,6 +4,7 @@ import NoteCompletionTable from "../../components/sections/listening/NoteComplet
 import MultipleChoiceGroup from "../../components/sections/listening/MultipleChoiceGroup";
 import NoteCompletionPart4 from "../../components/sections/listening/NoteCompletionPart4.jsx";
 import SubmitDialog from "../../components/sections/listening/SubmitDialog.jsx";
+import {useNavigate} from "react-router-dom";
 
 const PARTS_CONFIG = [
     { id: 1, questionCount: 10, startQ: 1 },
@@ -69,12 +70,13 @@ const PART_2_DATA = {
     ],
 };
 
-const ListeningExam = () => {
+const ListeningExam = ({mode,part}) => {
     const [answers, setAnswers] = useState({});
     const [fontSize, setFontSize] = useState(19);
     const [timeSeconds, setTimeSeconds] = useState(19);
     const [currentPart, setCurrentPart] = useState(1);
     const [showSubmitDialog, setShowSubmitDialog] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const t = setInterval(() => setTimeSeconds((s) => s + 1), 1000);
@@ -108,6 +110,7 @@ const ListeningExam = () => {
     const handleConfirmSubmit = () => {
         // TODO: gọi API nộp bài / chuyển sang trang kết quả
         console.log("Submit answers:", answers);
+        navigate("/listening/result/1")
         setShowSubmitDialog(false);
     };
 

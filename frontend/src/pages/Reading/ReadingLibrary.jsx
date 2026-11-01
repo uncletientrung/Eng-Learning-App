@@ -37,13 +37,12 @@ const ReadingLibrary = () => {
                             </div>
                             <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-3 tracking-tight leading-tight">Luyện Reading</h1>
                             <p className="text-slate-400 font-medium text-lg max-w-lg">
-                                Cambridge 20-10 đầy đủ &amp; Essential Words for the IELTS — True/False/Not Given, điền từ, và nhiều dạng câu hỏi khác.
+                            Luyện tập kĩ năng Reading thông qua các bộ đề bám sát thực tế
                             </p>
                         </div>
                     </div>
                 </header>
 
-                <StatsGrid />
                 <QuestionTypeFilter />
                 <QuestionTabs />
 

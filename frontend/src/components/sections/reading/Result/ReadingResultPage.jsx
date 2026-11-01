@@ -1,7 +1,7 @@
 import ResultLayout from "./ResultLayout";
 import ResultHeader from "./ResultHeader";
 import ResultHero from "./ResultHero";
-import ScoreCard from "./ScoreCard";
+import ScoreCard from "../../../ui/ScoreCard.jsx";
 import QuestionTypeTable from "./QuestionTypeTable";
 
 const ReadingResultPage = ({

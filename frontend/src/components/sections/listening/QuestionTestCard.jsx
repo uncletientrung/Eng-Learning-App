@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
+import {useState} from "react";
 
 const QuestionTestCard = ({ camNumber, testNumber, bgColor, patternId, patternPath, patternTransform, patternWidth }) => {
-    const basePath = `/practice/listening/cam-test/cam${camNumber}-test-${testNumber}`;
-
+    const basePath = `/listening`;
+    const [examid,setExamid,] = useState(1);
     return (
         <div className={`relative flex flex-col rounded-3xl p-5 ${bgColor} text-white shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden`}>
             <div className="absolute inset-0 pointer-events-none opacity-40 mix-blend-overlay">
@@ -48,7 +49,7 @@ const QuestionTestCard = ({ camNumber, testNumber, bgColor, patternId, patternPa
             </div>
 
             <div className="grid grid-cols-2 gap-2 mt-auto relative z-10">
-                <Link to={`${basePath}?mode=practice`} className="flex items-center justify-between bg-[#fdfaf6] text-slate-800 rounded-xl px-2 py-3 hover:bg-white hover:scale-[1.02] active:scale-95 transition-all shadow-sm">
+                <Link to={`${basePath}/exam/${examid}?mode=practice`} className="flex items-center justify-between bg-[#fdfaf6] text-slate-800 rounded-xl px-2 py-3 hover:bg-white hover:scale-[1.02] active:scale-95 transition-all shadow-sm">
                     <div className="flex items-center gap-1.5">
                         <div className="w-6 h-6 shrink-0 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-pencil w-3 h-3" aria-hidden="true">
@@ -62,7 +63,7 @@ const QuestionTestCard = ({ camNumber, testNumber, bgColor, patternId, patternPa
                         <path d="m9 18 6-6-6-6"></path>
                     </svg>
                 </Link>
-                <Link to={`${basePath}?mode=real_test`} className="flex items-center justify-between bg-[#fdfaf6] text-slate-800 rounded-xl px-2 py-3 hover:bg-white hover:scale-[1.02] active:scale-95 transition-all shadow-sm">
+                <Link to={`${basePath}/exam/${examid}?mode=full_test`} className="flex items-center justify-between bg-[#fdfaf6] text-slate-800 rounded-xl px-2 py-3 hover:bg-white hover:scale-[1.02] active:scale-95 transition-all shadow-sm">
                     <div className="flex items-center gap-1.5">
                         <div className="w-6 h-6 shrink-0 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-clock w-3 h-3" aria-hidden="true">
