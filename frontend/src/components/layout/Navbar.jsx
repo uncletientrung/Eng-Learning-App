@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import { useDueFolders, dueFolderLink } from '../../pages/Vocabulary/dashboard/flashcard/useDueFolders'
 
 function Navbar({ transparentOnTop = false }) {
-  const dueFolders = useDueFolders({ remindersOnly: true })
+  const { folders: dueFolders } = useDueFolders()
   const dueWordCount = dueFolders.reduce((count, folder) => count + folder.dueWords.length, 0)
   const [isScrolled, setIsScrolled] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)

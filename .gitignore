@@ -19,7 +19,6 @@ frontend/.env.*
 **/bin/
 **/obj/
 **/App_Data/speaking/
-**/Migrations/
 
 
 

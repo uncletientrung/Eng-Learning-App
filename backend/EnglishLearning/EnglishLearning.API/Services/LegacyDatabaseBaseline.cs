@@ -1,14 +1,28 @@
 using EnglishLearning.DAL.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace EnglishLearning.API.Services;
 
 public static class LegacyDatabaseBaseline
 {
-    private const string InitialMigration = "20261102133849_initDb";
-    private const string SeedCategoriesMigration = "20261102134148_SeedGrammarCategories";
-    private const string SeedSectionsMigration = "20261102134222_SeedGrammarSections";
+    private const string InitialMigration = "20261018061907_InitialCreate";
     private const string ProductVersion = "9.0.0";
+    private static readonly string[] BaselineMigrations =
+    [
+        InitialMigration,
+        "20261019192042_SyncModelChanges",
+        "20261019195403_SyncLatestEntityChanges",
+        "20261021021405_SyncTopicEntityChanges",
+        "20261021081621_MoveSpeakingTypeToExercise",
+        "20261021095510_UpdateSpeakingWritingConfig",
+        "20261024030952_AddSpeakingQuestionsRelationship",
+        "20261024035621_AddSpeakingQuestionsRelationship2",
+        "20261025121926_AddSpeakingQuestionCuesAndClosing",
+        "20261031152213_AddSpeakingAssessmentFields",
+        "20261031162254_SpeakingResultsOnAttempts",
+        "20261102093000_AddWritingAdminMetadata"
+    ];
 
     public static async Task ApplyAsync(
         AppDbContext context,
@@ -45,7 +59,16 @@ public static class LegacyDatabaseBaseline
                 "Hãy sao lưu database và đối chiếu schema trước khi chạy lại.");
         }
 
+        if (existingTables.Contains("speaking_grades"))
+        {
+            throw new InvalidOperationException(
+                "Database còn bảng speaking_grades nhưng không có lịch sử migration. " +
+                "Không thể tự đánh dấu migration vì cần chuyển dữ liệu Speaking trước khi xóa bảng này. " +
+                "Hãy sao lưu database và khôi phục lịch sử migration phù hợp.");
+        }
+
         await VerifyExistingSeedDataAsync(context, cancellationToken);
+        await VerifyExistingColumnsAsync(context, cancellationToken);
         await CreateMigrationHistoryAsync(context, cancellationToken);
     }
 
@@ -96,6 +119,51 @@ public static class LegacyDatabaseBaseline
             "Hãy sao lưu database và đối chiếu dữ liệu trong grammar_categories, grammar_sections, Reading_Test và reading_exercises.");
     }
 
+    private static async Task VerifyExistingColumnsAsync(
+        AppDbContext context,
+        CancellationToken cancellationToken)
+    {
+        var existingColumns = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        await context.Database.OpenConnectionAsync(cancellationToken);
+        try
+        {
+            await using var command = context.Database.GetDbConnection().CreateCommand();
+            command.CommandText =
+                "SELECT CONCAT(TABLE_NAME, '.', COLUMN_NAME) " +
+                "FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE()";
+            await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+            while (await reader.ReadAsync(cancellationToken))
+                existingColumns.Add(reader.GetString(0));
+        }
+        finally
+        {
+            await context.Database.CloseConnectionAsync();
+        }
+
+        var missingColumns = context.Model.GetEntityTypes()
+            .SelectMany(entity =>
+            {
+                var tableName = entity.GetTableName();
+                if (string.IsNullOrWhiteSpace(tableName))
+                    return [];
+
+                var table = StoreObjectIdentifier.Table(tableName, entity.GetSchema());
+                return entity.GetProperties()
+                    .Select(property => $"{tableName}.{property.GetColumnName(table)}");
+            })
+            .Where(column => !existingColumns.Contains(column))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (missingColumns.Count == 0)
+            return;
+
+        throw new InvalidOperationException(
+            "Database có schema cũ nhưng thiếu các cột của model hiện tại nên không thể đánh dấu migration an toàn. " +
+            $"Các cột còn thiếu: {string.Join(", ", missingColumns)}. " +
+            "Hãy sao lưu database và chạy/đối chiếu migration phù hợp trước khi khởi động lại.");
+    }
+
     private static async Task CreateMigrationHistoryAsync(
         AppDbContext context,
         CancellationToken cancellationToken)
@@ -111,12 +179,7 @@ public static class LegacyDatabaseBaseline
             cancellationToken);
 
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
-        foreach (var migrationId in new[]
-                 {
-                     InitialMigration,
-                     SeedCategoriesMigration,
-                     SeedSectionsMigration
-                 })
+        foreach (var migrationId in BaselineMigrations)
         {
             await context.Database.ExecuteSqlRawAsync(
                 "INSERT IGNORE INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`) " +
