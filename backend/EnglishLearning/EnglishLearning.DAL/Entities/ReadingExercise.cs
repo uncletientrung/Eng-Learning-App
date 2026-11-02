@@ -13,14 +13,18 @@ namespace EnglishLearning.DAL.Entities
         public int Id { get; set; }
 
         [Column("topic_id")]
-        public int TopicId { get; set; }
+        public int? TopicId { get; set; }
+        
+        [Column("ReadingTest_id")]
+        public int ReadingTestId{ get; set; }
 
         [Required, StringLength(2)]
         public string Level { get; set; } = string.Empty;
 
         [Required, StringLength(255)]
         public string Title { get; set; } = string.Empty;
-
+        [Required]
+        public string Content { get; set; } = string.Empty;
         [Required, StringLength(500)]
         [Column("image_url")]
         public string ImageUrl { get; set; } = string.Empty;
@@ -32,6 +36,9 @@ namespace EnglishLearning.DAL.Entities
         public DateTime CreatedAt { get; set; }
 
         [ForeignKey(nameof(TopicId))]
-        public Topic Topic { get; set; } = null!;
+        public Topic? Topic { get; set; } = null!;
+
+        [ForeignKey(nameof(ReadingTestId))] 
+        public ReadingTest ReadingTest { get; set; } = null!;
     }
 }

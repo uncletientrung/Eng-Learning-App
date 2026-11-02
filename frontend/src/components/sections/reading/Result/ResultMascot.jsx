@@ -1,37 +1,5 @@
 import { useEffect, useRef } from "react";
 
-/* ---------- Mây + mưa (giữ nguyên) ---------- */
-const RainCloud = () => (
-    <div
-        className="hidden sm:block absolute pointer-events-none z-10"
-        aria-hidden="true"
-        style={{ width: 125, left: -22, top: 15 }}
-    >
-        <svg viewBox="0 0 86 44" className="w-full">
-            <path
-                d="M18 40 C6 40 4 26 14 23 C14 12 28 8 35 15 C40 5 58 5 61 17 C72 15 80 24 76 32 C84 36 80 42 72 40 Z"
-                fill="#F1F4FF"
-                stroke="#1E2A6B"
-                strokeWidth="2.2"
-            />
-        </svg>
-        {[22, 46, 70].map((left, i) => (
-            <span
-                key={left}
-                className="tid-sun-rain absolute rounded-full"
-                style={{
-                    left: `${left}%`,
-                    top: "78%",
-                    width: 4,
-                    height: 14,
-                    backgroundColor: "#9DBBFA",
-                    animationDelay: `${i * 0.35}s`,
-                }}
-            />
-        ))}
-    </div>
-);
-
 /* ---------- Mặt trời (nhận refs để animate) ---------- */
 const SunFace = ({ faceGroupRef, eyePathRef }) => (
     <svg viewBox="0 0 63 63" fill="none" className="w-full h-full overflow-visible">
@@ -58,31 +26,53 @@ const SunFace = ({ faceGroupRef, eyePathRef }) => (
             strokeWidth="0.2"
         />
 
-        {/* Face: wrapper ngoài giữ offset tĩnh, wrapper trong nhận animation */}
-        <g style={{ transform: "translateX(1.8px) translateY(1.2px)" }}>
+        {/* === FIX LỖI LỆCH MẶT: Tách thành 3 lớp <g> === */}
+        {/* Lớp 1: Offset tĩnh từ HTML gốc, không bị JS đụng vào */}
+        <g style={{ transform: "translateX(-0.844525px) translateY(0.149813px)" }}>
+            {/* Lớp 2: Nhận animation (nhìn theo chuột) từ JS */}
             <g
                 ref={faceGroupRef}
                 style={{ transformOrigin: "50% 50%", transformBox: "fill-box" }}
             >
+                {/* Lớp 3: Dịch chuyển đến đúng vị trí tâm mặt và scale */}
                 <g transform="translate(26, 18) scale(0.8)">
-                    <path d="M 11.2 -1.6 L 15.6 -0.4" stroke="#121212" strokeWidth="0.9" strokeLinecap="round" />
-                    <path d="M 4.4 -0.6 L 0 0.8" stroke="#121212" strokeWidth="0.9" strokeLinecap="round" />
-                    <circle cx="13.5" cy="2.6" r="1.7" fill="#121212" />
-                    {/* Mắt trái: đổi circle → path để wink được */}
+                    {/* Mắt phải — cung cười */}
                     <path
-                        ref={eyePathRef}
-                        d="M 0.5 3.6 a 1.7 1.7 0 1 0 3.4 0 a 1.7 1.7 0 1 0 -3.4 0 Z"
-                        fill="#121212"
-                    />
-                    <path
-                        d="M -3.8 4.2 C -2.2 1.6 2.2 1.6 3.8 4.2"
+                        d="M 11.5 2.6 Q 13.7 -0.6 15.9 2.6"
                         stroke="#121212"
-                        strokeWidth="1"
+                        strokeWidth="1.1"
                         strokeLinecap="round"
                         fill="none"
-                        transform="translate(8.37 8.76) rotate(-4.85)"
                     />
-                    <path d="M 15.4 5 Q 14.2 7.4 15.4 8.2 Q 16.6 7.4 15.4 5 Z" fill="#5EB8FF" stroke="#2F7FC0" strokeWidth="0.3" />
+                    {/* Mắt trái — cung cười, đổi thành wink khi hover */}
+                    <path
+                        ref={eyePathRef}
+                        d="M -0.2 3.6 Q 2 0.4 4.2 3.6"
+                        stroke="#121212"
+                        strokeWidth="1.1"
+                        strokeLinecap="round"
+                        fill="none"
+                    />
+                    {/* Má hồng */}
+                    <ellipse cx="17.2" cy="6.2" rx="2" ry="1.1" fill="#FF7A6B" opacity="0.55" />
+                    <ellipse cx="-0.6" cy="7.4" rx="2" ry="1.1" fill="#FF7A6B" opacity="0.55" />
+                    {/* Miệng to + lưỡi */}
+                    <g transform="translate(8.37 8.4) rotate(-4.85)">
+                        <defs>
+                            <clipPath id="result-mascot-mouth-clip">
+                                <path d="M -4.6 0 C -4.2 6.4 4.2 6.4 4.6 0 Z" />
+                            </clipPath>
+                        </defs>
+                        <path d="M -4.6 0 C -4.2 6.4 4.2 6.4 4.6 0 Z" fill="#121212" />
+                        <ellipse
+                            cx="0"
+                            cy="4.7"
+                            rx="2.7"
+                            ry="1.8"
+                            fill="#FF7A6B"
+                            clipPath="url(#result-mascot-mouth-clip)"
+                        />
+                    </g>
                 </g>
             </g>
         </g>
@@ -90,7 +80,7 @@ const SunFace = ({ faceGroupRef, eyePathRef }) => (
 );
 
 /* ---------- Mascot wrapper: gắn animation ---------- */
-const ResultMascot = ({ tip }) => {
+const ResultMascot = () => {
     const mascotRef = useRef(null);
     const faceGroupRef = useRef(null);
     const eyePathRef = useRef(null);
@@ -103,8 +93,7 @@ const ResultMascot = ({ tip }) => {
         if (!mascot || !faceGroup || !eyePath) return;
 
         const normalEyeD = eyePath.getAttribute("d");
-        /* wink: đường cong tại đúng vị trí mắt trái (0.5 → 3.9, y ~3.6) */
-        const winkEyeD = "M 0.5 3.6 Q 2.2 5.2 3.9 3.6";
+        const winkEyeD = "M -0.2 3.6 L 4.2 3.6"; // Mắt nhắm thành đường thẳng
 
         let center = null;
         const updateCenter = () => {
@@ -137,19 +126,11 @@ const ResultMascot = ({ tip }) => {
 
         const handleMouseEnter = () => {
             eyePath.setAttribute("d", winkEyeD);
-            eyePath.setAttribute("stroke", "#121212");
-            eyePath.setAttribute("stroke-width", "0.8");
-            eyePath.setAttribute("stroke-linecap", "round");
-            eyePath.setAttribute("fill", "none");
         };
 
         const handleMouseLeave = () => {
             if (normalEyeD) {
                 eyePath.setAttribute("d", normalEyeD);
-                eyePath.removeAttribute("stroke");
-                eyePath.removeAttribute("stroke-width");
-                eyePath.removeAttribute("stroke-linecap");
-                eyePath.setAttribute("fill", "#121212");
             }
         };
 
@@ -196,18 +177,6 @@ const ResultMascot = ({ tip }) => {
     return (
         <div className="absolute top-1/2 -right-12 md:-right-24 z-0 transform -translate-y-[150px] md:-translate-y-[86px]">
             <div className="relative inline-block pointer-events-auto">
-                {tip && (
-                    <div
-                        className="absolute -top-[26px] left-1/2 -translate-x-1/2 z-10 whitespace-normal text-center bg-white text-[#1e3006] text-[11px] font-bold px-3 py-1.5 rounded-2xl shadow-lg border max-w-[180px] w-max"
-                        style={{ borderColor: "#e5ebd2" }}
-                    >
-                        {tip}
-                        <div
-                            className="absolute -bottom-1.5 left-1/3 -translate-x-1/2 w-3 h-3 bg-white border-b border-r rotate-45 shadow-sm"
-                            style={{ borderColor: "#e5ebd2" }}
-                        />
-                    </div>
-                )}
                 {/* Outer: giữ tilt tĩnh 4.37° */}
                 <div
                     style={{
@@ -223,7 +192,6 @@ const ResultMascot = ({ tip }) => {
                         className="w-full h-full cursor-pointer"
                         style={{ transformOrigin: "50% 100%" }}
                     >
-                        <RainCloud />
                         <SunFace faceGroupRef={faceGroupRef} eyePathRef={eyePathRef} />
                     </div>
                 </div>

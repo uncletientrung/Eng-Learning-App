@@ -2,10 +2,11 @@ import {CAMBRIDGE_10_TESTS} from "../../../data/listeningTests.js";
 import QuestionTestCard from "./QuestionTestCard.jsx";
 import Pagination from "../../layout/Pagination.jsx";
 import {useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
 
 const ListeningTestList = () =>{
     const [Listname, setListname] = useState("Cambridge Full Test");
-
+    const navigate = useNavigate();
     return(
         <>
             <div className="mb-14 relative">
@@ -33,6 +34,7 @@ const ListeningTestList = () =>{
                         <div className="flex overflow-x-auto gap-4 pb-6 snap-x snap-mandatory" style={{ scrollbarWidth: 'thin' }}>
                             {CAMBRIDGE_10_TESTS.map((test) => (
                                 <div key={test.id} className="snap-start shrink-0 w-[280px] sm:w-[320px]">
+
                                     <QuestionTestCard
                                         camNumber={10}
                                         testNumber={test.id}
@@ -42,6 +44,7 @@ const ListeningTestList = () =>{
                                         patternTransform={test.patternTransform}
                                         patternWidth={test.patternWidth}
                                     />
+
                                 </div>
                             ))}
                         </div>
