@@ -9,7 +9,6 @@
 - ### Vẫn ở đường dẫn chứa file .slnx (bắt buộc vì dotnet chạy dựa trên file Program.cs), chạy
 ```
 dotnet ef migrations add initDb --project EnglishLearning.DAL --startup-project EnglishLearning.API
-dotnet ef database update --project EnglishLearning.DAL --startup-project EnglishLearning.AP
-dotnet run --project EnglishLearning.API
+dotnet ef database update --project EnglishLearning.DAL --startup-project EnglishLearning.API
 ```
 - ### Kiểm tra thư mục Migrations và database

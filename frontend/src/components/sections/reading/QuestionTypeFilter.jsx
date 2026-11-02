@@ -1,8 +1,6 @@
 const QUESTION_TYPES = [
     'True/False/Not Given', 'Yes/No/Not Given', 'Multiple Choice',
-    'Matching Headings', 'Matching Information', 'Matching Features',
-    'Matching Sentence Endings', 'Short Answer', 'Sentence Completion',
-    'Note/Summary Completion', 'Flow Chart Completion', 'Diagram Labelling', 'Map Labelling',
+     'Short Answer', 'Sentence Completion',
 ];
 
 const QuestionTypeFilter = () => {
@@ -15,12 +13,7 @@ const QuestionTypeFilter = () => {
           </svg>
           Lọc theo tiêu chí
         </span>
-                <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold text-slate-400 capitalize normal-case tracking-normal">Thu gọn</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-down w-4 h-4 text-slate-400 transition-transform duration-300 rotate-180" aria-hidden="true">
-                        <path d="m6 9 6 6 6-6" />
-                    </svg>
-                </div>
+
             </button>
             <div className="overflow-hidden space-y-4 pt-4" style={{ height: 'auto', opacity: 1 }}>
                 <div>

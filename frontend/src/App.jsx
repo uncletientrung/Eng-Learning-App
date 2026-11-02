@@ -4,12 +4,13 @@ import { lazy, Suspense } from 'react'
 import Home from './pages/Home'
 import WritingLibrary from './pages/Writing/WritingLibrary'
 import WritingTest from './pages/Writing/WritingTest'
-import TranslationLandingPage from './pages/Writing/Translation/TranslationLandingPage'
+import TranslationLandingPage from './pages/Translation/TranslationLandingPage'
 import SpeakingLibrary from './pages/Speaking/SpeakingLibrary'
 import SpeakingPart1 from './pages/Speaking/SpeakingPart1'
 import SpeakingPart2 from './pages/Speaking/SpeakingPart2'
 import SpeakingPart3 from './pages/Speaking/SpeakingPart3'
 import GrammarLandingPage from './pages/Grammar/GrammarLandingPage'
+import Theory from './pages/Grammar/Theory'
 import ReadingLibrary from "./pages/Reading/ReadingLibrary.jsx";
 import LoginPage from "./pages/Login/LoginPage.jsx";
 import ListeningLibrary from "./pages/Listening/ListeningLibrary.jsx";
@@ -18,6 +19,9 @@ import {ReadingResultPage} from "./components/sections/reading/Result/index.js";
 import ReviewPage from "./pages/Reading/ReviewPage.jsx";
 import ListeningExam from "./pages/Listening/ListeningExam.jsx";
 import RequireAuth from './components/layout/RequireAuth';
+import ListeningResultPage from "./components/sections/listening/Result/ListeningResultPage.jsx";
+import PartSelectionPage from "./components/sections/PartSelectionPage.jsx";
+import ListeningExamPage from "./pages/Listening/ListeningExamPage.jsx";
 
 const VocabularyDashboard = lazy(() => import('./pages/Vocabulary/VocabularyDashboard'))
 
@@ -45,16 +49,22 @@ function App() {
 
       {/* Vocab */}
       <Route element={<RequireAuth />}>
-      <Route path="/vocabulary/dashboard" element={<Suspense fallback={<div className="min-h-screen bg-[#0e1014]" role="status" aria-label="Đang tải dashboard" />}><VocabularyDashboard /></Suspense>} />
-      <Route path="/vocabulary/flashcard" element={<Suspense fallback={<div className="min-h-screen bg-[#0e1014]" role="status" aria-label="Đang tải flashcard" />}><VocabularyDashboard flashcardPage /></Suspense>} />
+        <Route path="/vocabulary/dashboard" element={<Suspense fallback={<div className="min-h-screen bg-[#0e1014]" role="status" aria-label="Đang tải dashboard" />}><VocabularyDashboard /></Suspense>} />
+        <Route path="/vocabulary/flashcard" element={<Suspense fallback={<div className="min-h-screen bg-[#0e1014]" role="status" aria-label="Đang tải flashcard" />}><VocabularyDashboard flashcardPage /></Suspense>} />
       </Route>
-      <Route path="/grammar" element={<GrammarLandingPage />}/>
+
+      <Route path="/grammar" element={<GrammarLandingPage />} />
+      <Route path="/grammar/theory" element={<Theory />} />
+
       <Route path="/reading" element={<ReadingLibrary />} />
       <Route path="/reading/exam" element={<ExamPage />} />
       <Route path="/reading/exam/result" element={<ReadingResultPage />} />
       <Route path="/reading/exam/result/review" element={<ReviewPage />} />
+
       <Route path="/listening" element={<ListeningLibrary/>}/>
-      <Route path="/listening/exam" element={<ListeningExam />} />
+      <Route path="/listening/exam/:examid" element={<ListeningExamPage />} />
+
+      <Route path="/listening/result/:submissionid" element={<ListeningResultPage/>} />
     </Routes>
   )
 }

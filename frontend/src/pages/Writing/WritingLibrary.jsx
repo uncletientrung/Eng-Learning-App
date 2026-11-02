@@ -7,7 +7,7 @@ import WritingTestList from '../../components/sections/writing/WritingTestList'
 import WritingPagination from '../../components/sections/writing/WritingPagination'
 import MainLayout from '../../components/layout/MainLayout'
 
-import { getWritingExercises } from '../../services/writingAPI.js';
+import { getWritingExercises } from '../../services/writingApi.js';
 import { getTopicByModule } from '../../services/topicAPI';
 
 function WritingLibrary() {

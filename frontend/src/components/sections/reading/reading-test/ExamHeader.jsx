@@ -1,13 +1,44 @@
 // ============================================================
 // ExamHeader.jsx
 // ============================================================
+import { useState, useEffect } from 'react';
 import PartNavigation from './PartNavigation';
-import HeaderControls from './HeaderControls';
-import {useState} from "react";
-import EmptyAnswerDialog from "./EmptyAnswerDialog.jsx";
 
-const ExamHeader = () => {
 
+import { IconMaximize, IconMinimize} from '../../listening/icons.jsx';
+
+
+const ExamHeader = ({
+                        answers = {},
+                        fontSize,
+                        setFontSize,
+                        timeSeconds = 0,
+                        currentPart,
+                        onPartChange,
+                        onSubmit,
+                        parts = [],
+                    }) => {
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
+    useEffect(() => {
+        const onChange = () => setIsFullscreen(!!document.fullscreenElement);
+        document.addEventListener('fullscreenchange', onChange);
+        return () => document.removeEventListener('fullscreenchange', onChange);
+    }, []);
+
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen?.();
+        } else {
+            document.exitFullscreen?.();
+        }
+    };
+
+    const formatTime = (secs) => {
+        const m = Math.floor(secs / 60);
+        const s = Math.floor(secs % 60);
+        return `${m}:${s.toString().padStart(2, "0")}`;
+    };
 
     return (
         <header
@@ -20,6 +51,7 @@ const ExamHeader = () => {
             }}
         >
             <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 px-3 md:px-4 py-2">
+                {/* Nút quay lại */}
                 <a
                     className="w-[34px] h-[34px] shrink-0 flex items-center justify-center rounded-[9px] bg-white hover:bg-[#e8b13a] transition-colors"
                     title="Quay lại danh sách"
@@ -44,8 +76,82 @@ const ExamHeader = () => {
                     </svg>
                 </a>
 
-                <HeaderControls />
+                {/* Part Navigation */}
+                <div className="order-last w-full lg:order-none lg:w-auto lg:flex-1 min-w-0 flex items-center gap-1.5 overflow-x-auto py-[3px]">
+                    {parts.map((part, index) => {
+                        let answeredCount = 0;
+                        for (let i = 0; i < part.questionCount; i++) {
+                            const qId = part.startQ + i;
+                            const ans = answers[qId];
+                            if (
+                                Array.isArray(ans)
+                                    ? ans.length > 0
+                                    : ans && String(ans).trim()
+                            ) {
+                                answeredCount++;
+                            }
+                        }
 
+                        return (
+                            <div key={part.id} className="flex items-center gap-1 shrink-0">
+                                {index > 0 && (
+                                    <span className="shrink-0 w-[2px] h-[22px] mx-0.5 rounded-full bg-[rgba(26,26,18,0.3)]" />
+                                )}
+                                <PartNavigation
+                                    partNumber={part.id}
+                                    questionCount={part.questionCount}
+                                    startNumber={part.startQ}
+                                    answeredCount={answeredCount}
+                                    isActive={currentPart === part.id}
+                                    onPartClick={() => onPartChange?.(part.id)}
+                                    onQuestionClick={(n) => {
+                                        const el = document.getElementById(`question-${n}`);
+                                        if (el)
+                                            el.scrollIntoView({
+                                                behavior: "smooth",
+                                                block: "center",
+                                            });
+                                    }}
+                                />
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* Tools: font size, fullscreen, timer, submit */}
+                <div className="flex flex-1 lg:flex-none min-w-0 items-center gap-2 overflow-x-auto ml-auto">
+                    <select
+                        value={fontSize}
+                        onChange={(e) => setFontSize?.(Number(e.target.value))}
+                        className="shrink-0 max-w-[64px] text-[#1a1a12] border-2 border-[#1a1a12] cursor-pointer bg-white rounded-[7px] p-1 text-[11px] font-semibold outline-none"
+                    >
+                        {[14, 15, 16, 17, 18, 19, 21, 23].map((s) => (
+                            <option key={s} value={s}>
+                                {s}px
+                            </option>
+                        ))}
+                    </select>
+
+                    <button
+                        onClick={toggleFullscreen}
+                        title={isFullscreen ? "Thoát toàn màn hình" : "Toàn màn hình"}
+                        className="hidden md:flex w-[32px] h-[32px] shrink-0 items-center justify-center rounded-[9px] bg-white hover:bg-[#e8b13a] transition-colors border-[2.5px] border-[#1a1a12]"
+                    >
+                        {isFullscreen ? <IconMinimize /> : <IconMaximize />}
+                    </button>
+
+                    <div className="flex shrink-0 items-center gap-1.5 text-[12px] font-semibold bg-white rounded-[9px] px-2.5 py-[5px] whitespace-nowrap border-[2.5px] border-[#1a1a12]">
+                        <span className="w-[7px] h-[7px] rounded-full bg-[#3f6b2c]" />
+                        {formatTime(timeSeconds)}
+                    </div>
+
+                    <button
+                        className="shrink-0 rounded-[9px] px-4 py-[7px] font-bold text-[13px] whitespace-nowrap bg-[#e8b13a] text-[#1a1a12] border-[2.5px] border-[#1a1a12]"
+                        onClick={onSubmit}
+                    >
+                        Kiểm Tra
+                    </button>
+                </div>
             </div>
         </header>
     );

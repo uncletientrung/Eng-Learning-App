@@ -1,0 +1,7 @@
+dotnet ef migrations add SeedGrammarCategories --project EnglishLearning.DAL --startup-project EnglishLearning.API
+copy paste SeedGrammarCategories.cs vào Migration mới được tạo
+dotnet ef database update --project EnglishLearning.DAL --startup-project EnglishLearning.API
+
+dotnet ef migrations add SeedGrammarSections --project EnglishLearning.DAL --startup-project EnglishLearning.API
+copy paste SeedGrammarSections_Batched.cs vào Migration mới được tạo
+dotnet ef database update --project EnglishLearning.DAL --startup-project EnglishLearning.API

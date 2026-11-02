@@ -1,5 +1,5 @@
-import CircularProgress from "./CircularProgress";
-import { IconChevronRight, IconRotateCCW } from "./icons";
+import CircularProgress from "../sections/reading/Result/CircularProgress.jsx";
+import { IconChevronRight, IconRotateCCW } from "../sections/reading/Result/icons.jsx";
 
 const BreakdownRow = ({ color, label, count }) => (
     <li className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3">
