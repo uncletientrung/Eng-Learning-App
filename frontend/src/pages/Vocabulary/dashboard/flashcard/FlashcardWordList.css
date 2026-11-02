@@ -180,6 +180,13 @@
   color: var(--d-mute);
 }
 
+.vocabulary-dashboard .vf-list-empty-icon {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 48px;
+  line-height: 1;
+}
+
 @media (max-width: 700px) {
   .vocabulary-dashboard .vf-list-heading {
     margin: 24px 0;

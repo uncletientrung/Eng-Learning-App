@@ -38,7 +38,10 @@ function FlashcardSession({ folder }) {
   const [params] = useSearchParams();
   useReviewUpdates();
   const [wordList, setWordList] = useState(() => params.get("review") === "due" ? "due" : null);
-  const [studyIds, setStudyIds] = useState(() => folder.words.filter((word) => !progress[word.id] || isReviewDue(progress[word.id])).map((word) => word.id));
+  const [studyIds, setStudyIds] = useState(() => {
+    const pending = folder.words.filter((word) => !progress[word.id] || isReviewDue(progress[word.id]));
+    return (pending.length ? pending : folder.words).map((word) => word.id);
+  });
   const [position, setPosition] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [reviewed, setReviewed] = useState([]);
@@ -134,8 +137,6 @@ function FlashcardSession({ folder }) {
     setStudyIds(selected.map((item) => item.id));
     setPosition(0); setFlipped(false); setReviewed([]); setCompleted(false); setMessage(""); setWordList(null);
   }} />;
-
-  if (!ids.length) return <section className="vf-unavailable"><h1>Chưa có từ đến hạn ôn tập</h1><p>{folder.name}</p><button type="button" className="vf-list-back" onClick={() => setWordList("due")}>Xem danh sách từ vựng</button><Link to={folderLink}><ArrowLeft size={18} />Về bộ từ</Link></section>;
 
   return <div className="vf-study" style={{ "--fc-bg": "#ffc02e" }}>
     <div className="vf-top-grid">
