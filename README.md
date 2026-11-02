@@ -82,3 +82,11 @@ Gemini grading dùng `generateContent` với JSON response schema để giữ đ
 tối đa 3 lỗi quan trọng cho mỗi tiêu chí. `Gemini:TimeoutSeconds` đặt giới hạn
 thời gian chờ (mặc định 60 giây). Request tự retry tối đa 3 lần cho HTTP
 429/503.
+
+Lịch sử bài đã chấm được lấy từ `GET /api/writing-grading/history`; xem chi
+tiết từng lượt qua `GET /api/writing-grading/history/{attemptId}`. Hai endpoint
+này yêu cầu JWT và chỉ trả về lượt làm của người dùng đang đăng nhập.
+`GET /api/writing-grading/unattempted-exercise-ids` trả về các đề chưa có lượt
+chấm của người dùng hiện tại để lọc trạng thái **Chưa làm**.
+Xóa một lượt chấm thuộc tài khoản hiện tại bằng
+`DELETE /api/writing-grading/history/{attemptId}`.

@@ -1,13 +1,20 @@
 import { Volume2, Quote } from 'lucide-react'
 import { useEffect } from 'react'
+import SpeakingInlineAssessment from '../SpeakingInlineAssessment'
 
 
-export default function SpeakingP1Content({ question, answer, onSpeak}) {
+export default function SpeakingP1Content({
+  question,
+  answer,
+  onSpeak,
+  assessment,
+  autoSpeak = true,
+}) {
   useEffect(() => {
-    if (question) {
+    if (autoSpeak && question) {
       onSpeak(question)
     }
-  }, [question, onSpeak])
+  }, [autoSpeak, question, onSpeak])
   return (
     <>
       <div className="flex animate-in flex-col items-start fade-in slide-in-from-left-2 duration-500">
@@ -39,7 +46,7 @@ export default function SpeakingP1Content({ question, answer, onSpeak}) {
       {answer?.trim() && (
         <div className="flex animate-in flex-col items-end fade-in slide-in-from-left-2 duration-500">
           <div className="max-w-[90%] text-right md:max-w-[75%]">
-            <div className="inline-block rounded-2xl rounded-tr-none border-2 border-[#111] bg-[#e8f0c9] p-3 text-[#111] shadow-[4px_4px_0_rgba(0,0,0,0.15)]">
+            <div className="inline-block max-w-full rounded-2xl rounded-tr-none border-2 border-[#111] bg-[#e8f0c9] p-3 text-left text-[#111] shadow-[4px_4px_0_rgba(0,0,0,0.15)]">
               <p className="text-[13px] font-medium leading-relaxed md:text-[15px]">
                 {answer}
               </p>
@@ -47,6 +54,7 @@ export default function SpeakingP1Content({ question, answer, onSpeak}) {
           </div>
         </div>
       )}
+      {answer?.trim() && <SpeakingInlineAssessment {...assessment} />}
     </>
   )
 }

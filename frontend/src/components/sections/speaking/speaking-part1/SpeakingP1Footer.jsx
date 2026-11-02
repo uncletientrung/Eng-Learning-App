@@ -6,6 +6,7 @@ export default function SpeakingFooter({
   recording,
   onMicClick,
   onSubmit,
+  isSaving = false,
 }) {
   return (
     <footer className="mt-2 flex-none rounded-2xl border-[4px] border-[#111] bg-white px-5 py-4 shadow-[4px_4px_0_rgba(0,0,0,0.15)] md:px-4 md:py-3">
@@ -14,7 +15,9 @@ export default function SpeakingFooter({
           {/* Nút microphone */}
           <div className="flex flex-col items-center gap-1">
             <button
+              type="button"
               onClick={onMicClick}
+              disabled={isSaving}
               className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#111] text-white shadow-[3px_3px_0_#111] transition-all ${
                 recording
                   ? 'animate-pulse bg-red-600'
@@ -44,10 +47,10 @@ export default function SpeakingFooter({
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
                   e.preventDefault()
-                  onSubmit()
+                  if (!isSaving) onSubmit()
                 }
               }}
-              placeholder="Nhập câu trả lời hoặc bấm Mic..."
+              placeholder="Nói bằng microphone hoặc nhập transcript..."
               rows={1}
               className="block w-full resize-none rounded-xl border-[3px] border-[#111] bg-[#fffdf5] px-3 py-2 text-sm font-medium leading-5 text-[#111] outline-none transition-all focus:shadow-[3px_3px_0_#ffc926] md:px-4"
             />
@@ -55,11 +58,12 @@ export default function SpeakingFooter({
 
           {/* Nút gửi */}
           <button
+            type="button"
             onClick={onSubmit}
-            disabled={!answer.trim()}
+            disabled={isSaving || !answer.trim() && !recording}
             className="h-[44px] shrink-0 self-center rounded-lg border-[3px] border-[#111] bg-[#ffc926] px-5 text-sm font-extrabold text-[#111] shadow-[3px_3px_0_#111] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Gửi
+            {isSaving ? 'Đang lưu...' : 'Lưu câu'}
           </button>
         </div>
       </div>

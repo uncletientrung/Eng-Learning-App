@@ -7,7 +7,7 @@ import SpeakingTestList from '../../components/sections/speaking/SpeakingTestLis
 import MainLayout from '../../components/layout/MainLayout'
 
 import WritingPagination from '../../components/sections/writing/WritingPagination'
-import { getSpeakingExercisesWithQuestions } from '../../services/speakingAPI.js';
+import { getSpeakingExercisesWithQuestions } from '../../services/speakingAPI.js'
 import { getTopicByModule } from '../../services/topicAPI';
 
 const PAGE_SIZE = 8
@@ -105,7 +105,10 @@ function SpeakingLibrary() {
   const handleTestClick = (test) => {
     const part = partRoutes[test.speakingType]
     if (!part) return
-    navigate(`/speaking/${part}/${test.id}`)
+
+    navigate(`/speaking/${part}/${test.id}`, {
+      state: { startNewAttempt: true },
+    })
   }
 
   return (

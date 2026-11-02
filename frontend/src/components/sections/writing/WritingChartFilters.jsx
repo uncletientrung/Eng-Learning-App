@@ -1,6 +1,10 @@
 import {chartColors, defaultColors, getTopicConfig,} from  '../../../constant/writingConstant.js';
 
-function WritingChartFilters({topics = [], activeChartFilter, onChartFilterChange,}) {
+function WritingChartFilters({
+  topics = [],
+  activeChartFilter,
+  onChartFilterChange,
+}) {
   const displayFilters = [
     {
       id: 'ALL',
@@ -34,13 +38,13 @@ function WritingChartFilters({topics = [], activeChartFilter, onChartFilterChang
           chartColors[filter.colorKey || filter.id] ||
           defaultColors;
 
-        return (
+        const filterButton = (
           <button
             key={filter.id}
             type="button"
             onClick={() => onChartFilterChange(filter.id)}
             className={`
-              inline-flex items-center gap-1.5
+              inline-flex items-center gap-1.5 whitespace-nowrap
               rounded-full border px-4 py-1.5
               text-sm font-bold transition-all
               ${colors.border}
@@ -52,6 +56,8 @@ function WritingChartFilters({topics = [], activeChartFilter, onChartFilterChang
             {filter.label}
           </button>
         );
+
+        return filterButton;
       })}
     </div>
   );

@@ -1,7 +1,7 @@
 import { ArrowLeft } from 'lucide-react'
 import LinkButton from '../../ui/LinkButton'
 
-function WritingHeader() {
+function WritingHeader({ practiceStatus, onPracticeStatusChange }) {
   return (
     <div className="mb-2">
       <LinkButton
@@ -19,7 +19,7 @@ function WritingHeader() {
         className="
           flex flex-col gap-6
           md:flex-row
-          md:items-end
+          md:items-center
           md:justify-between
         "
       >
@@ -36,6 +36,18 @@ function WritingHeader() {
             được mô phỏng bám sát định dạng thực tế.
           </p>
         </div>
+
+        <label className="flex w-full flex-col gap-2 md:mb-1 md:w-auto md:min-w-56">
+          <select
+            value={practiceStatus}
+            onChange={(event) => onPracticeStatusChange(event.target.value)}
+            className="w-full cursor-pointer rounded-xl border-2 border-[#111] bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-[3px_3px_0_rgba(0,0,0,0.12)] outline-none transition focus-visible:ring-2 focus-visible:ring-[#ffc926] focus-visible:ring-offset-2"
+          >
+            <option className='text-sm font-semibold text-slate-700' value="ALL">Mọi trạng thái</option>
+            <option className='text-sm font-semibold text-slate-700' value="NOT_STARTED">Chưa làm</option>
+            <option className='text-sm font-semibold text-slate-700' value="PRACTICED">Đã luyện</option>
+          </select>
+        </label>
       </div>
     </div>
   )

@@ -13,8 +13,9 @@ function WritingEditor({
   isFullscreen,
   onFullscreen,
   token,
+  initialAttempt = null,
 }) {
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(initialAttempt?.userResponse ?? "");
   const [fontSize, setFontSize] = useState(16);
   const [fontFamily, setFontFamily] = useState("Inter");
 
@@ -22,7 +23,7 @@ function WritingEditor({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [needsLogin, setNeedsLogin] = useState(false);
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState(initialAttempt?.result ?? null);
   const [showEssay, setShowEssay] = useState(false);
 
   const topicKey = normalizeTopic(test?.topic?.name ?? "");
@@ -80,7 +81,7 @@ function WritingEditor({
             onClick={() => setShowEssay(true)}
             className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-brand hover:text-brand"
           >
-            Quay lại bài viết
+            {initialAttempt ? "Xem bài viết đã nộp" : "Quay lại bài viết"}
           </button>
 
           <WritingScoreSummary result={result} />

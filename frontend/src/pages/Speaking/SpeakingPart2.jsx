@@ -1,18 +1,21 @@
 
-import { useEffect, useRef, useState, useCallback } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useState, useCallback } from 'react'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import SpeakingHeader from '../../components/sections/speaking/speaking-part1/SpeakingP1Header'
 import SpeakingP2Content from '../../components/sections/speaking/speaking-part2/SpeakingP2Content'
 import SpeakingP2Footer from '../../components/sections/speaking/speaking-part2/SpeakingP2Footer'
+import SpeakingAttemptActionFooter from '../../components/sections/speaking/SpeakingAttemptActionFooter'
+import SpeakingInlineAssessment from '../../components/sections/speaking/SpeakingInlineAssessment'
+import useSpeakingAttempt from '../../hooks/useSpeakingAttempt'
+import useSpeakingRecorder from '../../hooks/useSpeakingRecorder'
 import { speak } from '../../utils/speech'
 import { getSpeakingExerciseById } from '../../services/speakingAPI'
 
 export default function SpeakingPart2() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { id: speakingExerciseId } = useParams()
-
-  const speechRecognitionRef = useRef(null)
 
   const [speakingExercise, setSpeakingExercise] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -25,13 +28,27 @@ export default function SpeakingPart2() {
 
   // Trạng thái trả lời
   const [currentAnswer, setCurrentAnswer] = useState('')
-  const [isRecording, setIsRecording] = useState(false)
   const [isFinished, setIsFinished] = useState(false)
-  const [conversationHistory, setConversationHistory] = useState([])
+  const [isSavingAnswer, setIsSavingAnswer] = useState(false)
+  const [isActionBusy, setIsActionBusy] = useState(false)
+  const [practiceError, setPracticeError] = useState('')
+  const speakingAttempt = useSpeakingAttempt(
+    speakingExerciseId,
+    location.state?.attemptId,
+    Boolean(speakingExercise?.questions?.length),
+    Boolean(location.state?.startNewAttempt)
+  )
+  const recorder = useSpeakingRecorder(setCurrentAnswer)
 
   // Thời gian chuẩn bị Part 2
   const [preparationTimeRemaining, setPreparationTimeRemaining] =useState(60)
   const [isPreparationStarted, setIsPreparationStarted] = useState(false)
+  const conversationHistory = (speakingAttempt.attempt?.answers ?? []).map(
+    (answer) => ({
+      ...answer,
+      answer: answer.transcript,
+    })
+  )
 
   // Dọn dẹp khi rời trang
   useEffect(() => {
@@ -39,8 +56,6 @@ export default function SpeakingPart2() {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel()
       }
-
-      speechRecognitionRef.current?.stop?.()
     }
   }, [])
 
@@ -89,23 +104,7 @@ export default function SpeakingPart2() {
   )
 
   // Bắt đầu hoặc dừng nhận diện giọng nói
-  const handleMicrophoneToggle = () => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition
-
-    if (!SpeechRecognition) {
-      window.alert(
-        'Trình duyệt chưa hỗ trợ nhận diện giọng nói. Bạn có thể nhập câu trả lời bằng bàn phím.'
-      )
-      return
-    }
-
-    if (isRecording) {
-      speechRecognitionRef.current?.stop()
-      setIsRecording(false)
-      return
-    }
-
+  const handleMicrophoneToggle = async () => {
     // Chỉ cho phép ghi âm sau khi hết thời gian chuẩn bị
     if (
       !isPreparationStarted ||
@@ -114,102 +113,80 @@ export default function SpeakingPart2() {
       return
     }
 
-    const speechRecognition = new SpeechRecognition()
-
-    speechRecognition.lang = 'en-US'
-    speechRecognition.interimResults = true
-    speechRecognition.continuous = true
-
-    speechRecognition.onresult = (event) => {
-      let recognizedTranscript = ''
-
-      for (
-        let resultIndex = 0;
-        resultIndex < event.results.length;
-        resultIndex++
-      ) {
-        recognizedTranscript +=
-          event.results[resultIndex][0].transcript
+    setPracticeError('')
+    try {
+      if (recorder.isRecording) {
+        await recorder.stopRecording()
+        return
       }
 
-      setCurrentAnswer(recognizedTranscript)
-    }
-
-    speechRecognition.onerror = () => {
-      setIsRecording(false)
-    }
-
-    speechRecognition.onend = () => {
-      setIsRecording(false)
-    }
-
-    speechRecognitionRef.current = speechRecognition
-
-    try {
-      speechRecognition.start()
-      setIsRecording(true)
+      await recorder.startRecording()
     } catch (error) {
-      console.error('Không thể bắt đầu nhận diện giọng nói:', error)
-      setIsRecording(false)
+      setPracticeError(error.message || 'Không thể xử lý file ghi âm.')
     }
   }
 
-  // Gửi câu trả lời
-  const handleAnswerSubmit = () => {
-    const submittedAnswer = currentAnswer.trim()
+  const handleAnswerSubmit = async () => {
+    const question = speakingExercise?.questions?.[0]
+    if (!question || isSavingAnswer) return
 
-    if (!submittedAnswer) return
+    setIsSavingAnswer(true)
+    setPracticeError('')
+    try {
+      const audio = recorder.isRecording
+        ? await recorder.stopRecording()
+        : recorder.getRecordedAudio()
+      const submittedAnswer =
+        currentAnswer.trim() || recorder.getRecognizedTranscript()
 
-    if (isRecording) {
-      speechRecognitionRef.current?.stop()
-      setIsRecording(false)
-    }
+      if (!submittedAnswer) {
+        throw new Error('Hãy nhập transcript hoặc bật nhận diện giọng nói.')
+      }
+      if (!audio) {
+        throw new Error('Hãy ghi âm câu trả lời trước khi lưu để chấm phát âm.')
+      }
 
-    setConversationHistory((previousHistory) => [
-      ...previousHistory,
-      {
-        questionId: speakingExercise?.id,
-        question: speakingExercise?.title ?? '',
-        answer: submittedAnswer,
-      },
-    ])
-
-    setCurrentAnswer('')
-  }
-
-  // Xác nhận kết thúc lượt luyện tập
-  const handleFinishPractice = () => {
-    if (isRecording) {
-      speechRecognitionRef.current?.stop()
-      setIsRecording(false)
-    }
-
-    setIsFinished(true)
-  }
-
-  // Lưu câu trả lời hiện tại trước khi kết thúc
-  const handleSaveAndFinish = () => {
-    const submittedAnswer = currentAnswer.trim()
-
-    if (submittedAnswer) {
-      setConversationHistory((previousHistory) => [
-        ...previousHistory,
-        {
-          questionId: speakingExercise?.id,
-          question: speakingExercise?.title ?? '',
-          answer: submittedAnswer,
-        },
-      ])
-
+      await speakingAttempt.saveAnswer(
+        question.id,
+        submittedAnswer,
+        audio
+      )
+      recorder.clearRecording()
       setCurrentAnswer('')
+    } catch (error) {
+      setPracticeError(error.message || 'Không thể lưu câu trả lời.')
+    } finally {
+      setIsSavingAnswer(false)
     }
+  }
 
-    if (isRecording) {
-      speechRecognitionRef.current?.stop()
-      setIsRecording(false)
-    }
-
+  const handleSubmitAttempt = async () => {
     setIsFinished(false)
+    setIsActionBusy(true)
+    setPracticeError('')
+    try {
+      await speakingAttempt.submit()
+    } catch (error) {
+      setPracticeError(error.message || 'Không thể nộp bài Speaking.')
+    } finally {
+      setIsActionBusy(false)
+    }
+  }
+
+  const handleRestartAttempt = async () => {
+    setIsActionBusy(true)
+    setPracticeError('')
+    try {
+      await speakingAttempt.startNewAttempt()
+      setCurrentAnswer('')
+      setIsPreparationStarted(false)
+      setPreparationTimeRemaining(60)
+      recorder.clearRecording()
+    } catch (error) {
+      setPracticeError(error.message || 'Không thể tạo lượt luyện tập mới.')
+    } finally {
+      setIsActionBusy(false)
+    }
   }
 
   if (isLoading) {
@@ -222,6 +199,26 @@ export default function SpeakingPart2() {
 
   if (!speakingExercise) {
     return <div className="p-8">Không tìm thấy bài Speaking này</div>
+  }
+
+  if (!speakingExercise.questions?.length) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#fdfcf9] p-6 text-center">
+        <h1 className="text-2xl font-black text-[#111]">
+          Đề Speaking chưa có câu hỏi
+        </h1>
+        <p className="max-w-lg text-sm text-slate-600">
+          Đề này chưa thể luyện tập. Lượt làm sẽ chỉ được tạo sau khi đề có câu hỏi.
+        </p>
+        <button
+          type="button"
+          onClick={() => navigate('/speaking')}
+          className="rounded-xl border-2 border-[#111] bg-[#ffc926] px-5 py-2 font-extrabold"
+        >
+          Quay lại thư viện Speaking
+        </button>
+      </main>
+    )
   }
 
   return (
@@ -241,13 +238,14 @@ export default function SpeakingPart2() {
         setSelectedVoice={setSelectedVoice}
         isVoiceMenuOpen={isVoiceMenuOpen}
         setIsVoiceMenuOpen={setIsVoiceMenuOpen}
-        questionNumber={2}
+        questionNumber={1}
         onSpeak={handleTextToSpeech}
         isFinished={isFinished}
         setIsFinished={setIsFinished}
-        onFinish={handleFinishPractice}
-        onSubmit={handleSaveAndFinish}
+        onFinish={() => setIsFinished(true)}
+        onSubmit={handleSubmitAttempt}
         speakingExercise={speakingExercise}
+        showFinishButton={false}
       />
 
       <section className="min-h-0 flex-1 space-y-8 overflow-y-auto scroll-smooth px-4 pb-4 pt-1 md:px-10 md:pb-10 md:pt-6">
@@ -256,32 +254,62 @@ export default function SpeakingPart2() {
           onSpeak={handleTextToSpeech}
         />
 
-       {conversationHistory.map((conversationItem, index) => (
-        <div
-          key={`${conversationItem.questionId}-${index}`}
-          className="flex animate-in flex-col items-end fade-in slide-in-from-left-2 duration-500"
-        >
-          <div className="max-w-[90%] text-right md:max-w-[75%]">
-            <div className="inline-block rounded-2xl rounded-tr-none border-2 border-[#111] bg-[#e8f0c9] p-3 text-[#111] shadow-[4px_4px_0_rgba(0,0,0,0.15)]">
-              <p className="whitespace-pre-wrap text-left text-[13px] font-medium leading-relaxed md:text-[15px]">
-                {conversationItem.answer}
-              </p>
+        {conversationHistory.map((conversationItem, index) => (
+          <div key={`${conversationItem.questionId}-${index}`}>
+            <div className="flex animate-in flex-col items-end fade-in slide-in-from-left-2 duration-500">
+              <div className="max-w-[90%] text-right md:max-w-[75%]">
+                <div className="inline-block rounded-2xl rounded-tr-none border-2 border-[#111] bg-[#e8f0c9] p-3 text-[#111] shadow-[4px_4px_0_rgba(0,0,0,0.15)]">
+                  <p className="whitespace-pre-wrap text-left text-[13px] font-medium leading-relaxed md:text-[15px]">
+                    {conversationItem.answer}
+                  </p>
+                </div>
+              </div>
             </div>
+            <SpeakingInlineAssessment
+              attempt={speakingAttempt.attempt}
+              questionId={conversationItem.questionId}
+              isFinalAnswer={index === conversationHistory.length - 1}
+              onRetry={speakingAttempt.retry}
+              onRetryError={setPracticeError}
+            />
           </div>
-        </div>
-      ))}
+        ))}
+        {(practiceError || speakingAttempt.attemptError || recorder.recordingError) && (
+          <div role="alert" className="rounded-xl bg-white px-4 py-3 text-sm font-bold text-red-700">
+            <p>{practiceError || speakingAttempt.attemptError || recorder.recordingError}</p>
+            {speakingAttempt.attemptError
+              .toLowerCase()
+              .includes('đăng nhập') && (
+              <Link to="/login" className="mt-1 inline-block underline">
+                Đăng nhập
+              </Link>
+            )}
+          </div>
+        )}
       </section>
 
-      <SpeakingP2Footer
-        currentAnswer={currentAnswer}
-        setCurrentAnswer={setCurrentAnswer}
-        isRecording={isRecording}
-        onMicrophoneToggle={handleMicrophoneToggle}
-        onAnswerSubmit={handleAnswerSubmit}
-        preparationTimeRemaining={preparationTimeRemaining}
-        setPreparationTimeRemaining={setPreparationTimeRemaining}
-        isPreparationStarted={isPreparationStarted}
-        setIsPreparationStarted={setIsPreparationStarted}
+      {speakingAttempt.attempt?.status === 'IN_PROGRESS' &&
+        conversationHistory.length === 0 && (
+        <SpeakingP2Footer
+          currentAnswer={currentAnswer}
+          setCurrentAnswer={setCurrentAnswer}
+          isRecording={recorder.isRecording}
+          onMicrophoneToggle={handleMicrophoneToggle}
+          onAnswerSubmit={handleAnswerSubmit}
+          preparationTimeRemaining={preparationTimeRemaining}
+          setPreparationTimeRemaining={setPreparationTimeRemaining}
+          isPreparationStarted={isPreparationStarted}
+          setIsPreparationStarted={setIsPreparationStarted}
+          isSaving={isSavingAnswer}
+        />
+      )}
+      <SpeakingAttemptActionFooter
+        status={speakingAttempt.attempt?.status}
+        allAnswersSaved={conversationHistory.length === 1}
+        isSubmitting={isActionBusy}
+        isRestarting={isActionBusy}
+        onSubmit={handleSubmitAttempt}
+        onRestart={handleRestartAttempt}
       />
     </main>
   )

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 
 import LinkButton from '../../components/ui/LinkButton'
@@ -9,17 +9,20 @@ import WritingGuide from '../../components/sections/writing/writing-test/Writing
 import WritingEditor from '../../components/sections/writing/writing-test/WritingEditor'
 import { getWritingExerciseById } from '../../services/writingAPI.js'
 import { getAccessToken } from '../../services/authApi.js'
+import { getWritingHistoryAttempt } from '../../services/writingGradingApi.js'
 
 function WritingTest() {
   const { id } = useParams()
+  const [searchParams] = useSearchParams()
+  const attemptId = searchParams.get('attemptId')
   const pageRef = useRef(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [test, setTest] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [topicName, setTopicName] = useState('Chưa có topic')
+  const [initialAttempt, setInitialAttempt] = useState(null)
 
-   // Lấy chi tiết bài Writing theo ID trên URL
   useEffect(() => {
     let cancelled = false
     async function fetchTest() {
@@ -27,16 +30,33 @@ function WritingTest() {
         setLoading(true)
         setError('')
         setTest(null)
-        const data = await getWritingExerciseById(id)
+        setInitialAttempt(null)
+        const token = getAccessToken()
+
+        if (attemptId && !token) {
+          throw new Error('Bạn cần đăng nhập để xem lịch sử Writing.')
+        }
+
+        const [data, attempt] = await Promise.all([
+          getWritingExerciseById(id),
+          attemptId
+            ? getWritingHistoryAttempt(attemptId, token)
+            : Promise.resolve(null),
+        ])
+
+        if (attempt && Number(attempt.exerciseId) !== Number(id)) {
+          throw new Error('Lượt làm này không thuộc đề Writing đã chọn.')
+        }
 
         if (cancelled) return
         setTest(data)
         setTopicName(data.topic != null ? data.topic.name :  'Chưa có topic')
+        setInitialAttempt(attempt)
 
       } catch (err) { 
         console.error('Lỗi tải bài Writing:', err)
         if (!cancelled) {
-          setError('Không thể tải dữ liệu bài Writing.')
+          setError(err.message || 'Không thể tải dữ liệu bài Writing.')
         }
       } finally {
         if (!cancelled) {
@@ -49,10 +69,7 @@ function WritingTest() {
     return () => {
       cancelled = true
     }
-  }, [id])
-  useEffect(() => {
-    console.log('Tests hiện tại:', test);
-  }, [test]);
+  }, [id, attemptId])
 
   const handleFullscreen = async () => {
     try {
@@ -127,7 +144,7 @@ function WritingTest() {
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 py-8">
         {/* Quay về */}
         <LinkButton
-            to="/writing"
+            to={attemptId ? "/writing?status=PRACTICED" : "/writing"}
             backgroundColor = "bg-white"
             textColor = 'text-black'
             className="px-10 py-2"
@@ -164,10 +181,12 @@ function WritingTest() {
 
           {/* RIGHT */}
           <WritingEditor
+            key={initialAttempt?.attemptId ?? id}
             test={test}
             isFullscreen={isFullscreen}
             onFullscreen={handleFullscreen}
             token={getAccessToken()}
+            initialAttempt={initialAttempt}
           />
 
         </div>

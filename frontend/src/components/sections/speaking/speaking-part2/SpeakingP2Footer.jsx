@@ -12,6 +12,7 @@ export default function SpeakingP2Footer({
   setPreparationTimeRemaining,
   isPreparationStarted,
   setIsPreparationStarted,
+  isSaving = false,
 }) {
   useEffect(() => {
     if (!isPreparationStarted || preparationTimeRemaining <= 0) {
@@ -85,7 +86,7 @@ export default function SpeakingP2Footer({
           <div className="flex flex-col items-center gap-1">
             <button
               onClick={onMicrophoneToggle}
-              disabled={!isAnsweringEnabled}
+              disabled={!isAnsweringEnabled || isSaving}
               aria-label={isRecording ? 'Dừng ghi âm' : 'Bắt đầu ghi âm'}
               className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#111] text-white shadow-[3px_3px_0_#111] transition-all disabled:cursor-not-allowed disabled:opacity-50 ${
                 isRecording
@@ -124,7 +125,7 @@ export default function SpeakingP2Footer({
                   ? 'Bấm 1 phút chuẩn bị để bắt đầu...'
                   : preparationTimeRemaining > 0
                     ? 'Bạn đang trong thời gian chuẩn bị...'
-                    : 'Nhập câu trả lời hoặc bấm Mic...'
+                    : 'Nói bằng microphone hoặc nhập transcript...'
               }
               rows={1}
               className="block w-full resize-none rounded-xl border-[3px] border-[#111] bg-[#fffdf5] px-3 py-2 text-sm font-medium leading-5 text-[#111] outline-none transition-all focus:shadow-[3px_3px_0_#ffc926] disabled:cursor-not-allowed disabled:opacity-60 md:px-4"
@@ -133,10 +134,14 @@ export default function SpeakingP2Footer({
 
           <button
             onClick={onAnswerSubmit}
-            disabled={!isAnsweringEnabled || !currentAnswer.trim()}
+            disabled={
+              !isAnsweringEnabled ||
+              isSaving ||
+              !currentAnswer.trim() && !isRecording
+            }
             className="h-[44px] shrink-0 self-center rounded-lg border-[3px] border-[#111] bg-[#ffc926] px-5 text-sm font-extrabold text-[#111] shadow-[3px_3px_0_#111] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Gửi
+            {isSaving ? 'Đang lưu...' : 'Lưu câu'}
           </button>
         </div>
       </div>

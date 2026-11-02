@@ -29,7 +29,8 @@ export default function SpeakingP1Header({
   setIsFinished,
   onFinish,
   onSubmit,
-  speakingExercise
+  speakingExercise,
+  showFinishButton = true,
 }) {
   if (!speakingExercise) {
     console.log(speakingExercise);
@@ -160,12 +161,14 @@ export default function SpeakingP1Header({
               </span>
             </div>
           }
-          <button
-            onClick={onFinish}
-            className="flex h-9 items-center justify-center rounded-xl border-2 border-[#111] bg-[#fce3df] px-3 text-sm font-extrabold text-[#c23b3b]"
-          >
-            Kết thúc
-          </button>
+          {showFinishButton && (
+            <button
+              onClick={onFinish}
+              className="flex h-9 items-center justify-center rounded-xl border-2 border-[#111] bg-[#fce3df] px-3 text-sm font-extrabold text-[#c23b3b]"
+            >
+              Kết thúc
+            </button>
+          )}
           
         </div>
         
@@ -185,7 +188,7 @@ export default function SpeakingP1Header({
             </div>
 
             <p className="mb-5 text-sm text-[#555]">
-              Câu trả lời sẽ được lưu trong lịch sử luyện tập trên giao diện này.
+              Các câu trả lời đã lưu sẽ được nộp để Gemini chấm điểm. Hãy lưu đủ câu trả lời trước khi tiếp tục.
             </p>
 
             <div className="flex justify-end gap-2">
@@ -200,7 +203,7 @@ export default function SpeakingP1Header({
                 onClick={onSubmit}
                 className="rounded-xl border-2 border-[#111] bg-[#ffc926] px-4 py-2 font-extrabold"
               >
-                Lưu câu trả lời
+                Nộp bài và chấm điểm
               </button>
             </div>
           </div>
