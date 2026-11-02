@@ -34,6 +34,35 @@ public sealed class VocabularyRepository(AppDbContext db) : IVocabularyRepositor
             .OrderBy(w => w.Id).ToListAsync(ct);
     // Tương tự GetWordCountsAsync. (Không groupby, không đếm)
 
+    public Task<List<UserWordProgress>> GetProgressAsync(int userId, CancellationToken ct) =>
+        db.UserWordProgresses.AsNoTracking()
+            .Include(p => p.Word).ThenInclude(w => w.Topic)
+            .Where(p => p.UserId == userId && p.Word.Topic.ModuleType == "VOCABULARY" &&
+                (p.Word.Topic.CreateByUserId == null || p.Word.Topic.CreateByUserId == userId))
+            .OrderBy(p => p.Id).ToListAsync(ct);
+
+    public async Task<UserWordProgress?> ReviewWordAsync(int setId, int wordId, int userId,
+        Action<UserWordProgress> review, CancellationToken ct)
+    {
+        await using var transaction = await db.Database.BeginTransactionAsync(ct);
+        // Lock the word while updating its progress to avoid duplicate rows or lost level increments.
+        var words = await db.Words.FromSqlInterpolated(
+            $"SELECT * FROM words WHERE Id = {wordId} AND topic_id = {setId} FOR UPDATE").ToListAsync(ct);
+        var word = words.SingleOrDefault();
+        if (word is null) return null;
+        var progress = await db.UserWordProgresses
+            .FirstOrDefaultAsync(p => p.UserId == userId && p.WordId == wordId, ct);
+        if (progress is null)
+        {
+            progress = new UserWordProgress { UserId = userId, WordId = wordId, Word = word };
+            db.UserWordProgresses.Add(progress);
+        }
+        review(progress);
+        await db.SaveChangesAsync(ct);
+        await transaction.CommitAsync(ct);
+        return progress;
+    }
+
     public async Task AddSetAsync(Topic topic, CancellationToken ct)
     {
         db.Topics.Add(topic);

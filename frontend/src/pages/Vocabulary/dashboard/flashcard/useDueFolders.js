@@ -1,16 +1,21 @@
-import { useNotebookFolders } from "../notebook/notebookStorage";
-import { isReviewDue, isReviewReminderDue, readProgress, useReviewUpdates } from "./flashcardStorage";
+import { isReviewDue, useVocabularyProgress } from "./flashcardProgress";
 
-export function useDueFolders({ remindersOnly = false } = {}) {
-  const folders = useNotebookFolders();
-  useReviewUpdates();
-  return folders.map((folder) => {
-    const progress = readProgress(folder.id);
-    const isDue = remindersOnly ? isReviewReminderDue : isReviewDue;
-    const dueWords = folder.words.filter((word) => isDue(progress[word.id]));
-    const signature = JSON.stringify(dueWords.map((word) => [word.id, progress[word.id]?.reviewedAt, progress[word.id]?.next_review_at]));
-    return { ...folder, dueWords, signature };
-  }).filter((folder) => folder.dueWords.length);
+export function useDueFolders() {
+  const { progress, loading, error } = useVocabularyProgress();
+  const folders = new Map();
+  for (const entry of Object.values(progress)) {
+    if (!isReviewDue(entry)) continue;
+    const { word } = entry;
+    if (!folders.has(word.topicId)) folders.set(word.topicId, {
+      id: word.topicId, name: entry.setName, wordCount: entry.wordCount, dueWords: [], signatures: [],
+    });
+    const folder = folders.get(word.topicId);
+    folder.dueWords.push(word);
+    folder.signatures.push([word.id, entry.lastReviewedAt, entry.nextReviewAt, entry.status]);
+  }
+  return { loading, error, folders: [...folders.values()].map(({ signatures, ...folder }) => ({
+    ...folder, signature: JSON.stringify(signatures),
+  })) };
 }
 
 export const dueFolderLink = (id) => `/vocabulary/flashcard?folder=${encodeURIComponent(id)}&review=due`;

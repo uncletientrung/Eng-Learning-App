@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useDueFolders, dueFolderLink } from "./useDueFolders";
+import { loadProgress } from "./flashcardProgress";
 import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Clock3, Layers, LibraryBig, RefreshCw, Sparkles } from "lucide-react";
 import VocabularySun from "../../../../components/sections/vocabulary/VocabularySun";
 import { getFolderColor } from "../notebook/folderColors";
@@ -12,8 +13,10 @@ const badgePoints = Array.from({ length: 32 }, (_, index) => {
 }).join(" ");
 
 export default function FlashcardTab({ onChooseSet }) {
-  const dueFolders = useDueFolders();
+  const { folders: dueFolders, loading, error } = useDueFolders();
   const totalDue = dueFolders.reduce((total, folder) => total + folder.dueWords.length, 0);
+  if (loading && !dueFolders.length) return <p role="status">Đang tải lịch ôn tập...</p>;
+  if (error && !dueFolders.length) return <section role="alert"><p>{error}</p><button type="button" onClick={() => loadProgress(true)}>Thử lại</button></section>;
   return (
     <div className={`vd-flashcard-layout${dueFolders.length ? " has-due" : ""}`}>
       {dueFolders.length > 0 && <section className="vd-review-page td-pop" aria-labelledby="vd-review-title">
@@ -63,7 +66,7 @@ export default function FlashcardTab({ onChooseSet }) {
                 <span className="vd-review-due-badge"><Clock3 size={13} aria-hidden="true" />{folder.dueWords.length} từ đến hạn</span>
               </div>
               <h3>{folder.name}</h3>
-              <p className="vd-review-deck-size">{folder.words.length} từ trong bộ</p>
+              <p className="vd-review-deck-size">{folder.wordCount} từ trong bộ</p>
               <div className="vd-review-word-preview" aria-hidden="true">
                 {folder.dueWords.slice(0, 3).map((word) => <span key={word.id}>{word.word}</span>)}
                 {folder.dueWords.length > 3 && <span>+{folder.dueWords.length - 3}</span>}

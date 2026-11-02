@@ -20,6 +20,16 @@ public sealed class VocabularyController(IVocabularyService service) : Controlle
     [HttpGet("mine")] // Bộ từ của chính user
     public async Task<IActionResult> GetMine(CancellationToken ct) => Ok(await service.GetSetsAsync(UserId, true, ct));
 
+    [HttpGet("progress")]
+    public async Task<IActionResult> GetProgress(CancellationToken ct) => Ok(await service.GetProgressAsync(UserId, ct));
+
+    [HttpPut("{id:int}/words/{wordId:int}/progress")]
+    public async Task<IActionResult> ReviewWord(int id, int wordId, ReviewVocabularyWordRequest request, CancellationToken ct)
+    {
+        var result = await service.ReviewWordAsync(id, wordId, UserId, request, ct);
+        return result is null ? Missing() : Ok(result);
+    }
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetSet(int id, CancellationToken ct)
     {

@@ -522,6 +522,13 @@
   font-weight: 900;
 }
 
+.vocabulary-dashboard .vf-grades button:disabled,
+.vocabulary-dashboard .vf-navigation button:disabled {
+  opacity: .6;
+  cursor: wait;
+  transform: none;
+}
+
 .vocabulary-dashboard .vf-navigation {
   display: flex;
   align-items: center;
@@ -995,7 +1002,8 @@
   }
 
   .vocabulary-dashboard .vf-grades small {
-    display: none;
+    display: block;
+    font-size: 10px;
   }
 
   .vocabulary-dashboard .vf-grades button>span {

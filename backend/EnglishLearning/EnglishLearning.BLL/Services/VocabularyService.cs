@@ -5,8 +5,52 @@ using EnglishLearning.DAL.Interfaces;
 
 namespace EnglishLearning.BLL.Services;
 
-public sealed class VocabularyService(IVocabularyRepository repository) : IVocabularyService
+public sealed class VocabularyService(IVocabularyRepository repository, TimeProvider? clock = null) : IVocabularyService
 {
+    private static readonly int[] ReviewDays = [0, 3, 7, 15, 30, 60, 90, 180];
+
+    private static int RememberedDelay(int level) =>
+        level < ReviewDays.Length ? ReviewDays[level] : 365 * (level - 7);
+
+    private static VocabularyProgressDto ToProgressDto(UserWordProgress progress, int wordCount) => new(
+        ToDto(progress.Word), progress.Word.Topic.Name, wordCount,
+        progress.Status, progress.Level, DateOnly.FromDateTime(progress.LastReviewedAt),
+        DateOnly.FromDateTime(progress.NextReviewAt), RememberedDelay(Math.Min(127, progress.Level + 1)));
+
+    public async Task<List<VocabularyProgressDto>> GetProgressAsync(int userId, CancellationToken ct)
+    {
+        var progress = await repository.GetProgressAsync(userId, ct);
+        if (progress.Count == 0) return [];
+        var counts = await repository.GetWordCountsAsync(progress.Select(p => p.Word.TopicId).Distinct().ToArray(), ct);
+        return progress.Select(p => ToProgressDto(p, counts.GetValueOrDefault(p.Word.TopicId))).ToList();
+    }
+
+    public async Task<VocabularyProgressDto?> ReviewWordAsync(int id, int wordId, int userId,
+        ReviewVocabularyWordRequest request, CancellationToken ct)
+    {
+        if (request.Status is < 1 or > 3) throw new ArgumentOutOfRangeException(nameof(request.Status));
+        var topic = await repository.GetSetAsync(id, userId, false, ct);
+        if (topic is null) return null;
+        var progress = await repository.ReviewWordAsync(id, wordId, userId, entry =>
+        {
+            var today = (clock ?? TimeProvider.System).GetUtcNow().ToOffset(TimeSpan.FromHours(7)).Date;
+            entry.Level = request.Status switch
+            {
+                1 => 0,
+                2 => entry.Level,
+                _ => (byte)Math.Min(127, entry.Level + 1),
+            };
+            var days = request.Status == 1 ? 0 : request.Status == 2 ? 1 : RememberedDelay(entry.Level);
+            entry.Status = request.Status;
+            entry.LastReviewedAt = today;
+            entry.NextReviewAt = today.AddDays(days);
+        }, ct);
+        if (progress is null) return null;
+        progress.Word.Topic = topic;
+        var counts = await repository.GetWordCountsAsync([id], ct);
+        return ToProgressDto(progress, counts.GetValueOrDefault(id));
+    }
+
     // Entity db -> Dto
     private static VocabularyWordDto ToDto(Word w) =>
         new(w.Id, w.TopicId, w.WordText, w.Meaning, w.Phonetic, w.PartOfSpeech, w.Example);

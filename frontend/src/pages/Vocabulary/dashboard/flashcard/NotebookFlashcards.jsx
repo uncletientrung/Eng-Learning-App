@@ -9,18 +9,19 @@ import WordActionDialog from "../notebook/WordActionDialog";
 import FlashcardStatsDialog from "./FlashcardStatsDialog";
 import FlashcardCompletion from "./FlashcardCompletion";
 import FlashcardWordList from "./FlashcardWordList";
-import { readProgress, saveProgress, scheduleReview, isReviewDue, groupFlashcardWords, useReviewUpdates } from "./flashcardStorage";
+import { useVocabularyProgress, saveWordProgress, loadProgress, isReviewDue, groupFlashcardWords, reviewDelayLabel } from "./flashcardProgress";
 import "./NotebookFlashcards.css";
 
 const grades = [
   { value: 1, label: "Quên", icon: Frown, color: "#a8482a" },
   { value: 2, label: "Mơ hồ", icon: Meh, color: "#8a6410" },
-  { value: 4, label: "Nhớ rồi", icon: Sparkles, color: "#2e607f" },
+  { value: 3, label: "Nhớ rồi", icon: Sparkles, color: "#2e607f" },
 ];
 
 export default function NotebookFlashcards({ folderId }) {
   const personalFolder = useNotebookFolders().find((item) => item.id === folderId);
   const { set, error, loading, retry } = useVocabularySet(folderId);
+  const { progress, loaded, error: progressError } = useVocabularyProgress();
   const folder = personalFolder || set;
   if (!folder && loading) return <p role="status">Đang tải bộ từ...</p>;
   if (!folder && error) return <section role="alert"><p>{error}</p><button type="button" onClick={retry}>Thử lại</button> <Link to="/vocabulary/dashboard?tab=botu">Về bộ từ</Link></section>;
@@ -30,13 +31,13 @@ export default function NotebookFlashcards({ folderId }) {
       : "/vocabulary/dashboard?tab=botu";
     return <section className="vf-unavailable"><h1>{folder ? "Bộ từ chưa có từ vựng" : "Không tìm thấy bộ từ"}</h1><Link to={backLink}><ArrowLeft size={18} />Về bộ từ</Link></section>;
   }
-  return <FlashcardSession key={`${folder.id}:${folder.words.map((word) => word.id).join(",")}`} folder={folder} />;
+  if (progressError && !loaded) return <section role="alert"><p>{progressError}</p><button type="button" onClick={() => loadProgress(true)}>Thử lại</button></section>;
+  if (!loaded) return <p role="status">Đang tải tiến độ học...</p>;
+  return <FlashcardSession key={`${folder.id}:${folder.words.map((word) => word.id).join(",")}`} folder={folder} progress={progress} />;
 }
 
-function FlashcardSession({ folder }) {
-  const progress = readProgress(folder.id);
+function FlashcardSession({ folder, progress }) {
   const [params] = useSearchParams();
-  useReviewUpdates();
   const [wordList, setWordList] = useState(() => params.get("review") === "due" ? "due" : null);
   const [studyIds, setStudyIds] = useState(() => {
     const pending = folder.words.filter((word) => !progress[word.id] || isReviewDue(progress[word.id]));
@@ -49,6 +50,8 @@ function FlashcardSession({ folder }) {
   const [stats, setStats] = useState(null);
   const [editing, setEditing] = useState(false);
   const [message, setMessage] = useState("");
+  const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);
   const touchStart = useRef(null);
   const [audioError, setAudioError] = useState("");
   const wordsById = new Map(folder.words.map((word) => [word.id, word]));
@@ -91,14 +94,18 @@ function FlashcardSession({ folder }) {
   const speakerButton = <button type="button" className="vf-audio" aria-label={`Nghe phát âm ${word.word}`} title="Nghe phát âm" onClick={playAudio}><Volume2 size={19} aria-hidden="true" /></button>;
 
   const go = (step) => {
+    if (savingRef.current) return;
     setPosition((index + step + ids.length) % ids.length);
     setFlipped(false);
     setCompleted(false);
   };
-  const rate = (grade) => {
-    const nextProgress = { ...progress, [word.id]: { id: word.id, ...scheduleReview(progress[word.id], grade) } };
-    try { saveProgress(folder.id, nextProgress); }
-    catch { setMessage("Chưa lưu được mức nhớ. Vui lòng thử lại trước khi chuyển thẻ."); return; }
+  const rate = async (grade) => {
+    if (savingRef.current) return;
+    savingRef.current = true;
+    setSaving(true);
+    try { await saveWordProgress(folder.id, word.id, grade); }
+    catch (error) { setMessage(error.message || "Chưa lưu được mức nhớ. Vui lòng thử lại trước khi chuyển thẻ."); return; }
+    finally { savingRef.current = false; setSaving(false); }
     const nextReviewed = [...new Set([...seen, word.id])];
     setReviewed(nextReviewed);
     setMessage("");
@@ -112,7 +119,7 @@ function FlashcardSession({ folder }) {
 
   useEffect(() => {
     const keyboard = (event) => {
-      if (!ids.length || wordList || editing || stats || document.querySelector("dialog[open]") || event.ctrlKey || event.metaKey || event.altKey || event.repeat || event.target.closest("input, textarea, select, [contenteditable=true]")) return;
+      if (savingRef.current || !ids.length || wordList || editing || stats || document.querySelector("dialog[open]") || event.ctrlKey || event.metaKey || event.altKey || event.repeat || event.target.closest("input, textarea, select, [contenteditable=true]")) return;
       if (event.code === "Space" && !completed && !event.target.closest("button, a")) { event.preventDefault(); setFlipped((value) => !value); }
       if (event.key === "ArrowLeft" && !completed) { event.preventDefault(); go(-1); }
       if (event.key === "ArrowRight" && !completed) { event.preventDefault(); go(1); }
@@ -123,8 +130,8 @@ function FlashcardSession({ folder }) {
   });
 
   const statsWords = stats === "Đã nhớ" ? remembered : stats === "Chưa nhớ" ? unseen : folder.words;
-  const sessionRemembered = seen.filter((id) => progress[id]?.grade >= 3);
-  const sessionUnremembered = seen.filter((id) => !(progress[id]?.grade >= 3));
+  const sessionRemembered = seen.filter((id) => progress[id]?.status === 3);
+  const sessionUnremembered = seen.filter((id) => progress[id]?.status !== 3);
   const reviewUnremembered = () => {
     if (!sessionUnremembered.length) return;
     setStudyIds(sessionUnremembered);
@@ -162,9 +169,9 @@ function FlashcardSession({ folder }) {
             <div className="vf-deck-heading"><Link to={folderLink} title="Về bộ từ đang học">{folder.name} ({ids.length}) <ArrowRight size={13} /></Link><span>Thẻ {index + 1}/{ids.length}</span></div>
             <div className="vf-title-row"><h1>Lật thẻ.</h1><span>Còn {ids.length - seen.length} từ nữa nè!</span></div><p className="vf-subtitle">Tự nhớ nghĩa rồi lật thẻ, chấm mức độ nhớ.</p>
             <div className="vf-progress" role="progressbar" aria-label="Tiến độ phiên học" aria-valuemin={0} aria-valuemax={ids.length} aria-valuenow={seen.length}><span style={{ width: `${seen.length / ids.length * 100}%` }} /></div>
-            <div className="vf-counts">{[["Đã nhớ", remembered.length, "remembered"], ["C\u1ea7n \u00f4n t\u1eadp", due.length, "due"], ["Chưa nhớ", unseen.length, "unremembered"]].map(([label, count, category]) => <button key={label} type="button" onClick={() => setWordList(category)}>{label} <span>{count}</span></button>)}<button type="button" onClick={() => setStats("Thống kê")}><BarChart3 size={13} />Thống kê</button></div>
-            <div className="vf-grades">{grades.map(({ value, label, icon: Icon, color }, gradeIndex) => <button type="button" key={label} style={{ "--grade-color": color }} onClick={() => rate(value)} title={`${label} (phím ${gradeIndex + 1})`}><span style={{ background: color }}><Icon size={22} /></span><strong>{label}</strong><small>{gradeIndex + 1}</small></button>)}</div>
-            <div className="vf-navigation"><button type="button" aria-label="Thẻ trước" onClick={() => go(-1)}><ArrowLeft size={18} /></button><button type="button" className="vf-flip-button" onClick={() => setFlipped(!flipped)}><RotateCcw size={17} />Lật thẻ <kbd>Space</kbd></button><button type="button" aria-label="Thẻ tiếp" onClick={() => go(1)}><ArrowRight size={18} /></button></div>
+            <div className="vf-counts">{[["Đã nhớ", remembered.length, "remembered"], ["Cần ôn tập", due.length, "due"], ["Chưa nhớ", unseen.length, "unremembered"]].map(([label, count, category]) => <button key={label} type="button" disabled={saving} onClick={() => setWordList(category)}>{label} <span>{count}</span></button>)}<button type="button" disabled={saving} onClick={() => setStats("Thống kê")}><BarChart3 size={13} />Thống kê</button></div>
+            <div className="vf-grades" aria-busy={saving}>{grades.map(({ value, label, icon: Icon, color }, gradeIndex) => <button type="button" key={label} disabled={saving} style={{ "--grade-color": color }} onClick={() => rate(value)} title={`${label} (phím ${gradeIndex + 1})`}><span style={{ background: color }}><Icon size={22} /></span><strong>{label}</strong><small>{reviewDelayLabel(value, progress[word.id])} · {gradeIndex + 1}</small></button>)}</div>
+            <div className="vf-navigation"><button type="button" disabled={saving} aria-label="Thẻ trước" onClick={() => go(-1)}><ArrowLeft size={18} /></button><button type="button" disabled={saving} className="vf-flip-button" onClick={() => setFlipped(!flipped)}><RotateCcw size={17} />Lật thẻ <kbd>Space</kbd></button><button type="button" disabled={saving} aria-label="Thẻ tiếp" onClick={() => go(1)}><ArrowRight size={18} /></button></div>
           </div>
         </>}
       </section>

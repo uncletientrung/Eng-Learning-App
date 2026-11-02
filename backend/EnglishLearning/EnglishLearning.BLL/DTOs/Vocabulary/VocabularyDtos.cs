@@ -51,3 +51,14 @@ public sealed class MoveVocabularyWordRequest
 }
 
 public sealed record AddVocabularyWordsResult(int AddedCount, int DuplicateCount);
+
+public sealed class ReviewVocabularyWordRequest
+{
+    [Range(1, 3)]
+    public byte Status { get; set; }
+}
+
+public sealed record VocabularyProgressDto(
+    VocabularyWordDto Word, string SetName, int WordCount,
+    byte Status, byte Level, DateOnly LastReviewedAt, DateOnly NextReviewAt,
+    int RememberedDelayDays);
