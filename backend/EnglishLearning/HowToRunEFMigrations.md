@@ -23,3 +23,5 @@ dotnet ef database update --project EnglishLearning.DAL --startup-project Englis
 ```
 
 Các đề Writing hiện có sẽ được gán trạng thái `PUBLISHED` để tiếp tục hiển thị với học viên. Migration cũng bỏ hành vi tự cập nhật `created_at` khi sửa đề; thời điểm sửa được ghi riêng trong `updated_at`.
+
+Khi khởi động, API chỉ tự ghi nhận các migration nền cho database cũ nếu toàn bộ bảng ứng dụng và dữ liệu seed đã tồn tại. Nếu schema hoặc dữ liệu không khớp, API sẽ dừng với thông báo cụ thể; hãy sao lưu và đối chiếu dữ liệu trước khi can thiệp vào `__EFMigrationsHistory`.

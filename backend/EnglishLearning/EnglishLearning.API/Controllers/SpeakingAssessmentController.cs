@@ -55,12 +55,13 @@ public sealed class SpeakingAssessmentController : ControllerBase
     }
 
     [HttpPut("{attemptId:int}/answers/{questionId:int}")]
+    [Consumes("multipart/form-data")]
     [RequestSizeLimit(11 * 1024 * 1024)]
     public async Task<IActionResult> SaveAnswer(
         int attemptId,
         int questionId,
         [FromForm] string transcript,
-        [FromForm] IFormFile audio,
+        IFormFile audio,
         CancellationToken cancellationToken)
     {
         if (!TryGetUserId(out var userId))

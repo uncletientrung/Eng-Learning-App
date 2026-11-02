@@ -141,6 +141,7 @@ await using (var scope = app.Services.CreateAsyncScope())
 
     try
     {
+        await LegacyDatabaseBaseline.ApplyAsync(db);
         await db.Database.MigrateAsync();
         await DbSeeder.SeedAsync(db);
     }
