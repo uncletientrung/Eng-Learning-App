@@ -5,18 +5,17 @@ import CalendarBadge from "../overview/CalendarBadge";
 import NotebookFolderCard from "./NotebookFolderCard";
 import NotebookFolderDetail from "./NotebookFolderDetail";
 import FolderActionDialog from "./FolderActionDialog";
-import { nextFolderColor } from "./folderColors";
-import { addNotebookWords, getNotebookFolders, saveNotebookFolders, useNotebookFolders } from "./notebookStorage";
+import { addNotebookWords, createNotebookFolder, loadNotebookFolders, useNotebookState } from "./notebookStorage";
 import "./NotebookTab.css";
 
 export default function NotebookTab({ onBack }) {
-  const folders = useNotebookFolders();
+  const { folders, loading, error: loadError } = useNotebookState();
   const [creating, setCreating] = useState(false);
   const [folderAction, setFolderAction] = useState(null);
   const [message, setMessage] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState("");
-  const [storageError, setStorageError] = useState(false);
+  const [saving, setSaving] = useState(false);
   const nameInputRef = useRef(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedFolderId = searchParams.get("folder");
@@ -35,20 +34,19 @@ export default function NotebookTab({ onBack }) {
     setName("");
     setError("");
   };
-  const createFolder = (event) => {
+  const createFolder = async (event) => {
     event.preventDefault();
+    if (saving) return;
     const folderName = name.trim();
     if (!folderName) {
       setError("Vui lòng nhập tên thư mục.");
       nameInputRef.current?.focus();
       return;
     }
-    const currentFolders = getNotebookFolders();
-    const nextFolders = [{ id: crypto.randomUUID(), name: folderName, color: nextFolderColor(currentFolders), createdAt: new Date().toISOString(), words: [], wordCount: 0 }, ...currentFolders];
-    try {
-      saveNotebookFolders(nextFolders);
-      setStorageError(false);
-    } catch { setStorageError(true); return; }
+    setSaving(true);
+    const result = await createNotebookFolder(folderName);
+    setSaving(false);
+    if (result.error) { setError(result.error); return; }
     cancelCreating();
   };
   const wordCount = folders.reduce((total, folder) => total + folder.wordCount, 0);
@@ -68,6 +66,8 @@ export default function NotebookTab({ onBack }) {
     });
   };
 
+  if (loading && !folders.length) return <p role="status">Đang tải bộ từ cá nhân...</p>;
+  if (loadError) return <section role="alert"><p>{loadError}</p><button type="button" onClick={() => loadNotebookFolders(true)}>Thử lại</button></section>;
   if (selectedFolder) return <NotebookFolderDetail key={selectedFolder.id} folder={selectedFolder} onBack={backToFolders} onAddWords={(selections) => addNotebookWords(selectedFolder.id, selections)} />;
   if (selectedFolderId) return <section className="vd-notebook"><button type="button" className="vd-notebook-back" onClick={backToFolders}><ChevronLeft size={17} />Tất cả thư mục</button><p role="status">Không tìm thấy thư mục.</p></section>;
 
@@ -90,14 +90,13 @@ export default function NotebookTab({ onBack }) {
           <button type="button" onClick={startCreating} className="vd-notebook-create"><FolderPlus size={17} />Tạo thư mục mới</button>
         </div>
       </header>
-      {storageError && <p role="status" className="text-sm text-d-mute">Trình duyệt chưa lưu được thư mục. Vui lòng kiểm tra dung lượng hoặc quyền lưu rồi thử lại.</p>}
       {message && <p role="status" className="vd-notebook-folder-message">{message}</p>}
       <div className="vd-notebook-folders">
         {creating ? (
           <form className="vd-notebook-folder-form" onSubmit={createFolder} onKeyDown={(event) => { if (event.key === "Escape") { event.stopPropagation(); cancelCreating(); } }} aria-label="Tạo thư mục">
             <input ref={nameInputRef} type="text" aria-label="Tên thư mục" aria-invalid={Boolean(error)} aria-describedby={error ? "vd-folder-name-error" : undefined} placeholder="Tên thư mục ..." maxLength={80} value={name} onChange={(event) => { setName(event.target.value); setError(""); }} />
             {error && <p id="vd-folder-name-error" role="alert">{error}</p>}
-            <div className="vd-notebook-folder-form-actions"><button type="submit">Tạo</button><button type="button" onClick={cancelCreating}>Hủy</button></div>
+            <div className="vd-notebook-folder-form-actions"><button type="submit" disabled={saving}>{saving ? "Đang tạo..." : "Tạo"}</button><button type="button" disabled={saving} onClick={cancelCreating}>Hủy</button></div>
           </form>
         ) : <button type="button" onClick={startCreating} className="vd-notebook-new-folder"><Plus size={20} strokeWidth={3} />Thư mục mới</button>}
         {folders.map((folder) => <NotebookFolderCard key={folder.id} folder={folder} onOpen={openFolder} onAction={(mode, target) => setFolderAction({ mode, folder: target })} />)}

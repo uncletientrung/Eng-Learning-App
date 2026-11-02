@@ -17,6 +17,7 @@ import ExamPage from "./components/sections/reading/reading-test/ExamPage.jsx";
 import {ReadingResultPage} from "./components/sections/reading/Result/index.js";
 import ReviewPage from "./pages/Reading/ReviewPage.jsx";
 import ListeningExam from "./pages/Listening/ListeningExam.jsx";
+import RequireAuth from './components/layout/RequireAuth';
 
 const VocabularyDashboard = lazy(() => import('./pages/Vocabulary/VocabularyDashboard'))
 
@@ -43,8 +44,10 @@ function App() {
       <Route path="/speaking/p3/:id" element={<SpeakingPart3 />} />
 
       {/* Vocab */}
+      <Route element={<RequireAuth />}>
       <Route path="/vocabulary/dashboard" element={<Suspense fallback={<div className="min-h-screen bg-[#0e1014]" role="status" aria-label="Đang tải dashboard" />}><VocabularyDashboard /></Suspense>} />
       <Route path="/vocabulary/flashcard" element={<Suspense fallback={<div className="min-h-screen bg-[#0e1014]" role="status" aria-label="Đang tải flashcard" />}><VocabularyDashboard flashcardPage /></Suspense>} />
+      </Route>
       <Route path="/grammar" element={<GrammarLandingPage />}/>
       <Route path="/reading" element={<ReadingLibrary />} />
       <Route path="/reading/exam" element={<ExamPage />} />

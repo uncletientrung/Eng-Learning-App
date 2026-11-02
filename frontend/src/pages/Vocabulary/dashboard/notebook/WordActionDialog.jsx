@@ -9,9 +9,10 @@ const types = ["noun", "verb", "adjective", "adverb", "pronoun", "preposition", 
 export default function WordActionDialog({ mode, word, folderId, onClose, onSuccess }) {
   const dialogRef = useRef(null);
   const folders = useNotebookFolders().filter((folder) => folder.id !== folderId);
-  const [draft, setDraft] = useState(() => ({ word: word.word, type: word.type, meaning: word.meaning, example: word.example || "" }));
+  const [draft, setDraft] = useState(() => ({ word: word.word, type: word.type, meaning: word.meaning, phonetic: word.phonetic || "", example: word.example || "" }));
   const [targetId, setTargetId] = useState("");
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
   const editing = mode === "edit";
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -19,9 +20,12 @@ export default function WordActionDialog({ mode, word, folderId, onClose, onSucc
     return () => dialog.close();
   }, []);
   const change = (field, value) => { setError(""); setDraft((previous) => ({ ...previous, [field]: value })); };
-  const submit = (event) => {
+  const submit = async (event) => {
     event.preventDefault();
-    const result = editing ? updateNotebookWord(folderId, word.id, draft) : moveNotebookWord(folderId, targetId, word.id);
+    if (saving) return;
+    setSaving(true);
+    const result = await (editing ? updateNotebookWord(folderId, word.id, draft) : moveNotebookWord(folderId, targetId, word.id));
+    setSaving(false);
     if (result.error) { setError(result.error); return; }
     onSuccess(editing ? `Đã cập nhật từ “${draft.word.trim()}”.` : `Đã chuyển “${word.word}” sang thư mục “${result.targetName}”.`);
     onClose();
@@ -47,7 +51,7 @@ export default function WordActionDialog({ mode, word, folderId, onClose, onSucc
         <footer className="vd-add-words-footer">
           {error && <p className="vd-word-save-error" role="alert">{error}</p>}
           <button type="button" className="vd-word-cancel" onClick={onClose}>Hủy</button>
-          <button type="submit" className="vd-word-save" disabled={editing ? !draft.word.trim() || !draft.type.trim() || !draft.meaning.trim() : !targetId}>{editing ? "Lưu thay đổi" : "Chuyển từ"}</button>
+          <button type="submit" className="vd-word-save" disabled={saving || (editing ? !draft.word.trim() || !draft.type.trim() || !draft.meaning.trim() : !targetId)}>{saving ? "Đang lưu..." : editing ? "Lưu thay đổi" : "Chuyển từ"}</button>
         </footer>
       </form>
     </dialog>

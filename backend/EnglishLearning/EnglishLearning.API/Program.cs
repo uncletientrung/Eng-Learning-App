@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,7 +45,13 @@ builder.Services
             ClockSkew = TimeSpan.FromSeconds(30)
         };
     });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("VocabularyUser", policy => policy
+        .RequireAuthenticatedUser()
+        .RequireAssertion(context => int.TryParse(
+            context.User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) && id > 0));
+}); // Login ms cho dùng vocab (trang dashboard mà)
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -54,6 +61,7 @@ builder.Services.AddScoped<
     IWritingExerciseRepository,
     WritingExerciseRepository>();
 builder.Services.AddScoped<ITopicRepository, TopicRepository>();
+builder.Services.AddScoped<IVocabularyRepository, VocabularyRepository>();
 builder.Services.AddScoped<ISpeakingExerciseRepository, SpeakingExerciseRepository>();
 
 // Đăng ký Service
@@ -61,6 +69,7 @@ builder.Services.AddScoped<
     IWritingExerciseService,
     WritingExerciseService>();
 builder.Services.AddScoped<ITopicService, TopicService>();
+builder.Services.AddScoped<IVocabularyService, VocabularyService>();
 builder.Services.AddScoped<ISpeakingExerciseService, SpeakingExerciseService>();
 
 builder.Services.AddScoped<IWritingGradingService, WritingGradingService>();

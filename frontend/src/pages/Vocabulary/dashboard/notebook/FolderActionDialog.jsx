@@ -7,6 +7,7 @@ export default function FolderActionDialog({ folder, mode, onClose, onSuccess })
   const ref = useRef(null);
   const [name, setName] = useState(folder.name);
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
   const currentFolder = useNotebookFolders().find((item) => item.id === folder.id);
   const renaming = mode === "rename";
   useEffect(() => {
@@ -17,9 +18,12 @@ export default function FolderActionDialog({ folder, mode, onClose, onSuccess })
   }, [renaming]);
   return (
     <dialog ref={ref} className="vd-add-words-dialog vd-folder-action-dialog" aria-labelledby="vd-folder-action-title" onClose={(event) => { if (!event.currentTarget.open) onClose(); }}>
-      <form className="vd-add-words-form" onSubmit={(event) => {
+      <form className="vd-add-words-form" onSubmit={async (event) => {
         event.preventDefault();
-        const result = renaming ? renameNotebookFolder(folder.id, name) : deleteNotebookFolder(folder.id);
+        if (saving) return;
+        setSaving(true);
+        const result = await (renaming ? renameNotebookFolder(folder.id, name) : deleteNotebookFolder(folder.id));
+        setSaving(false);
         if (result.error) { setError(result.error); return; }
         onSuccess(renaming ? `Đã đổi tên thư mục thành “${result.name}”.` : `Đã xóa thư mục “${currentFolder?.name || folder.name}”.`);
         onClose();
@@ -31,7 +35,7 @@ export default function FolderActionDialog({ folder, mode, onClose, onSuccess })
         <footer className="vd-add-words-footer">
           {error && <p role="alert" className="vd-word-save-error">{error}</p>}
           <button type="button" className="vd-word-cancel" onClick={onClose}>Hủy</button>
-          <button type="submit" className={`vd-word-save${renaming ? "" : " vd-folder-delete-confirm"}`} disabled={renaming && !name.trim()}>{renaming ? "Lưu tên" : "Xóa thư mục"}</button>
+          <button type="submit" className={`vd-word-save${renaming ? "" : " vd-folder-delete-confirm"}`} disabled={saving || (renaming && !name.trim())}>{saving ? "Đang lưu..." : renaming ? "Lưu tên" : "Xóa thư mục"}</button>
         </footer>
       </form>
     </dialog>

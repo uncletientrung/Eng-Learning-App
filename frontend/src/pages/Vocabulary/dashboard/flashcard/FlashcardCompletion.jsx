@@ -27,7 +27,7 @@ export default function FlashcardCompletion({ folder, rememberedCount, reviewCou
         <div className="vf-finish-ratio"><div className="vf-finish-ring vf-finish-ring-animated" style={{ "--vf-result-offset": 100 - percent }} role="img" aria-label={`${percent}% từ đã nhớ`}><svg viewBox="0 0 68 68" aria-hidden="true"><circle className="vf-result-track" cx="34" cy="34" r="29" /><circle className="vf-result-fill" cx="34" cy="34" r="29" pathLength="100" /></svg><strong>{percent}%</strong></div><span>Tỷ lệ đã nhớ</span></div>
         <div className="vf-finish-legend"><span><i />{rememberedCount} Đã nhớ</span><span><i />{reviewCount} Cần ôn lại</span></div>
       </div>
-      <div className="vf-finish-actions"><button type="button" disabled={!reviewCount} onClick={onReview}>Ôn những từ chưa nhớ</button><Link to={folderLink}>Về thư mục</Link></div>
+      <div className="vf-finish-actions"><button type="button" disabled={!reviewCount} onClick={onReview}>Ôn những từ chưa nhớ</button><Link to={folderLink}>Về bộ từ</Link></div>
       {!reviewCount && <p className="vf-finish-all-known">Bạn đã nhớ tất cả từ trong phiên này!</p>}
     </section>
     <section className="vf-finish-message" aria-label="Kết quả phiên học">

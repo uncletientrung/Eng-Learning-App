@@ -19,7 +19,7 @@ export default function NotebookFolderCard({ folder, onOpen, onAction }) {
       <span className="vd-notebook-folder-word-count" aria-label={`${folder.wordCount} từ`}><strong>{folder.wordCount}</strong><span>từ</span></span>
       <FolderBookIcon />
       <h2 title={folder.name}>{folder.name}</h2>
-      <p>Đã thêm <time dateTime={folder.createdAt}>{dateFormatter.format(new Date(folder.createdAt))}</time></p>
+      {folder.createdAt && !Number.isNaN(Date.parse(folder.createdAt)) && <p>Đã thêm <time dateTime={folder.createdAt}>{dateFormatter.format(new Date(folder.createdAt))}</time></p>}
     </article>
   );
 }

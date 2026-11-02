@@ -12,7 +12,7 @@ function readDismissed() {
 }
 
 export default function ReviewNotifications() {
-  const dueFolders = useDueFolders();
+  const dueFolders = useDueFolders({ remindersOnly: true });
   const [open, setOpen] = useState(false);
   const [portalHost, setPortalHost] = useState(null);
   const dismissed = readDismissed();

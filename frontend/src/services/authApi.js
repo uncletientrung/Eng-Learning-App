@@ -23,6 +23,7 @@ export async function login(email, password) {
 
   sessionStorage.setItem(ACCESS_TOKEN_KEY, data.accessToken);
   sessionStorage.setItem(USER_KEY, JSON.stringify(data.user));
+  window.dispatchEvent(new Event("auth-changed"));
   return data;
 }
 
@@ -33,4 +34,32 @@ export function getAccessToken() {
 export function logout() {
   sessionStorage.removeItem(ACCESS_TOKEN_KEY);
   sessionStorage.removeItem(USER_KEY);
+  window.dispatchEvent(new Event("auth-changed"));
+}
+
+export function getCurrentUser() {
+  try { return JSON.parse(sessionStorage.getItem(USER_KEY) || "null"); }
+  catch { return null; }
+}
+
+export function getTokenExpiresAt(token = getAccessToken()) {
+  try {
+    const encoded = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    const { exp } = JSON.parse(atob(encoded.padEnd(Math.ceil(encoded.length / 4) * 4, "=")));
+    return typeof exp === "number" ? exp * 1000 : 0;
+  } catch { return 0; }
+}
+
+export function getAuthenticatedToken() {
+  const token = getAccessToken();
+  return getTokenExpiresAt(token) > Date.now() ? token : null;
+}
+
+export function subscribeAuth(callback) {
+  window.addEventListener("auth-changed", callback);
+  window.addEventListener("storage", callback);
+  return () => {
+    window.removeEventListener("auth-changed", callback);
+    window.removeEventListener("storage", callback);
+  };
 }

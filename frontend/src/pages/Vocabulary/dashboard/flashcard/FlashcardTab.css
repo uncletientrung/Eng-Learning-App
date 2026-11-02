@@ -4,6 +4,224 @@
   place-items: center;
 }
 
+.vocabulary-dashboard .vd-flashcard-layout.has-due {
+  align-items: start;
+  padding: 14px clamp(0px, 2vw, 24px) 32px;
+}
+
+.vocabulary-dashboard .vd-review-page {
+  display: grid;
+  gap: 30px;
+  width: 100%;
+  max-width: 1120px;
+  min-width: 0;
+}
+
+.vocabulary-dashboard .vd-review-header,
+.vocabulary-dashboard .vd-review-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.vocabulary-dashboard .vd-review-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 8px;
+  color: var(--d-mute);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .16em;
+}
+
+.vocabulary-dashboard .vd-review-header h1 {
+  margin: 0;
+  font-size: clamp(26px, 3vw, 32px);
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -.035em;
+}
+
+.vocabulary-dashboard .vd-review-header p,
+.vocabulary-dashboard .vd-review-section-heading p {
+  margin: 7px 0 0;
+  color: var(--d-mute);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.vocabulary-dashboard .vd-review-browse {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 43px;
+  padding: 10px 15px;
+  border: 1px solid var(--d-line);
+  border-radius: 13px;
+  background: var(--d-surf);
+  font-size: 13px;
+  font-weight: 800;
+  transition: background .2s, border-color .2s;
+}
+
+.vocabulary-dashboard .vd-review-browse:hover {
+  border-color: var(--d-mute);
+  background: var(--d-surf2);
+}
+
+.vocabulary-dashboard .vd-review-hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(240px, 1fr);
+  align-items: center;
+  gap: 20px;
+  overflow: hidden;
+  padding: 36px 44px;
+  border: 1px solid #f4d277;
+  border-radius: 28px;
+  background: #f8da85;
+  color: #29251d;
+}
+
+.vocabulary-dashboard .vd-review-hero::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(ellipse at 100% 0%, #fff7d7b0, transparent 65%);
+  content: "";
+}
+
+.vocabulary-dashboard .vd-review-hero-copy { min-width: 0; }
+
+.vocabulary-dashboard .vd-review-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .13em;
+  color: #73602e;
+}
+
+.vocabulary-dashboard .vd-review-kicker>span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6b7944;
+}
+
+.vocabulary-dashboard .vd-review-hero h2 {
+  margin: 13px 0 14px;
+  font-size: clamp(30px, 3.6vw, 45px);
+  font-weight: 900;
+  line-height: 1.14;
+  letter-spacing: -.045em;
+}
+
+.vocabulary-dashboard .vd-review-hero h2>span { color: #8b6333; }
+.vocabulary-dashboard .vd-review-hero-copy>p { max-width: 390px; margin: 0 0 22px; color: #715d35; font-size: 14px; line-height: 1.65; }
+.vocabulary-dashboard .vd-review-hero-copy>p strong { color: #413721; font-weight: 900; }
+
+.vocabulary-dashboard .vd-review-start {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  min-height: 46px;
+  padding: 12px 19px;
+  border-radius: 13px;
+  background: #29251f;
+  color: #fffaf0;
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 4px 0 #29251f16;
+  transition: transform .2s, background .2s;
+}
+
+.vocabulary-dashboard .vd-review-start:hover { transform: translateY(-2px); background: #443a2b; }
+.vocabulary-dashboard .vd-review-start:focus-visible { outline-color: #29251f; }
+.vocabulary-dashboard .vd-review-first-set { display: block; max-width: 390px; overflow: hidden; margin-top: 10px; color: #806937; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+
+.vocabulary-dashboard .vd-review-illustration { position: relative; width: 300px; height: 260px; justify-self: center; pointer-events: none; }
+.vocabulary-dashboard .vd-review-orbit { position: absolute; inset: 5px 0 -5px; border: 1px solid #b6954f45; border-radius: 50%; transform: rotate(-25deg) scaleX(1.1); }
+.vocabulary-dashboard .vd-review-paper { position: absolute; top: 21px; left: 65px; width: 172px; height: 222px; border-radius: 19px; }
+.vocabulary-dashboard .vd-review-paper-back { background: #a391c4; transform: translate(20px, 0) rotate(17deg); box-shadow: 0 9px 14px #735a1c16; }
+.vocabulary-dashboard .vd-review-paper-back>span { display: block; padding: 24px; color: #f3ebff; font-size: 18px; font-weight: 900; text-align: right; }
+.vocabulary-dashboard .vd-review-paper-middle { background: #a8c9b8; transform: translate(-18px, 1px) rotate(-13deg); }
+.vocabulary-dashboard .vd-review-paper-front { display: flex; flex-direction: column; align-items: center; padding: 21px 15px; border: 1px solid #fff; background: #fffdf7; transform: rotate(3deg); box-shadow: 0 14px 24px #735a1c22; }
+.vocabulary-dashboard .vd-review-paper-label { display: flex; align-items: center; gap: 6px; color: #928368; font-size: 8px; font-weight: 900; letter-spacing: .08em; }
+.vocabulary-dashboard .vd-review-paper-front>strong { margin-top: 7px; color: #463e30; font-size: 72px; font-weight: 900; line-height: 1.25; letter-spacing: -.07em; }
+.vocabulary-dashboard .vd-review-paper-front>span:nth-of-type(2) { color: #85765e; font-size: 13px; font-weight: 700; }
+.vocabulary-dashboard .vd-review-paper-bottom { display: flex; gap: 4px; margin-top: auto; }
+.vocabulary-dashboard .vd-review-paper-bottom>span { width: 6px; height: 6px; border-radius: 50%; background: #d9dfcf; }
+.vocabulary-dashboard .vd-review-paper-bottom>span:first-child { width: 20px; border-radius: 6px; background: #a6b38b; }
+.vocabulary-dashboard .vd-review-spark { position: absolute; color: #8d7539; }
+.vocabulary-dashboard .vd-review-spark-top { top: 1px; left: 30px; transform: rotate(-12deg); }
+.vocabulary-dashboard .vd-review-spark-bottom { right: 0; bottom: 21px; }
+.vocabulary-dashboard .vd-review-illustration-badge { position: absolute; left: 24px; bottom: 8px; display: grid; place-items: center; width: 57px; height: 57px; border: 5px solid #f8da85; border-radius: 19px; background: #fef7dc; color: #896637; transform: rotate(-12deg); }
+
+.vocabulary-dashboard .vd-review-section-heading { margin-bottom: 18px; }
+.vocabulary-dashboard .vd-review-section-heading h2 { margin: 0; font-size: 21px; font-weight: 900; letter-spacing: -.025em; }
+.vocabulary-dashboard .vd-review-section-heading p { font-size: 13px; }
+.vocabulary-dashboard .vd-review-set-count { flex-shrink: 0; padding: 6px 11px; border: 1px solid var(--d-line); border-radius: 9px; color: var(--d-mute); font-size: 12px; font-weight: 800; }
+.vocabulary-dashboard .vd-review-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 18px; }
+
+.vocabulary-dashboard .vd-review-deck {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: 22px;
+  border: 1px solid var(--d-line);
+  border-radius: 21px;
+  background: var(--d-surf);
+  color: var(--d-ink);
+  transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+
+.vocabulary-dashboard .vd-review-deck:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--review-accent) 60%, var(--d-line)); box-shadow: 0 12px 28px #00000010; }
+.vocabulary-dashboard .vd-review-deck-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 19px; }
+.vocabulary-dashboard .vd-review-deck-icon { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; border: 1px solid color-mix(in srgb, var(--review-accent) 22%, transparent); border-radius: 13px; background: color-mix(in srgb, var(--review-accent) 12%, transparent); color: var(--review-accent); }
+.vocabulary-dashboard .vd-review-due-badge { display: inline-flex; align-items: center; gap: 5px; padding: 6px 9px; border-radius: 8px; background: #9c79d514; color: #8560bd; font-size: 11px; font-weight: 800; white-space: nowrap; }
+.vocabulary-dashboard .dark .vd-review-due-badge { color: #c6acec; background: #b38cfa14; }
+.vocabulary-dashboard .vd-review-deck h3 { margin: 0; overflow-wrap: anywhere; font-size: 20px; font-weight: 900; line-height: 1.35; letter-spacing: -.025em; }
+.vocabulary-dashboard .vd-review-deck-size { margin: 5px 0 16px; color: var(--d-mute); font-size: 12px; }
+.vocabulary-dashboard .vd-review-word-preview { display: flex; flex-wrap: wrap; align-content: start; gap: 6px; min-height: 30px; margin-bottom: 22px; }
+.vocabulary-dashboard .vd-review-word-preview>span { max-width: 100%; overflow: hidden; padding: 4px 8px; border-radius: 7px; background: var(--d-surf2); color: var(--d-mute); font-size: 11px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+.vocabulary-dashboard .vd-review-deck-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--d-line); font-size: 12px; font-weight: 800; }
+.vocabulary-dashboard .vd-review-deck-arrow { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--d-surf2); transition: background .2s, color .2s; }
+.vocabulary-dashboard .vd-review-deck:hover .vd-review-deck-arrow { background: #f8da85; color: #463e30; }
+.vocabulary-dashboard .vd-review-note { display: flex; align-items: center; justify-content: center; gap: 7px; margin: -4px 0 0; color: var(--d-mute); font-size: 12px; line-height: 1.5; text-align: center; }
+
+@media (max-width: 800px) {
+  .vocabulary-dashboard .vd-review-hero { grid-template-columns: minmax(0, 1fr) 220px; padding: 30px; gap: 8px; }
+  .vocabulary-dashboard .vd-review-illustration { transform: scale(.82); }
+}
+
+@media (max-width: 600px) {
+  .vocabulary-dashboard .vd-flashcard-layout.has-due { padding: 8px 0 24px; }
+  .vocabulary-dashboard .vd-review-page { gap: 24px; }
+  .vocabulary-dashboard .vd-review-header { flex-wrap: wrap; gap: 16px; }
+  .vocabulary-dashboard .vd-review-browse { min-height: 38px; padding: 8px 12px; font-size: 12px; }
+  .vocabulary-dashboard .vd-review-hero { grid-template-columns: minmax(0, 1fr); padding: 27px 24px; border-radius: 23px; }
+  .vocabulary-dashboard .vd-review-illustration { display: none; }
+  .vocabulary-dashboard .vd-review-hero h2 { font-size: 34px; }
+  .vocabulary-dashboard .vd-review-hero-copy>p { font-size: 13px; }
+  .vocabulary-dashboard .vd-review-section-heading { gap: 12px; }
+  .vocabulary-dashboard .vd-review-section-heading p { max-width: 230px; font-size: 12px; }
+  .vocabulary-dashboard .vd-review-deck { padding: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vocabulary-dashboard .vd-review-page a,
+  .vocabulary-dashboard .vd-review-page button,
+  .vocabulary-dashboard .vd-review-deck-arrow { transition: none; }
+}
+
 .vocabulary-dashboard .vd-flashcard-empty {
   position: relative;
   isolation: isolate;

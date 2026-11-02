@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, BarChart3, Frown, Meh, Moon, Pencil, RotateCcw, Sparkles, Volume2 } from "lucide-react";
 import { useNotebookFolders } from "../notebook/notebookStorage";
+import useVocabularySet from "../word-sets/useVocabularySet";
 import { speak } from "../../../../utils/speech";
 import PartOfSpeechBadge from "../notebook/PartOfSpeechBadge";
 import WordActionDialog from "../notebook/WordActionDialog";
@@ -18,8 +19,17 @@ const grades = [
 ];
 
 export default function NotebookFlashcards({ folderId }) {
-  const folder = useNotebookFolders().find((item) => item.id === folderId);
-  if (!folder || !folder.words.length) return <section className="vf-unavailable"><h1>{folder ? "Thư mục chưa có từ vựng" : "Không tìm thấy thư mục"}</h1><p>{folder ? "Thêm từ vào thư mục để bắt đầu luyện flashcard." : "Thư mục có thể đã được xóa hoặc chưa được lưu trên trình duyệt này."}</p><Link to={folder ? `/vocabulary/dashboard?tab=notebook&folder=${encodeURIComponent(folderId)}` : "/vocabulary/dashboard?tab=notebook"}><ArrowLeft size={18} />Về thư mục của bạn</Link></section>;
+  const personalFolder = useNotebookFolders().find((item) => item.id === folderId);
+  const { set, error, loading, retry } = useVocabularySet(folderId);
+  const folder = personalFolder || set;
+  if (!folder && loading) return <p role="status">Đang tải bộ từ...</p>;
+  if (!folder && error) return <section role="alert"><p>{error}</p><button type="button" onClick={retry}>Thử lại</button> <Link to="/vocabulary/dashboard?tab=botu">Về bộ từ</Link></section>;
+  if (!folder || !folder.words.length) {
+    const backLink = folder?.createByUserId != null
+      ? `/vocabulary/dashboard?tab=notebook&folder=${encodeURIComponent(folderId)}`
+      : "/vocabulary/dashboard?tab=botu";
+    return <section className="vf-unavailable"><h1>{folder ? "Bộ từ chưa có từ vựng" : "Không tìm thấy bộ từ"}</h1><Link to={backLink}><ArrowLeft size={18} />Về bộ từ</Link></section>;
+  }
   return <FlashcardSession key={`${folder.id}:${folder.words.map((word) => word.id).join(",")}`} folder={folder} />;
 }
 
@@ -44,7 +54,9 @@ function FlashcardSession({ folder }) {
   const word = wordsById.get(ids[index]) || folder.words[0];
   const seen = reviewed.filter((id) => wordsById.has(id));
   const { remembered, due, unremembered: unseen } = groupFlashcardWords(folder.words, progress);
-  const folderLink = `/vocabulary/dashboard?tab=notebook&folder=${encodeURIComponent(folder.id)}`;
+  const folderLink = folder.createByUserId == null
+    ? "/vocabulary/dashboard?tab=botu"
+    : `/vocabulary/dashboard?tab=notebook&folder=${encodeURIComponent(folder.id)}`;
   const showingWordList = Boolean(wordList);
 
   const stopAudio = useCallback(() => {
@@ -140,7 +152,7 @@ function FlashcardSession({ folder }) {
                 <div className="vf-card-tags"><span>{folder.name}</span><PartOfSpeechBadge type={word.type} /></div><span className="vf-card-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
               </div>
               <div className="vf-card-face vf-card-back" inert={!flipped} aria-hidden={!flipped} onClick={(event) => { if (!event.target.closest("button")) setFlipped(false); }}>
-                <div className="vf-card-face-heading"><span>NGHĨA TIẾNG VIỆT</span><button type="button" className="vf-edit" onClick={() => setEditing(true)}><Pencil size={15} />Sửa</button>{speakerButton}</div>
+                <div className="vf-card-face-heading"><span>NGHĨA TIẾNG VIỆT</span>{folder.createByUserId != null && <button type="button" className="vf-edit" onClick={() => setEditing(true)}><Pencil size={15} />Sửa</button>}{speakerButton}</div>
                 <button type="button" className="vf-card-flip-target is-definition" aria-label="Lật lại mặt trước" onClick={() => setFlipped(false)}><strong>{word.meaning}</strong>{word.example && <span className="vf-example"><small>VÍ DỤ</small><em>“{word.example}”</em></span>}<small>↺ Chạm để lật lại</small></button>
               </div>
             </div>
