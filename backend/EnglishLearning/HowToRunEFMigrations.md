@@ -13,3 +13,13 @@ dotnet ef database update --project EnglishLearning.DAL --startup-project Englis
 ```
 # - Run: dotnet ``` dotnet run --project EnglishLearning.API ```
 - ### Kiểm tra thư mục Migrations và database
+
+## Cập nhật schema cho Admin Writing
+
+Migration `AddWritingAdminMetadata` bổ sung trạng thái đề và thời gian cập nhật. Khi dùng database đã có dữ liệu, chạy từ thư mục `backend/EnglishLearning`:
+
+```
+dotnet ef database update --project EnglishLearning.DAL --startup-project EnglishLearning.API
+```
+
+Các đề Writing hiện có sẽ được gán trạng thái `PUBLISHED` để tiếp tục hiển thị với học viên. Migration cũng bỏ hành vi tự cập nhật `created_at` khi sửa đề; thời điểm sửa được ghi riêng trong `updated_at`.

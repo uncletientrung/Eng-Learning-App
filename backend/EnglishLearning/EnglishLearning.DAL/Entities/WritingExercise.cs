@@ -37,6 +37,13 @@ namespace EnglishLearning.DAL.Entities
         [Required, Column("created_at", TypeName = "timestamp")]
         public DateTime CreatedAt { get; set; }
 
+        [Required, StringLength(20)]
+        [Column("status")]
+        public string Status { get; set; } = "PUBLISHED";
+
+        [Column("updated_at", TypeName = "timestamp")]
+        public DateTime? UpdatedAt { get; set; }
+
         [ForeignKey(nameof(TopicId))]
         public Topic Topic { get; set; } = null!;
     }

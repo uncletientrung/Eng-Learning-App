@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 
-function HeroMascot({ isMascotSmiling }) {
+function HeroMascot({ isMascotSmiling, compact = false, interactive = true }) {
   const [isMascotHovering, setIsMascotHovering] = useState(false)
   const containerRef = useRef(null)
   const sunRef = useRef(null)
   const faceRef = useRef(null)
 
   useEffect(() => {
+    if (!interactive) return
+
     const container = containerRef.current
     const sun = sunRef.current
     const face = faceRef.current
@@ -84,17 +86,17 @@ function HeroMascot({ isMascotSmiling }) {
       gsap.killTweensOf(sun)
       gsap.killTweensOf(face)
     }
-  }, [])
+  }, [interactive])
 
   return (
     <div
       ref={containerRef}
       className="relative h-full w-full overflow-visible"
     >
-      <div className="h-full w-full -translate-x-60 translate-y-15">
+      <div className={`h-full w-full${compact ? "" : " -translate-x-60 translate-y-15"}`}>
         <svg
           ref={sunRef}
-          className="h-full w-full scale-130 drop-shadow-2xl "
+          className={`h-full w-full${compact ? " drop-shadow-xl" : " scale-130 drop-shadow-2xl"}`}
           fill="none"
           viewBox="0 0 63 63"
           xmlns="http://www.w3.org/2000/svg"
@@ -240,9 +242,9 @@ function HeroMascot({ isMascotSmiling }) {
               scale(1.08)
               translate(-31.75 -31.75)
             "
-            onMouseEnter={() => setIsMascotHovering(true)}
-            onMouseLeave={() => setIsMascotHovering(false)}
-            className='cursor-pointer'
+            onMouseEnter={interactive ? () => setIsMascotHovering(true) : undefined}
+            onMouseLeave={interactive ? () => setIsMascotHovering(false) : undefined}
+            className={interactive ? 'cursor-pointer' : undefined}
           />
 
           {/* ==================================================

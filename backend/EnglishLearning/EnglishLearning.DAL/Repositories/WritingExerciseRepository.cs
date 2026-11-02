@@ -19,6 +19,7 @@ public class WritingExerciseRepository : IWritingExerciseRepository {
             .AsNoTracking() // Yêu cầu EF Core không theo dõi các Entity được lấy ra trong truy vấn này. Phù hợp với trường hợp chỉ đọc dữ liệu,
                             // không cần sửa các Entity rồi lưu lại thông qua cùng DbContext.
             .Include(e => e.Topic) // yêu cầu EF Core tải thêm dữ liệu chủ đề liên quan của khóa ngoại
+            .Where(e => e.Status == "PUBLISHED")
             .OrderByDescending(e => e.CreatedAt)
             .ToListAsync(); // Thực thi truy vấn bất đồng bộ và lấy kết quả thành một danh sách.
     }
@@ -28,7 +29,7 @@ public class WritingExerciseRepository : IWritingExerciseRepository {
         return await _context.WritingExercises
             .AsNoTracking()
             .Include(e => e.Topic)
-            .FirstOrDefaultAsync(e => e.Id == id);
+            .FirstOrDefaultAsync(e => e.Id == id && e.Status == "PUBLISHED");
     }
 
     public async Task AddAsync(WritingExercise exercise)

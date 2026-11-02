@@ -58,6 +58,10 @@ public class AppDbContext : DbContext
             .HasForeignKey(e => e.TopicId) // Cột TopicId là khóa ngoại.
             .OnDelete(DeleteBehavior.Restrict); // Ngăn xóa Topic nếu vẫn còn bài tập viết tham chiếu đến nó.
 
+        modelBuilder.Entity<WritingExercise>()
+            .Property(e => e.Status)
+            .HasDefaultValue("PUBLISHED");
+
         modelBuilder.Entity<UserWritingAttempt>()
             .HasOne(a => a.User)
             .WithMany()

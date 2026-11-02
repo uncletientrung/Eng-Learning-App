@@ -17,19 +17,42 @@ import ListeningLibrary from "./pages/Listening/ListeningLibrary.jsx";
 import ExamPage from "./components/sections/reading/reading-test/ExamPage.jsx";
 import {ReadingResultPage} from "./components/sections/reading/Result/index.js";
 import ReviewPage from "./pages/Reading/ReviewPage.jsx";
-import ListeningExam from "./pages/Listening/ListeningExam.jsx";
 import RequireAuth from './components/layout/RequireAuth';
 import ListeningResultPage from "./components/sections/listening/Result/ListeningResultPage.jsx";
-import PartSelectionPage from "./components/sections/PartSelectionPage.jsx";
 import ListeningExamPage from "./pages/Listening/ListeningExamPage.jsx";
+import RequireAdmin from "./components/admin/RequireAdmin";
 
 const VocabularyDashboard = lazy(() => import('./pages/Vocabulary/VocabularyDashboard'))
+const AdminLayout = lazy(() => import("./components/admin/AdminLayout"))
+const AdminDashboardPage = lazy(() => import("./pages/Admin/AdminDashboardPage"))
+const AdminWritingExercisesPage = lazy(() => import("./pages/Admin/AdminWritingExercisesPage"))
+const AdminWritingExerciseFormPage = lazy(() => import("./pages/Admin/AdminWritingExerciseFormPage"))
+const AdminWritingExerciseDetailPage = lazy(() => import("./pages/Admin/AdminWritingExerciseDetailPage"))
+const AdminWritingSubmissionsPage = lazy(() => import("./pages/Admin/AdminWritingSubmissionsPage"))
+const AdminWritingSubmissionDetailPage = lazy(() => import("./pages/Admin/AdminWritingSubmissionDetailPage"))
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<LoginPage/>}/>
+      <Route element={<RequireAuth />}>
+        <Route element={<RequireAdmin />}>
+          <Route path="/admin" element={
+            <Suspense fallback={<div className="min-h-screen bg-slate-100 p-6" role="status">Đang tải khu vực quản trị...</div>}>
+              <AdminLayout />
+            </Suspense>
+          }>
+            <Route index element={<AdminDashboardPage />} />
+            <Route path="writing" element={<AdminWritingExercisesPage />} />
+            <Route path="writing/create" element={<AdminWritingExerciseFormPage />} />
+            <Route path="writing/edit/:id" element={<AdminWritingExerciseFormPage />} />
+            <Route path="writing/submissions" element={<AdminWritingSubmissionsPage />} />
+            <Route path="writing/submissions/:id" element={<AdminWritingSubmissionDetailPage />} />
+            <Route path="writing/:id" element={<AdminWritingExerciseDetailPage />} />
+          </Route>
+        </Route>
+      </Route>
       <Route
         path="/writing"
         element={<WritingLibrary />}

@@ -1253,6 +1253,17 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("created_at");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("status")
+                        .HasDefaultValue("PUBLISHED");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("updated_at");
+
                     b.Property<string>("ImageUrl")
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)")

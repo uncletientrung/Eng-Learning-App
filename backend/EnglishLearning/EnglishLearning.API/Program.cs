@@ -60,6 +60,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<
     IWritingExerciseRepository,
     WritingExerciseRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<ITopicRepository, TopicRepository>();
 builder.Services.AddScoped<IVocabularyRepository, VocabularyRepository>();
 builder.Services.AddScoped<ISpeakingExerciseRepository, SpeakingExerciseRepository>();
@@ -71,6 +72,7 @@ builder.Services.AddScoped<IReadingExerciseRepository, ReadingExerciseRepository
 builder.Services.AddScoped<
     IWritingExerciseService,
     WritingExerciseService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<ITopicService, TopicService>();
 builder.Services.AddScoped<IVocabularyService, VocabularyService>();
 builder.Services.AddScoped<ISpeakingExerciseService, SpeakingExerciseService>();
