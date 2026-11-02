@@ -4,12 +4,13 @@ import { lazy, Suspense } from 'react'
 import Home from './pages/Home'
 import WritingLibrary from './pages/Writing/WritingLibrary'
 import WritingTest from './pages/Writing/WritingTest'
-import TranslationLandingPage from './pages/Writing/Translation/TranslationLandingPage'
+import TranslationLandingPage from './pages/Translation/TranslationLandingPage'
 import SpeakingLibrary from './pages/Speaking/SpeakingLibrary'
 import SpeakingPart1 from './pages/Speaking/SpeakingPart1'
 import SpeakingPart2 from './pages/Speaking/SpeakingPart2'
 import SpeakingPart3 from './pages/Speaking/SpeakingPart3'
 import GrammarLandingPage from './pages/Grammar/GrammarLandingPage'
+import Theory from './pages/Grammar/Theory'
 import ReadingLibrary from "./pages/Reading/ReadingLibrary.jsx";
 import LoginPage from "./pages/Login/LoginPage.jsx";
 import ListeningLibrary from "./pages/Listening/ListeningLibrary.jsx";
@@ -45,7 +46,10 @@ function App() {
       {/* Vocab */}
       <Route path="/vocabulary/dashboard" element={<Suspense fallback={<div className="min-h-screen bg-[#0e1014]" role="status" aria-label="Đang tải dashboard" />}><VocabularyDashboard /></Suspense>} />
       <Route path="/vocabulary/flashcard" element={<Suspense fallback={<div className="min-h-screen bg-[#0e1014]" role="status" aria-label="Đang tải flashcard" />}><VocabularyDashboard flashcardPage /></Suspense>} />
-      <Route path="/grammar" element={<GrammarLandingPage />}/>
+
+      <Route path="/grammar" element={<GrammarLandingPage />} />
+      <Route path="/grammar/theory" element={<Theory />} />
+
       <Route path="/reading" element={<ReadingLibrary />} />
       <Route path="/reading/exam" element={<ExamPage />} />
       <Route path="/reading/exam/result" element={<ReadingResultPage />} />

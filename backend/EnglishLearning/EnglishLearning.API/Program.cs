@@ -55,6 +55,8 @@ builder.Services.AddScoped<
     WritingExerciseRepository>();
 builder.Services.AddScoped<ITopicRepository, TopicRepository>();
 builder.Services.AddScoped<ISpeakingExerciseRepository, SpeakingExerciseRepository>();
+builder.Services.AddScoped<IGrammarRepository, GrammarRepository>();
+
 
 // Đăng ký Service
 builder.Services.AddScoped<
@@ -64,6 +66,8 @@ builder.Services.AddScoped<ITopicService, TopicService>();
 builder.Services.AddScoped<ISpeakingExerciseService, SpeakingExerciseService>();
 
 builder.Services.AddScoped<IWritingGradingService, WritingGradingService>();
+builder.Services.AddScoped<IGrammarService, GrammarService>();
+
 var geminiTimeoutSeconds = builder.Configuration.GetValue(
     "Gemini:TimeoutSeconds",
     60);

@@ -19,6 +19,9 @@ namespace EnglishLearning.DAL.Entities
         [Required, StringLength(255)]
         public string Name { get; set; } = string.Empty;
 
+        [Column("description", TypeName = "text")]
+        public string? Description { get; set; }
+
         [Column("display_order")]
         public int DisplayOrder { get; set; }
 

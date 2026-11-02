@@ -34,6 +34,10 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("created_at");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("int")
                         .HasColumnName("display_order");

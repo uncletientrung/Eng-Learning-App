@@ -9,7 +9,6 @@ import {
     BookOpen,
     ChevronRight,
     ArrowRight,
-    Lock
 } from "lucide-react";
 
 export default function TranslationLandingPage () {
