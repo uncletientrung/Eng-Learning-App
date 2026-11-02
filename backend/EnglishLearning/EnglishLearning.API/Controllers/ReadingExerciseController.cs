@@ -1,4 +1,4 @@
-using EnglishLearning.BLL.Interfaces;
+/*using EnglishLearning.BLL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EnglishLearning.API.Controllers;
@@ -28,4 +28,4 @@ public class ReadingExerciseController : ControllerBase
         return Ok(results);
     }
 
-}
+}*/

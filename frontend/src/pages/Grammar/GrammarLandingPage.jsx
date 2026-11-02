@@ -1,6 +1,5 @@
 import { getGrammarCategories } from '../../services/grammarAPI'
 import { getRandomIcons } from "../../utils/iconLibrary";
-
 import { Link } from 'react-router-dom';
 import MainLayout from '../../components/layout/MainLayout';
 import { useState, useEffect } from 'react';
