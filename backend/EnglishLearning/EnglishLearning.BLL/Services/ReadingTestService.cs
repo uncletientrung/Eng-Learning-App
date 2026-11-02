@@ -37,8 +37,27 @@ public class ReadingTestService : IReadingTestService
             Title = test.Title,
             level = test.Level,
             CreatedAt = test.CreatedAt,
-            
 
         };
+    }
+
+    public async Task<ReadingTestDTO> AddAsync(ReadingTestDTO readingTest)
+    {
+        var test = new ReadingTest
+        {
+            Title = readingTest.Title,
+            Level = readingTest.level,
+            CreatedAt = DateTime.Now,
+        };
+        await _repository.AddAsync(test);
+
+        return new ReadingTestDTO
+        {
+            Id = test.Id,
+            Title = test.Title,
+            level = test.Level,
+            CreatedAt = test.CreatedAt,
+        };
+
     }
 }

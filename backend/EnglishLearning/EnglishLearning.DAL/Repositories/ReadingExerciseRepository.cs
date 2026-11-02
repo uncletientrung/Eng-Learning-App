@@ -14,20 +14,26 @@ public class ReadingExerciseRepository: IReadingExerciseRepository
         _context = context;
     }
 
-   public Task<List<ReadingExercise>> GetAllAsync()
+   public Task<List<ReadingExercise>> GetAllAsync(int id)
     {
         return _context.ReadingExercises
             .AsNoTracking()
-            .OrderByDescending(a => a.CreatedAt)
+            .Where(a => a.ReadingTestId ==id )
+            .OrderBy(a => a.Passage)
             .ToListAsync();
     }
 
-   public Task<List<ReadingExercise>> GetByIdAsync(int id)
+   public Task<ReadingExercise?> GetByIdAsync(int id)
    {
        return _context.ReadingExercises
            .AsNoTracking()
-           .Where(a => a.ReadingTestId ==id )
-           .OrderBy(a => a.Passage)
-           .ToListAsync();
+           .FirstOrDefaultAsync(e => e.ReadingTestId == id);
+   }
+
+   public async Task<ReadingExercise> AddAsync(ReadingExercise readingExercise)
+   {
+       await _context.ReadingExercises.AddAsync(readingExercise);
+       await _context.SaveChangesAsync();
+       return readingExercise;
    }
 }

@@ -1,3 +1,4 @@
+using EnglishLearning.BLL.DTOs;
 using EnglishLearning.BLL.Interfaces;
 using EnglishLearning.DAL.Data;
 using EnglishLearning.DAL.Interfaces;
@@ -26,5 +27,16 @@ public class ReadingTestController : ControllerBase
     {
         var results = await _readingTestService.GetByIdAsync(id);
         return Ok(results);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddAsync([FromBody] ReadingTestDTO request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        var result = await _readingTestService.AddAsync(request);
+        return Created("", result);
     }
 }

@@ -65,7 +65,7 @@ builder.Services.AddScoped<IVocabularyRepository, VocabularyRepository>();
 builder.Services.AddScoped<ISpeakingExerciseRepository, SpeakingExerciseRepository>();
 builder.Services.AddScoped<IGrammarRepository, GrammarRepository>();
 builder.Services.AddScoped<IReadingTestRepository, ReadingTestRepository>();
-
+builder.Services.AddScoped<IReadingExerciseRepository, ReadingExerciseRepository>();
 
 // Đăng ký Service
 builder.Services.AddScoped<
@@ -75,7 +75,7 @@ builder.Services.AddScoped<ITopicService, TopicService>();
 builder.Services.AddScoped<IVocabularyService, VocabularyService>();
 builder.Services.AddScoped<ISpeakingExerciseService, SpeakingExerciseService>();
 builder.Services.AddScoped<IReadingTestService, ReadingTestService>();
-    
+builder.Services.AddScoped<IReadingExerciseService, ReadingExerciseService>();
 builder.Services.AddScoped<IWritingGradingService, WritingGradingService>();
 builder.Services.AddScoped<IGrammarService, GrammarService>();
 

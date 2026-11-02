@@ -1,5 +1,6 @@
 using EnglishLearning.BLL.DTOs;
 using EnglishLearning.BLL.Interfaces;
+using EnglishLearning.DAL.Entities;
 using EnglishLearning.DAL.Interfaces;
 
 namespace EnglishLearning.BLL.Services;
@@ -13,26 +14,9 @@ public class ReadingExerciseService: IReadingExerciseService
         _readingExerciseRepository = readingExerciseRepository;
     }
 
-    public async Task<List<ReadingExerciseDTO>> GetAllAsync()
+    public async Task<List<ReadingExerciseDTO>> GetAllAsync(int id)
     {
-        var result = await _readingExerciseRepository.GetAllAsync();
-        return result.Select(e => new ReadingExerciseDTO
-        {
-            Id = e.Id,
-            title = e.Title,
-            Content = e.Content,
-            Imageurl = e.ImageUrl,
-            level = e.Level,
-            Passage = e.Passage,
-            TopicId =  e.TopicId,
-            ReadingTestId =  e.ReadingTestId,
-            CreatedAt =  e.CreatedAt,
-        }).ToList();
-    }
-
-    public async Task<List<ReadingExerciseDTO>> GetByIdAsync(int id)
-    {
-        var result = await _readingExerciseRepository.GetByIdAsync(id);
+        var result = await _readingExerciseRepository.GetAllAsync(id);
         return result.Select(e => new ReadingExerciseDTO
         {
             Id = e.Id,
@@ -45,5 +29,31 @@ public class ReadingExerciseService: IReadingExerciseService
             ReadingTestId = e.ReadingTestId,
             CreatedAt = e.CreatedAt,
         }).ToList();
+    }
+
+    public async Task<ReadingExerciseDTO?> GetByIdAsync(int id)
+    {
+        var result = await _readingExerciseRepository.GetByIdAsync(id);
+        return new ReadingExerciseDTO
+        {
+            Id = result.Id,
+            title = result.Title,
+            Content = result.Content,
+            Imageurl = result.ImageUrl,
+            level = result.Level,
+            Passage = result.Passage,
+            TopicId = result.TopicId,
+            ReadingTestId = result.ReadingTestId,
+            CreatedAt = result.CreatedAt,
+        };
+    }
+
+    public Task<ReadingExerciseDTO> AddAsync(ReadingExerciseDTO readingExercise)
+    {
+        var exercise = new ReadingExercise
+        {
+            
+        }
+        
     }
 }

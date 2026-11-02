@@ -28,9 +28,10 @@ public class ReadingTestRepository:IReadingTestRepository
     }
 
 
-    public async Task AddAsync(ReadingTest readingTest)
+    public async Task<ReadingTest> AddAsync(ReadingTest readingTest)
     {
         await _context.ReadingTests.AddAsync(readingTest);
         await _context.SaveChangesAsync();
+        return readingTest;
     }
 }

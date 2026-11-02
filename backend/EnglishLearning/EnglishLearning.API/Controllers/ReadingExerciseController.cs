@@ -15,13 +15,13 @@ public class ReadingExerciseController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(int id)
     {
-        var results = await _readingExerciseService.GetAllAsync();
+        var results = await _readingExerciseService.GetAllAsync(id);
         return Ok(results);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{testid}")]
     public async Task<IActionResult> GetById(int id)
     {
         var results = await _readingExerciseService.GetByIdAsync(id);

@@ -8,7 +8,7 @@ public interface IReadingTestRepository
     
     Task<ReadingTest?> GetByIdAsync(int id);
     
-    Task AddAsync(ReadingTest readingTest);
+    Task<ReadingTest> AddAsync(ReadingTest readingTest);
     
     
 }
