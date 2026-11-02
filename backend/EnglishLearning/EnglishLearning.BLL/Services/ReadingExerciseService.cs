@@ -47,13 +47,4 @@ public class ReadingExerciseService: IReadingExerciseService
             CreatedAt = result.CreatedAt,
         };
     }
-
-    public Task<ReadingExerciseDTO> AddAsync(ReadingExerciseDTO readingExercise)
-    {
-        var exercise = new ReadingExercise
-        {
-            
-        }
-        
-    }
 }

@@ -11,4 +11,5 @@
 dotnet ef migrations add initDb --project EnglishLearning.DAL --startup-project EnglishLearning.API
 dotnet ef database update --project EnglishLearning.DAL --startup-project EnglishLearning.API
 ```
+# - Run: dotnet ``` dotnet run --project EnglishLearning.API ```
 - ### Kiểm tra thư mục Migrations và database
