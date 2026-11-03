@@ -34,5 +34,10 @@ namespace EnglishLearning.DAL.Entities
         [Required]
         [Column(TypeName = "tinyint")]
         public int Status { get; set; }
+
+        public int CurrentStreak { get; set; } = 0;
+
+        [Column(TypeName = "date")]
+        public DateOnly? LastStudyDate { get; set; }
     }
 }

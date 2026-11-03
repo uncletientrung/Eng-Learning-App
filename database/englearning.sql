@@ -359,15 +359,17 @@ CREATE TABLE `user` (
   `Password` varchar(255) NOT NULL,
   `Email` varchar(255) NOT NULL,
   `Phone` varchar(255) NOT NULL,
-  `Status` tinyint(4) NOT NULL
+  `Status` tinyint(4) NOT NULL,
+  `CurrentStreak` int NOT NULL DEFAULT 0,
+  `LastStudyDate` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`Id`, `Name`, `Role`, `Username`, `Password`, `Email`, `Phone`, `Status`) VALUES
-(1, 'test1', 'ADMIN', 'a', 'AQAAAAIAAYagAAAAEDnG6IBcS7dN59XlrketOc3GcncfNBXOWDkCrXKpe2n1c8G4ro5SiUShSJZGFkopHA==', 'test@gmail.com', '0352447642', 1);
+INSERT INTO `user` (`Id`, `Name`, `Role`, `Username`, `Password`, `Email`, `Phone`, `Status`, `CurrentStreak`, `LastStudyDate`) VALUES
+(1, 'test1', 'ADMIN', 'a', 'AQAAAAIAAYagAAAAEDnG6IBcS7dN59XlrketOc3GcncfNBXOWDkCrXKpe2n1c8G4ro5SiUShSJZGFkopHA==', 'test@gmail.com', '0352447642', 1, 0, NULL);
 
 -- --------------------------------------------------------
 
