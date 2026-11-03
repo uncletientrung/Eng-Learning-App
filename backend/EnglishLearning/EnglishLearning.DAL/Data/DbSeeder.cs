@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using EnglishLearning.DAL.Data.Seeders;
 
 namespace EnglishLearning.DAL.Data;
 
@@ -9,13 +10,17 @@ public static class DbSeeder
         AppDbContext context,
         CancellationToken cancellationToken = default)
     {
-        // Database đã được migrate trước khi gọi hàm này.
+        /* 
+        * AppDbContext: db, DbSeeder: điều phối, Seeder: Dữ liệu
+        * Program.cs -> AppDbContext -> Migration -> DbSeeder -> Seeder
+        * Database đã được migrate trước khi gọi hàm này.
+        */
+        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
 
-        // TODO:
-        // 1. Seed dữ liệu nền nếu dự án cần.
-        // 2. Kiểm tra dữ liệu hiện có trước khi thêm.
-        // 3. Không ghi đè dữ liệu người dùng đã tạo.
+        await UserSeeder.SeedAsync(context, cancellationToken);
+        var topicIds = await TopicSeeder.SeedAsync(context, cancellationToken);
+        await WordSeeder.SeedAsync(context, topicIds, cancellationToken);
 
-        await Task.CompletedTask;
+        await transaction.CommitAsync(cancellationToken);
     }
 }
