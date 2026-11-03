@@ -12,6 +12,8 @@ public class SpeakingExerciseDto
 
     public DateTime CreatedAt { get; set; }
 
+    public bool IsActive { get; set; } = true;
+
     // Thông tin Topic liên quan
     public TopicDto? Topic { get; set; }
     public List<SpeakingQuestionDto> Questions { get; set; } = new();

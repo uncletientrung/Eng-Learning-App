@@ -86,6 +86,10 @@ public sealed class SpeakingAssessmentService : ISpeakingAssessmentService
             };
         }
 
+        if (!exercise.IsActive)
+            throw new InvalidOperationException(
+                "Đề Speaking đã ngừng hoạt động và không nhận lượt làm mới.");
+
         if (unfinishedAttempt is not null)
         {
             unfinishedAttempt.Status = Abandoned;

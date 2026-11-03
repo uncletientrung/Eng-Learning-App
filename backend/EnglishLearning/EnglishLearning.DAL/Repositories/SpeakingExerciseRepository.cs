@@ -19,6 +19,7 @@ public class SpeakingExerciseRepository : ISpeakingExerciseRepository
         return await _context.SpeakingExercises
             .AsNoTracking()
             .Include(e => e.Topic)
+            .Where(e => e.IsActive)
             .OrderByDescending(e => e.CreatedAt)
             .ToListAsync();
     }
@@ -29,6 +30,7 @@ public class SpeakingExerciseRepository : ISpeakingExerciseRepository
         .AsNoTracking()
         .Include(e => e.Topic)
         .Include(e => e.Questions)
+        .Where(e => e.IsActive)
         .OrderByDescending(e => e.CreatedAt)
         .ToListAsync();
 

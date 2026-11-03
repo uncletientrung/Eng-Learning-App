@@ -586,6 +586,12 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("created_at");
 
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_active");
+
                     b.Property<string>("SpeakingType")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -740,10 +746,18 @@ namespace EnglishLearning.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CurrentStreak")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
+
+                    b.Property<DateOnly?>("LastStudyDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1253,17 +1267,6 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("created_at");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)")
-                        .HasColumnName("status")
-                        .HasDefaultValue("PUBLISHED");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("updated_at");
-
                     b.Property<string>("ImageUrl")
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)")
@@ -1281,6 +1284,14 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnType("text")
                         .HasColumnName("reference_answer");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasDefaultValue("PUBLISHED")
+                        .HasColumnName("status");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -1289,6 +1300,10 @@ namespace EnglishLearning.DAL.Migrations
                     b.Property<int>("TopicId")
                         .HasColumnType("int")
                         .HasColumnName("topic_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("updated_at");
 
                     b.Property<string>("WritingType")
                         .HasMaxLength(50)
@@ -1432,7 +1447,7 @@ namespace EnglishLearning.DAL.Migrations
                     b.HasOne("EnglishLearning.DAL.Entities.Topic", "Topic")
                         .WithMany()
                         .HasForeignKey("TopicId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Topic");
@@ -1556,7 +1571,7 @@ namespace EnglishLearning.DAL.Migrations
                     b.HasOne("EnglishLearning.DAL.Entities.SpeakingQuestion", "Question")
                         .WithMany()
                         .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Attempt");
@@ -1569,7 +1584,7 @@ namespace EnglishLearning.DAL.Migrations
                     b.HasOne("EnglishLearning.DAL.Entities.SpeakingExercise", "Exercise")
                         .WithMany()
                         .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("EnglishLearning.DAL.Entities.User", "User")

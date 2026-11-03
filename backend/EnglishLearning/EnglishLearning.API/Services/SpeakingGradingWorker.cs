@@ -43,6 +43,10 @@ public sealed class SpeakingGradingWorker : BackgroundService
                     "Speaking grading failed for attempt {AttemptId}.",
                     attemptId);
             }
+            finally
+            {
+                _queue.Complete(attemptId);
+            }
         }
     }
 

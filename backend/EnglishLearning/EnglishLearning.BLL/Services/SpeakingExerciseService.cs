@@ -26,6 +26,7 @@ public class SpeakingExerciseService : ISpeakingExerciseService
             Title = e.Title,
             SpeakingType = e.SpeakingType,
             CreatedAt = e.CreatedAt,
+            IsActive = e.IsActive,
             Topic = e.Topic == null ? null : new TopicDto
             {
                 Id = e.Topic.Id,
@@ -49,6 +50,7 @@ public class SpeakingExerciseService : ISpeakingExerciseService
             Title = e.Title,
             SpeakingType = e.SpeakingType,
             CreatedAt = e.CreatedAt,
+            IsActive = e.IsActive,
             Topic = e.Topic == null ? null : new TopicDto
             {
                 Id = e.Topic.Id,
@@ -93,6 +95,7 @@ public class SpeakingExerciseService : ISpeakingExerciseService
             Title = exercise.Title,
             SpeakingType = exercise.SpeakingType,
             CreatedAt = exercise.CreatedAt,
+            IsActive = exercise.IsActive,
             Topic = exercise.Topic == null ? null : new TopicDto
             {
                 Id = exercise.Topic.Id,

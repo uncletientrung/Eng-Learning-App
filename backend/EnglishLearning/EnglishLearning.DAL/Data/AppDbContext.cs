@@ -94,7 +94,8 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<SpeakingExercise>()
             .HasOne(e => e.Topic)
             .WithMany()
-            .HasForeignKey(e => e.TopicId);
+            .HasForeignKey(e => e.TopicId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         // SpeakingQuestion -> SpeakingExercise // chỉ định collection
         modelBuilder.Entity<SpeakingQuestion>()
@@ -113,7 +114,12 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<UserSpeakingAttempt>()
             .HasOne(a => a.Exercise)
             .WithMany()
-            .HasForeignKey(a => a.ExerciseId);
+            .HasForeignKey(a => a.ExerciseId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<SpeakingExercise>()
+            .Property(e => e.IsActive)
+            .HasDefaultValue(true);
 
         // UserSpeakingAnswer -> UserSpeakingAttempt
         modelBuilder.Entity<UserSpeakingAnswer>()
@@ -125,7 +131,8 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<UserSpeakingAnswer>()
             .HasOne(a => a.Question)
             .WithMany()
-            .HasForeignKey(a => a.QuestionId);
+            .HasForeignKey(a => a.QuestionId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<SpeakingCriterionScore>()
             .HasOne(s => s.Attempt)

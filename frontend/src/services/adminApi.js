@@ -59,3 +59,43 @@ export const updateAdminWritingSubmission = (id, data) =>
   });
 export const deleteAdminWritingSubmission = (id) =>
   request(`/writing/submissions/${id}`, { method: "DELETE" });
+
+export const getAdminSpeakingExercises = (params) =>
+  request(`/speaking/exercises${queryString(params)}`);
+export const getAdminSpeakingExercise = (id) =>
+  request(`/speaking/exercises/${id}`);
+export const createAdminSpeakingExercise = (data) =>
+  request("/speaking/exercises", { method: "POST", body: JSON.stringify(data) });
+export const updateAdminSpeakingExercise = (id, data) =>
+  request(`/speaking/exercises/${id}`, { method: "PUT", body: JSON.stringify(data) });
+export const updateAdminSpeakingExerciseStatus = (id, isActive) =>
+  request(`/speaking/exercises/${id}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({ isActive }),
+  });
+export const getAdminSpeakingSubmissions = (params) =>
+  request(`/speaking/submissions${queryString(params)}`);
+export const getAdminSpeakingSubmission = (id) =>
+  request(`/speaking/submissions/${id}`);
+export const updateAdminSpeakingSubmission = (id, data) =>
+  request(`/speaking/submissions/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+export const deleteAdminSpeakingSubmission = (id) =>
+  request(`/speaking/submissions/${id}`, { method: "DELETE" });
+export const retryAdminSpeakingGrading = (id) =>
+  request(`/speaking/submissions/${id}/retry-grading`, { method: "POST" });
+
+export async function getAdminSpeakingAudio(answerId) {
+  const response = await fetch(
+    `${API_URL}/admin/speaking/answers/${answerId}/audio`,
+    { headers: { Authorization: `Bearer ${getAccessToken()}` } },
+  );
+  if (!response.ok) {
+    if (response.status === 401) logout();
+    const data = await response.json().catch(() => null);
+    throw new Error(data?.message || `Không thể tải audio (HTTP ${response.status}).`);
+  }
+  return response.blob();
+}

@@ -25,6 +25,9 @@ namespace EnglishLearning.DAL.Entities
         [Required, Column("created_at", TypeName = "timestamp")]
         public DateTime CreatedAt { get; set; }
 
+        [Column("is_active")]
+        public bool IsActive { get; set; } = true;
+
         [ForeignKey(nameof(TopicId))]
         public Topic Topic { get; set; } = null!;
 

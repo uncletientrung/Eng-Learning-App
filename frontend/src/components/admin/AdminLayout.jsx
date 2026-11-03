@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  Mic,
   X,
 } from "lucide-react";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -15,6 +16,7 @@ import { getCurrentUser, logout } from "../../services/authApi";
 const navigation = [
   { label: "Dashboard", to: "/admin", icon: LayoutDashboard, end: true },
   { label: "Quản lý Writing", to: "/admin/writing", icon: FileText },
+  { label: "Quản lý Speaking", to: "/admin/speaking", icon: Mic },
 ];
 
 const writingNavigation = [
@@ -22,8 +24,12 @@ const writingNavigation = [
   { label: "Bài nộp Writing", to: "/admin/writing/submissions", icon: ClipboardList },
 ];
 
+const speakingNavigation = [
+  { label: "Quản lý đề Speaking", to: "/admin/speaking", icon: Mic },
+  { label: "Bài nộp Speaking", to: "/admin/speaking/submissions", icon: ClipboardList },
+];
+
 const comingSoon = [
-  "Quản lý Speaking",
   "Quản lý Reading",
   "Quản lý Listening",
   "Quản lý Vocabulary",
@@ -33,6 +39,13 @@ const comingSoon = [
 ];
 
 function currentTitle(pathname) {
+  if (pathname.startsWith("/admin/speaking")) {
+    if (pathname.includes("/submissions")) return "Bài nộp Speaking";
+    if (pathname.includes("/create")) return "Thêm đề Speaking";
+    if (pathname.includes("/edit/")) return "Chỉnh sửa đề Speaking";
+    if (pathname.match(/\/admin\/speaking\/\d+/)) return "Chi tiết đề Speaking";
+    return "Quản lý Speaking";
+  }
   if (pathname.includes("/submissions")) return "Bài nộp Writing";
   if (pathname.includes("/writing/create")) return "Thêm đề Writing";
   if (pathname.includes("/writing/edit/")) return "Chỉnh sửa đề Writing";
@@ -181,6 +194,26 @@ export default function AdminLayout() {
                 const active = to.endsWith("/submissions")
                   ? location.pathname.startsWith(to)
                   : !location.pathname.startsWith("/admin/writing/submissions");
+                return (
+                  <Link
+                    key={to}
+                    to={to}
+                    aria-current={active ? "page" : undefined}
+                    className={`inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-[9px] px-4 py-2 text-xs font-extrabold no-underline transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7] ${active ? "bg-[#4f7cf7] text-white shadow-[0_3px_8px_#315fc52e]" : "text-[#6b7080] hover:bg-[#f1f3f7] hover:text-[#1b1d22]"}`}
+                  >
+                    <Icon size={16} />
+                    {label}
+                  </Link>
+                );
+              })}
+            </nav>
+          )}
+          {location.pathname.startsWith("/admin/speaking") && (
+            <nav className="mx-auto mb-5 flex w-full max-w-[1440px] gap-1 overflow-x-auto rounded-xl border border-[#e4e7ed] bg-white p-1.5" aria-label="Điều hướng quản lý Speaking">
+              {speakingNavigation.map(({ label, to, icon: Icon }) => {
+                const active = to.endsWith("/submissions")
+                  ? location.pathname.startsWith(to)
+                  : !location.pathname.startsWith("/admin/speaking/submissions");
                 return (
                   <Link
                     key={to}
