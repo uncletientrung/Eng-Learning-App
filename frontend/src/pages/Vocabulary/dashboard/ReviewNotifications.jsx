@@ -7,7 +7,7 @@ import { useDueFolders, dueFolderLink } from "./flashcard/useDueFolders";
 import "./ReviewNotifications.css";
 
 export default function ReviewNotifications() {
-  const { folders: dueFolders, loading, error } = useDueFolders();
+  const { folders: dueFolders, loading, error } = useDueFolders({ forNotifications: true });
   const [open, setOpen] = useState(false);
   const [portalHost, setPortalHost] = useState(null);
   const [dismissed, setDismissed] = useState({});
