@@ -7,6 +7,9 @@ namespace EnglishLearning.DAL.Repositories;
 
 public sealed class VocabularyRepository(AppDbContext db) : IVocabularyRepository
 {
+    public Task<User?> GetUserAsync(int userId, CancellationToken ct) =>
+        db.Users.AsNoTracking().FirstOrDefaultAsync(user => user.Id == userId, ct);
+
     public Task<List<Topic>> GetSetsAsync(int userId, bool personal, CancellationToken ct) =>
         db.Topics.AsNoTracking() // read -> no tracking
             .Where(t => t.ModuleType == "VOCABULARY" &&
@@ -45,6 +48,12 @@ public sealed class VocabularyRepository(AppDbContext db) : IVocabularyRepositor
         Action<UserWordProgress> review, CancellationToken ct)
     {
         await using var transaction = await db.Database.BeginTransactionAsync(ct);
+        // Serialize this user's reviews across tabs and sets before reading progress.
+        var users = await db.Users.FromSqlInterpolated(
+            $"SELECT * FROM `user` WHERE Id = {userId} FOR UPDATE").ToListAsync(ct);
+        var user = users.SingleOrDefault();
+        if (user is null) return null;
+
         // Lock the word while updating its progress to avoid duplicate rows or lost level increments.
         var words = await db.Words.FromSqlInterpolated(
             $"SELECT * FROM words WHERE Id = {wordId} AND topic_id = {setId} FOR UPDATE").ToListAsync(ct);
@@ -59,6 +68,19 @@ public sealed class VocabularyRepository(AppDbContext db) : IVocabularyRepositor
         }
         review(progress);
         await db.SaveChangesAsync(ct);
+
+        var today = DateOnly.FromDateTime(progress.LastReviewedAt);
+        if ((user.LastStudyDate is null || user.LastStudyDate < today) &&
+            !await db.Words.Where(w => w.TopicId == setId).AnyAsync(w =>
+                !db.UserWordProgresses.Any(p => p.UserId == userId && p.WordId == w.Id &&
+                    p.LastReviewedAt == progress.LastReviewedAt), ct))
+        {
+            user.CurrentStreak = user.LastStudyDate == today.AddDays(-1)
+                ? user.CurrentStreak + 1 : 1;
+            user.LastStudyDate = today;
+            await db.SaveChangesAsync(ct);
+        }
+
         await transaction.CommitAsync(ct);
         return progress;
     }

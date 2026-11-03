@@ -4,6 +4,7 @@ namespace EnglishLearning.BLL.Interfaces;
 
 public interface IVocabularyService
 {
+    Task<VocabularyStreakDto?> GetStreakAsync(int userId, CancellationToken ct);
     Task<List<VocabularySetDto>> GetSetsAsync(int userId, bool personal, CancellationToken ct);
     Task<VocabularySetDto?> GetSetAsync(int id, int userId, CancellationToken ct);
     Task<List<VocabularyProgressDto>> GetProgressAsync(int userId, CancellationToken ct);

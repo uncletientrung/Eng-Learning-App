@@ -9,7 +9,7 @@ import WordActionDialog from "../notebook/WordActionDialog";
 import FlashcardStatsDialog from "./FlashcardStatsDialog";
 import FlashcardCompletion from "./FlashcardCompletion";
 import FlashcardWordList from "./FlashcardWordList";
-import { useVocabularyProgress, saveWordProgress, loadProgress, isReviewDue, groupFlashcardWords, reviewDelayLabel } from "./flashcardProgress";
+import { useVocabularyProgress, saveWordProgress, loadProgress, isReviewDue, groupFlashcardWords, reviewDelayLabel, reviewDate } from "./flashcardProgress";
 import "./NotebookFlashcards.css";
 
 const grades = [
@@ -132,6 +132,12 @@ function FlashcardSession({ folder, progress }) {
   const statsWords = stats === "Đã nhớ" ? remembered : stats === "Chưa nhớ" ? unseen : folder.words;
   const sessionRemembered = seen.filter((id) => progress[id]?.status === 3);
   const sessionUnremembered = seen.filter((id) => progress[id]?.status !== 3);
+  const studyDate = reviewDate();
+  const remainingToday = folder.words.filter((item) => progress[item.id]?.lastReviewedAt !== studyDate);
+  const continueSet = () => {
+    setStudyIds(remainingToday.map((item) => item.id));
+    setPosition(0); setFlipped(false); setCompleted(false); setReviewed([]); setMessage("");
+  };
   const reviewUnremembered = () => {
     if (!sessionUnremembered.length) return;
     setStudyIds(sessionUnremembered);
@@ -149,7 +155,7 @@ function FlashcardSession({ folder, progress }) {
     <div className="vf-top-grid">
       <section className={`vf-stage td-pop${completed ? " vf-stage-finished" : ""}`} aria-label={`Flashcard thư mục ${folder.name}`}>
         <span className="vf-halo" aria-hidden="true" /><span className="vf-dots" aria-hidden="true" /><span className="vf-ring td-float" aria-hidden="true" /><span className="vf-tape" aria-hidden="true" />{!completed && <span className="vf-moon td-bob" aria-hidden="true"><Moon size={32} fill="#f7e9a2" /></span>}
-        {completed ? <FlashcardCompletion folder={folder} folderLink={folderLink} rememberedCount={sessionRemembered.length} reviewCount={sessionUnremembered.length} onReview={reviewUnremembered} /> : <>
+        {completed ? <FlashcardCompletion folder={folder} folderLink={folderLink} rememberedCount={sessionRemembered.length} reviewCount={sessionUnremembered.length} onReview={reviewUnremembered} remainingCount={remainingToday.length} onContinue={continueSet} /> : <>
           <div className="vf-mobile-title"><strong>Lật thẻ.</strong><Link to={folderLink}>{folder.name}</Link><span>{index + 1}/{ids.length}</span></div>
           <div className="vf-card-area" onTouchStart={(event) => { touchStart.current = event.touches[0].clientX; }} onTouchEnd={(event) => { if (touchStart.current !== null) { const distance = event.changedTouches[0].clientX - touchStart.current; if (Math.abs(distance) > 65) go(distance < 0 ? 1 : -1); } touchStart.current = null; }}>
             <span className="vf-paper vf-paper-one" aria-hidden="true" /><span className="vf-paper vf-paper-two" aria-hidden="true" />

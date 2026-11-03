@@ -2,8 +2,10 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import CalendarDecoration from "./CalendarDecoration";
 import CalendarBadge from "./CalendarBadge";
+import StreakFlame from "./StreakFlame";
+import { isStreakDay } from "./useVocabularyStreak";
 
-export default function DashboardCalendar({ today }) {
+export default function DashboardCalendar({ today, streak, loading, error, onRetry }) {
   const [month, setMonth] = useState(() => today.slice(0, 7));
   const [selected, setSelected] = useState(today);
   const [year, monthNumber] = month.split("-").map(Number);
@@ -14,12 +16,19 @@ export default function DashboardCalendar({ today }) {
     setMonth(`${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}`);
   };
   const label = new Intl.DateTimeFormat("vi-VN", { weekday: "long", day: "2-digit", month: "2-digit", timeZone: "Asia/Bangkok" }).format(new Date(`${selected}T12:00:00+07:00`));
+  const studied = isStreakDay(streak, selected);
+  const status = loading ? "Đang tải..." : error ? "Chưa tải được hoạt động"
+    : studied ? "Đã học" : selected > today ? "Sắp tới" : "Chưa học";
   return (
     <section className="td-pop relative flex flex-col gap-3 rounded-[30px] bg-d-surf px-5 py-[22px] text-d-ink" style={{ gridArea: "cal" }}>
       <CalendarDecoration />
       <div className="flex flex-wrap items-end gap-3.5">
         <h2 className="m-0 text-[24px] font-bold leading-[1.05] tracking-[-0.03em]">Hoạt động học tập.<br /><span className="text-d-mute">Tháng {monthNumber} · {year}</span></h2>
-        <span className="rounded-xl bg-[#ffc02e] px-3.5 py-2 text-sm font-extrabold leading-snug text-[#1b1d22]">{label}{selected === today ? " · Hôm nay" : ""} · chưa học</span>
+        <span className={`flex flex-wrap items-center gap-1 rounded-xl px-3 py-2 text-[12px] font-extrabold leading-snug ${studied ? "bg-[#f0512d] text-white" : "bg-d-surf2 text-d-mute"}`} role="status">
+          {label}{selected === today ? " · Hôm nay" : ""} · {status}
+          {studied && <StreakFlame size={16} />}
+          {error && <button type="button" onClick={onRetry} className="underline" title={error}>Thử lại</button>}
+        </span>
       </div>
       <div className="flex justify-end gap-1">
         <button type="button" aria-label="Tháng trước" onClick={() => moveMonth(-1)} className="rounded-lg p-1 hover:bg-d-surf2"><ChevronLeft size={18} /></button>
@@ -32,7 +41,12 @@ export default function DashboardCalendar({ today }) {
           const day = index + 1;
           const date = `${month}-${String(day).padStart(2, "0")}`;
           const active = selected === date;
-          return <button key={date} type="button" aria-label={`Ngày ${day} tháng ${monthNumber} năm ${year}`} aria-pressed={active} onClick={() => setSelected(date)} className={`relative flex h-10 items-center justify-center transition-transform hover:scale-110 ${active ? "text-[#ffc02e]" : "text-d-surf2"}`}><CalendarBadge /><span className={`relative text-sm font-bold ${active ? "text-[#1b1d22]" : "text-d-ink"}`}>{day}</span>{date === today && <span className="absolute bottom-0.5 size-1 rounded-full bg-d-accent" />}</button>;
+          const learned = isStreakDay(streak, date);
+          return <button key={date} type="button" aria-label={`Ngày ${day} tháng ${monthNumber} năm ${year}${learned ? ", đã học" : ""}`} aria-pressed={active} aria-current={date === today ? "date" : undefined} onClick={() => setSelected(date)} className={`relative flex h-10 items-center justify-center rounded-xl transition-transform hover:scale-110 ${learned ? "text-[#f0512d]" : active ? "bg-d-surf2 text-d-ink" : "text-d-mute"}`}>
+            {learned && <CalendarBadge />}
+            <span className={`relative text-sm font-bold ${learned ? "text-white" : ""}`}>{day}</span>
+            {date === today && !learned && <span className="absolute bottom-0.5 size-1 rounded-full bg-d-accent" />}
+          </button>;
         })}
       </div>
     </section>

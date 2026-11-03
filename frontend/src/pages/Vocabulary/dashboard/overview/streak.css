@@ -1,0 +1,121 @@
+.vocabulary-dashboard .td-streak-card {
+  background: #5b79fa;
+  min-height: 460px;
+}
+
+.vocabulary-dashboard .td-streak-flame {
+  position: relative;
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.vocabulary-dashboard .td-streak-flame svg {
+  position: relative;
+  z-index: 1;
+}
+
+.vocabulary-dashboard .td-streak-glow {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #ffb338b3 0%, #ff794966 38%, transparent 72%);
+  pointer-events: none;
+}
+
+.vocabulary-dashboard .td-streak-flame-core {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: .65s ease-in-out infinite alternate tdFlame;
+}
+
+.vocabulary-dashboard .td-streak-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+  padding: 6px;
+  border-radius: 20px;
+  background: #ffffff26;
+}
+
+.vocabulary-dashboard .td-streak-day {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+  padding: 4px 0;
+  border-radius: 14px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.vocabulary-dashboard .td-streak-day.is-today {
+  color: #67422c;
+  background: #fff7ee;
+  box-shadow: 0 0 18px #ffc46b80;
+}
+
+.vocabulary-dashboard .td-streak-day.is-today .td-streak-flame {
+  width: 40px;
+  height: 36px;
+}
+
+.vocabulary-dashboard .td-streak-empty {
+  width: 25px;
+  height: 25px;
+  margin: 5.5px 0;
+  border: 1.5px solid #ffffffb3;
+  border-radius: 50%;
+  background: #ffffff12;
+}
+
+.vocabulary-dashboard .td-streak-day.is-today .td-streak-empty {
+  border-color: #b6b9d2;
+}
+
+.vocabulary-dashboard .td-streak-status {
+  position: relative;
+  z-index: 5;
+  align-self: flex-start;
+  max-width: calc(100% - 45px);
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #ffffff33;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.4;
+}
+
+.vocabulary-dashboard .td-streak-status button {
+  margin-left: 6px;
+  text-decoration: underline;
+}
+
+.vocabulary-dashboard .td-streak-count {
+  font-variant-numeric: tabular-nums;
+}
+
+.vocabulary-dashboard .td-streak-feedback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--d-ink);
+}
+
+.vocabulary-dashboard .td-streak-feedback .td-streak-flame {
+  width: 24px;
+  height: 28px;
+}
+
+@media (max-width: 400px) {
+  .vocabulary-dashboard .td-streak-card { min-height: 430px; }
+}

@@ -30,7 +30,10 @@ public static class LegacyDatabaseBaseline
     {
         var appliedMigrations = await context.Database
             .GetAppliedMigrationsAsync(cancellationToken);
-        if (appliedMigrations.Contains(InitialMigration, StringComparer.Ordinal))
+        var currentInitialMigration = context.Database.GetMigrations().FirstOrDefault();
+        if (appliedMigrations.Contains(InitialMigration, StringComparer.Ordinal) ||
+            (currentInitialMigration is not null &&
+                appliedMigrations.Contains(currentInitialMigration, StringComparer.Ordinal)))
             return;
 
         if (appliedMigrations.Any())

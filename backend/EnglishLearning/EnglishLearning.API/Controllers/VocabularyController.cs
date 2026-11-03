@@ -23,6 +23,13 @@ public sealed class VocabularyController(IVocabularyService service) : Controlle
     [HttpGet("progress")]
     public async Task<IActionResult> GetProgress(CancellationToken ct) => Ok(await service.GetProgressAsync(UserId, ct));
 
+    [HttpGet("streak")]
+    public async Task<IActionResult> GetStreak(CancellationToken ct)
+    {
+        var result = await service.GetStreakAsync(UserId, ct);
+        return result is null ? NotFound(new { message = "Không tìm thấy người dùng." }) : Ok(result);
+    }
+
     [HttpPut("{id:int}/words/{wordId:int}/progress")]
     public async Task<IActionResult> ReviewWord(int id, int wordId, ReviewVocabularyWordRequest request, CancellationToken ct)
     {

@@ -62,3 +62,7 @@ public sealed record VocabularyProgressDto(
     VocabularyWordDto Word, string SetName, int WordCount,
     byte Status, byte Level, DateOnly LastReviewedAt, DateOnly NextReviewAt,
     int RememberedDelayDays);
+
+public sealed record VocabularyStreakDto(
+    int CurrentStreak, DateOnly? LastStudyDate, DateOnly? StreakStartDate,
+    DateOnly Today, bool StudiedToday);

@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { PartyPopper } from "lucide-react";
 import VocabularySun from "../../../../components/sections/vocabulary/VocabularySun";
 import "./FlashcardCompletion.css";
+import StreakFlame from "../overview/StreakFlame";
+import useVocabularyStreak from "../overview/useVocabularyStreak";
 
 const confettiColors = ["#5c78ff", "#39b98e", "#ff7199", "#ffffff", "#e98036", "#9b63d8"];
 const confetti = Array.from({ length: 44 }, (_, index) => ({
@@ -13,7 +15,8 @@ const confetti = Array.from({ length: 44 }, (_, index) => ({
   "--confetti-duration": `${2.7 + (index % 7) * .22}s`,
 }));
 
-export default function FlashcardCompletion({ folder, rememberedCount, reviewCount, onReview, folderLink }) {
+export default function FlashcardCompletion({ folder, rememberedCount, reviewCount, onReview, folderLink, remainingCount, onContinue }) {
+  const { streak, loading, error, retry } = useVocabularyStreak();
   const total = rememberedCount + reviewCount;
   const percent = total ? Math.round(rememberedCount / total * 100) : 0;
   return <>
@@ -23,11 +26,17 @@ export default function FlashcardCompletion({ folder, rememberedCount, reviewCou
       <span className="vf-finish-badge" aria-hidden="true"><PartyPopper size={30} /></span>
       <h1 id="vf-finish-title">Hoàn thành!</h1>
       <p>Thống kê phiên học của bạn</p>
+      <div className="td-streak-feedback" role="status">
+        {loading ? "Đang tải chuỗi ngày học..." : error ? <><span>Chưa tải được chuỗi.</span><button type="button" onClick={retry} className="underline" title={error}>Thử lại</button></>
+          : streak?.studiedToday ? <><StreakFlame /><span>Đã giữ chuỗi hôm nay · {streak.currentStreak} ngày liên tiếp!</span></>
+            : <span>Học đủ một bộ trong ngày để giữ chuỗi nhé!</span>}
+      </div>
       <div className="vf-finish-stats">
         <div className="vf-finish-ratio"><div className="vf-finish-ring vf-finish-ring-animated" style={{ "--vf-result-offset": 100 - percent }} role="img" aria-label={`${percent}% từ đã nhớ`}><svg viewBox="0 0 68 68" aria-hidden="true"><circle className="vf-result-track" cx="34" cy="34" r="29" /><circle className="vf-result-fill" cx="34" cy="34" r="29" pathLength="100" /></svg><strong>{percent}%</strong></div><span>Tỷ lệ đã nhớ</span></div>
         <div className="vf-finish-legend"><span><i />{rememberedCount} Đã nhớ</span><span><i />{reviewCount} Cần ôn lại</span></div>
       </div>
       <div className="vf-finish-actions"><button type="button" disabled={!reviewCount} onClick={onReview}>Ôn những từ chưa nhớ</button><Link to={folderLink}>Về bộ từ</Link></div>
+      {streak && !streak.studiedToday && remainingCount > 0 && <div className="vf-finish-actions"><button type="button" onClick={onContinue}>Học nốt {remainingCount} từ để giữ chuỗi</button></div>}
       {!reviewCount && <p className="vf-finish-all-known">Bạn đã nhớ tất cả từ trong phiên này!</p>}
     </section>
     <section className="vf-finish-message" aria-label="Kết quả phiên học">

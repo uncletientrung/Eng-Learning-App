@@ -4,6 +4,7 @@ namespace EnglishLearning.DAL.Interfaces;
 
 public interface IVocabularyRepository
 {
+    Task<User?> GetUserAsync(int userId, CancellationToken ct);
     // Task<List<Topic>> -> bất đồng bộ -> List<Topic>
     Task<List<Topic>> GetSetsAsync(int userId, bool personal, CancellationToken ct); // n topic
     Task<Topic?> GetSetAsync(int id, int userId, bool ownedOnly, CancellationToken ct); // 1 topic

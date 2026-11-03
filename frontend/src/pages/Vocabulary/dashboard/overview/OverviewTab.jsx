@@ -5,6 +5,7 @@ import DashboardVocabulary from "./DashboardVocabulary";
 import DashboardCountdown from "./DashboardCountdown";
 import DashboardCalendar from "./DashboardCalendar";
 import DashboardSkills from "./DashboardSkills";
+import useVocabularyStreak from "./useVocabularyStreak";
 
 const quotes = [
   "Hít thở sâu trước khi bắt đầu — bình tĩnh cũng là một kỹ năng.",
@@ -13,6 +14,7 @@ const quotes = [
 ];
 
 export default function OverviewTab({ preferences, onBandChange, onExamDateChange, today }) {
+  const { streak, loading, error, retry } = useVocabularyStreak(today);
   const [quoteIndex, setQuoteIndex] = useState(0);
   const dateInputRef = useRef(null);
   const daysRemaining = preferences.examDate ? Math.max(0, Math.round((Date.parse(`${preferences.examDate}T00:00:00+07:00`) - Date.parse(`${today}T00:00:00+07:00`)) / 86_400_000)) : null;
@@ -22,10 +24,10 @@ export default function OverviewTab({ preferences, onBandChange, onExamDateChang
   };
   return <div className="td-overview"><div className="td-ov-grid">
     <DashboardHero band={preferences.band ?? 6.5} onBandChange={onBandChange} hasGoal={preferences.band !== null} />
-    <DashboardStreak today={today} />
+    <DashboardStreak today={today} streak={streak} loading={loading} error={error} onRetry={retry} />
     <DashboardVocabulary />
     <DashboardCountdown dateInputRef={dateInputRef} onChooseDate={chooseExamDate} examDate={preferences.examDate} onExamDateChange={onExamDateChange} today={today} todayLabel={today.slice(5).split("-").reverse().join("/")} daysRemaining={daysRemaining} quote={quotes[quoteIndex]} onNextQuote={() => setQuoteIndex((value) => (value + 1) % quotes.length)} />
-    <DashboardCalendar today={today} />
+    <DashboardCalendar today={today} streak={streak} loading={loading} error={error} onRetry={retry} />
     <DashboardSkills />
   </div></div>;
 }

@@ -9,6 +9,19 @@ public sealed class VocabularyService(IVocabularyRepository repository, TimeProv
 {
     private static readonly int[] ReviewDays = [0, 3, 7, 15, 30, 60, 90, 180];
 
+    public async Task<VocabularyStreakDto?> GetStreakAsync(int userId, CancellationToken ct)
+    {
+        var user = await repository.GetUserAsync(userId, ct);
+        if (user is null) return null;
+        var today = DateOnly.FromDateTime(
+            (clock ?? TimeProvider.System).GetUtcNow().ToOffset(TimeSpan.FromHours(7)).Date);
+        var currentStreak = user.LastStudyDate >= today.AddDays(-1) && user.LastStudyDate <= today
+            ? user.CurrentStreak : 0;
+        var start = user.LastStudyDate is { } last && user.CurrentStreak > 0
+            ? last.AddDays(1 - user.CurrentStreak) : (DateOnly?)null;
+        return new(currentStreak, user.LastStudyDate, start, today, user.LastStudyDate == today);
+    }
+
     private static int RememberedDelay(int level) =>
         level < ReviewDays.Length ? ReviewDays[level] : 365 * (level - 7);
 
