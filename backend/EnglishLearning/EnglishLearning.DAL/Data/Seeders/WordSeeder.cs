@@ -17,11 +17,17 @@ public static class WordSeeder
         var existingWords = await context.Words
             .AsNoTracking()
             .Where(word => Enumerable.Contains(actualTopicIds, word.TopicId))
-            .Select(word => new { word.TopicId, word.WordText, word.PartOfSpeech, word.Meaning })
+            .Select(word => new
+            {
+                word.TopicId, word.WordText, word.PartOfSpeech, word.Meaning,
+                word.Phonetic, word.Example
+            })
             .ToListAsync(cancellationToken);
+        // Giữ các bản ghi có phiên âm hoặc ví dụ khác nhau trong dữ liệu SQL.
         var known = existingWords
             .Select(word => (word.TopicId, Normalize(word.WordText),
-                Normalize(word.PartOfSpeech), Normalize(word.Meaning)))
+                Normalize(word.PartOfSpeech), Normalize(word.Meaning),
+                word.Phonetic, word.Example))
             .ToHashSet();
         var additions = new List<Word>();
 
@@ -29,7 +35,8 @@ public static class WordSeeder
         {
             var topicId = topicIds[seed.SourceTopicId];
             if (!known.Add((topicId, Normalize(seed.Text),
-                    Normalize(seed.PartOfSpeech), Normalize(seed.Meaning))))
+                    Normalize(seed.PartOfSpeech), Normalize(seed.Meaning),
+                    seed.Phonetic, seed.Example)))
             {
                 continue;
             }
@@ -52,7 +59,7 @@ public static class WordSeeder
         }
     }
 
-    // Match the duplicate-word rule used by VocabularyService.
+    // Chuẩn hóa từ, từ loại và nghĩa khi kiểm tra trùng.
     private static string Normalize(string value) =>
         string.Join(" ", value.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries))
             .ToLowerInvariant();
