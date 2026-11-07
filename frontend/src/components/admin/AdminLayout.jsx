@@ -1,23 +1,14 @@
 import { useState } from "react";
 import {
-  ChevronLeft,
-  ChevronRight,
   FileText,
   ClipboardList,
-  LayoutDashboard,
   LogOut,
   Menu,
   Mic,
-  X,
 } from "lucide-react";
-import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { getCurrentUser, logout } from "../../services/authApi";
-
-const navigation = [
-  { label: "Dashboard", to: "/admin", icon: LayoutDashboard, end: true },
-  { label: "Quản lý Writing", to: "/admin/writing", icon: FileText },
-  { label: "Quản lý Speaking", to: "/admin/speaking", icon: Mic },
-];
+import AdminSidebar from "./AdminSidebar";
 
 const writingNavigation = [
   { label: "Quản lý đề Writing", to: "/admin/writing", icon: FileText },
@@ -27,15 +18,6 @@ const writingNavigation = [
 const speakingNavigation = [
   { label: "Quản lý đề Speaking", to: "/admin/speaking", icon: Mic },
   { label: "Bài nộp Speaking", to: "/admin/speaking/submissions", icon: ClipboardList },
-];
-
-const comingSoon = [
-  "Quản lý Reading",
-  "Quản lý Listening",
-  "Quản lý Vocabulary",
-  "Quản lý Grammar",
-  "Quản lý Idioms",
-  "Quản lý Users",
 ];
 
 function currentTitle(pathname) {
@@ -71,84 +53,13 @@ export default function AdminLayout() {
 
   return (
     <div className="flex h-dvh min-h-dvh w-full overflow-hidden bg-[#e9edf3] text-[#1b1d22] font-sans [&_*]:box-border [&_button]:[font:inherit] [&_a]:[font:inherit] [&_input]:[font:inherit] [&_select]:[font:inherit] [&_textarea]:[font:inherit] [&_button]:[-webkit-tap-highlight-color:transparent] [&_a]:[-webkit-tap-highlight-color:transparent] [&_button:focus-visible]:outline-2 [&_button:focus-visible]:outline-offset-2 [&_button:focus-visible]:outline-[#4f7cf7] [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-2 [&_a:focus-visible]:outline-[#4f7cf7] [&_input:focus-visible]:outline-2 [&_input:focus-visible]:outline-offset-2 [&_input:focus-visible]:outline-[#4f7cf7] [&_select:focus-visible]:outline-2 [&_select:focus-visible]:outline-offset-2 [&_select:focus-visible]:outline-[#4f7cf7] [&_textarea:focus-visible]:outline-2 [&_textarea:focus-visible]:outline-offset-2 [&_textarea:focus-visible]:outline-[#4f7cf7]">
-      {mobileOpen && (
-        <button
-          type="button"
-          className="fixed inset-0 z-[19] hidden border-0 bg-[#10172580] max-[760px]:block"
-          aria-label="Đóng menu"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
-      <aside className={`relative z-20 flex h-full w-[258px] shrink-0 flex-col overflow-auto border-r border-[#e4e7ed] bg-white px-[14px] py-5 transition-[width,flex-basis,transform] duration-200 max-[760px]:fixed max-[760px]:inset-y-0 max-[760px]:left-0 max-[760px]:z-20 max-[760px]:h-dvh max-[760px]:w-[min(290px,84vw)] max-[760px]:px-[14px] max-[760px]:py-[18px] ${mobileOpen ? "max-[760px]:translate-x-0" : "max-[760px]:-translate-x-[105%]"} ${collapsed ? "min-[761px]:w-[76px] min-[761px]:basis-[76px] min-[761px]:px-[10px]" : ""}`}>
-        <div className={`${"flex min-h-12 items-center gap-2.5 border-b border-[#e4e7ed] px-[5px] pb-4"} ${collapsed ? "min-[761px]:justify-center min-[761px]:px-0" : ""}`}>
-          <Link to="/" className="shrink-0 [&_img]:block [&_img]:size-[39px] [&_img]:rounded-xl [&_img]:border [&_img]:border-[#e4e7ed] [&_img]:object-cover" aria-label="Về trang chủ">
-            <img src="/assets/logo-finall.png" alt="" />
-          </Link>
-          <div className={`${"flex min-w-0 flex-col gap-0.5 [&_strong]:overflow-hidden [&_strong]:text-ellipsis [&_strong]:whitespace-nowrap [&_strong]:text-xs [&_strong]:font-black [&_strong]:tracking-[.045em] [&_span]:text-[9px] [&_span]:font-extrabold [&_span]:tracking-[.12em] [&_span]:text-[#6b7080]"} ${collapsed ? "min-[761px]:hidden max-[760px]:flex" : ""}`}>
-            <strong>IELTS DICTIONARY</strong>
-            <span>ADMIN WORKSPACE</span>
-          </div>
-          <button
-            type="button"
-            className="ml-auto hidden size-8 items-center justify-center rounded-[10px] text-[#1b1d22] hover:bg-[#f1f3f7] max-[760px]:inline-flex"
-            aria-label="Đóng menu"
-            onClick={() => setMobileOpen(false)}
-          >
-            <X size={19} />
-          </button>
-        </div>
-
-        <p className={`${"mx-2.5 mb-2 mt-5 text-[9px] font-black tracking-[.16em] text-[#6b7080]"} ${collapsed ? "min-[761px]:hidden max-[760px]:block" : ""}`}>QUẢN TRỊ</p>
-        <nav className="grid gap-1" aria-label="Điều hướng quản trị">
-          {navigation.map(({ label, to, icon: Icon, end }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              onClick={() => setMobileOpen(false)}
-              className={({ isActive }) => {
-                return `flex min-h-[42px] w-full items-center gap-[11px] rounded-xl px-[11px] py-[9px] text-left text-[13px] font-bold no-underline transition-colors hover:bg-[#f1f3f7] ${isActive ? "bg-[#eaf0ff] text-[#355fc8]" : "text-[#1b1d22]"}${collapsed ? " min-[761px]:justify-center min-[761px]:px-2 [&>span]:min-[761px]:hidden" : ""}`;
-              }}
-              title={collapsed ? label : undefined}
-            >
-              <Icon size={19} />
-              <span>{label}</span>
-            </NavLink>
-          ))}
-        </nav>
-        <p className={`${"mx-2.5 mb-2 mt-5 text-[9px] font-black tracking-[.16em] text-[#6b7080] mt-6"} ${collapsed ? "min-[761px]:hidden max-[760px]:block" : ""}`}>SẮP RA MẮT</p>
-        <nav className="grid gap-1" aria-label="Các chức năng đang phát triển">
-          {comingSoon.map((label) => (
-            <div className={`${"flex min-h-[42px] w-full items-center gap-[11px] rounded-xl px-[11px] py-[9px] text-left text-[13px] font-bold text-[#1b1d22] no-underline transition-colors hover:bg-[#f1f3f7] min-h-[34px] cursor-default py-1.5 text-[#6b7080] hover:bg-transparent [&_small]:ml-auto [&_small]:text-[9px] [&_small]:font-bold"} ${collapsed ? "min-[761px]:hidden max-[760px]:flex" : ""}`} key={label} title={label}>
-              <span className="size-[7px] shrink-0 rounded-full border border-[#6b7080]" />
-              <span>{label}</span>
-              <small>Sắp tới</small>
-            </div>
-          ))}
-        </nav>
-        <div className="relative mt-auto grid gap-2 border-t border-[#e4e7ed] pt-4">
-          <div className={`${"flex min-w-0 items-center gap-2.5 px-[5px] pb-1"} ${collapsed ? "min-[761px]:justify-center min-[761px]:px-0 max-[760px]:justify-start max-[760px]:px-[5px]" : ""}`}>
-            <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#e7edff] text-sm font-black text-[#355fc8]">{initials}</span>
-            <div className={`${"flex min-w-0 flex-col gap-0.5 [&_strong]:overflow-hidden [&_strong]:text-ellipsis [&_strong]:whitespace-nowrap [&_strong]:text-xs [&_strong]:font-black [&_strong]:tracking-[.045em] [&_span]:text-[9px] [&_span]:font-extrabold [&_span]:tracking-[.12em] [&_span]:text-[#6b7080]"} ${collapsed ? "min-[761px]:hidden max-[760px]:flex" : ""}`}>
-              <strong>{user?.name || "Quản trị viên"}</strong>
-              <span>ADMINISTRATOR</span>
-            </div>
-          </div>
-          <button type="button" className={`${"flex min-h-[42px] w-full items-center gap-[11px] rounded-xl px-[11px] py-[9px] text-left text-[13px] font-bold text-[#d94355] no-underline hover:bg-[#f1f3f7]"} ${collapsed ? "min-[761px]:justify-center min-[761px]:px-2 [&>span]:min-[761px]:hidden" : ""}`} onClick={signOut}>
-            <LogOut size={18} />
-            <span>Đăng xuất</span>
-          </button>
-          <button
-            type="button"
-            className="absolute -top-8 right-0 inline-flex size-[26px] items-center justify-center rounded-lg border border-[#e4e7ed] bg-white text-[#6b7080] hover:bg-[#f1f3f7] max-[760px]:hidden"
-            aria-label={collapsed ? "Mở rộng sidebar" : "Thu gọn sidebar"}
-            aria-expanded={!collapsed}
-            onClick={() => setCollapsed((value) => !value)}
-          >
-            {collapsed ? <ChevronRight size={17} /> : <ChevronLeft size={17} />}
-          </button>
-        </div>
-      </aside>
+      <AdminSidebar
+        expanded={!collapsed}
+        onToggleExpanded={() => setCollapsed((value) => !value)}
+        mobileOpen={mobileOpen}
+        onCloseMobile={() => setMobileOpen(false)}
+        onLogout={signOut}
+      />
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="relative z-10 flex min-h-[76px] items-center justify-between gap-[18px] border-b border-[#e4e7ed] bg-white px-[30px] py-3 max-[760px]:min-h-[68px] max-[760px]:justify-start max-[760px]:gap-2.5 max-[760px]:px-[14px] max-[760px]:py-2.5">
