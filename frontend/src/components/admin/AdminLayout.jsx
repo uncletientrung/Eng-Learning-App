@@ -9,6 +9,7 @@ import {
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { getCurrentUser, logout } from "../../services/authApi";
 import AdminSidebar from "./AdminSidebar";
+import "./AdminLayout.css";
 
 const writingNavigation = [
   { label: "Quản lý đề Writing", to: "/admin/writing", icon: FileText },
@@ -40,6 +41,7 @@ export default function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [dark, setDark] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const user = getCurrentUser();
@@ -52,13 +54,15 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="flex h-dvh min-h-dvh w-full overflow-hidden bg-[#e9edf3] text-[#1b1d22] font-sans [&_*]:box-border [&_button]:[font:inherit] [&_a]:[font:inherit] [&_input]:[font:inherit] [&_select]:[font:inherit] [&_textarea]:[font:inherit] [&_button]:[-webkit-tap-highlight-color:transparent] [&_a]:[-webkit-tap-highlight-color:transparent] [&_button:focus-visible]:outline-2 [&_button:focus-visible]:outline-offset-2 [&_button:focus-visible]:outline-[#4f7cf7] [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-2 [&_a:focus-visible]:outline-[#4f7cf7] [&_input:focus-visible]:outline-2 [&_input:focus-visible]:outline-offset-2 [&_input:focus-visible]:outline-[#4f7cf7] [&_select:focus-visible]:outline-2 [&_select:focus-visible]:outline-offset-2 [&_select:focus-visible]:outline-[#4f7cf7] [&_textarea:focus-visible]:outline-2 [&_textarea:focus-visible]:outline-offset-2 [&_textarea:focus-visible]:outline-[#4f7cf7]">
+    <div className={`admin-layout flex h-dvh min-h-dvh w-full overflow-hidden bg-[#e9edf3] text-[#1b1d22] font-sans [&_*]:box-border [&_button]:[font:inherit] [&_a]:[font:inherit] [&_input]:[font:inherit] [&_select]:[font:inherit] [&_textarea]:[font:inherit] [&_button]:[-webkit-tap-highlight-color:transparent] [&_a]:[-webkit-tap-highlight-color:transparent] [&_button:focus-visible]:outline-2 [&_button:focus-visible]:outline-offset-2 [&_button:focus-visible]:outline-[#4f7cf7] [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-2 [&_a:focus-visible]:outline-[#4f7cf7] [&_input:focus-visible]:outline-2 [&_input:focus-visible]:outline-offset-2 [&_input:focus-visible]:outline-[#4f7cf7] [&_select:focus-visible]:outline-2 [&_select:focus-visible]:outline-offset-2 [&_select:focus-visible]:outline-[#4f7cf7] [&_textarea:focus-visible]:outline-2 [&_textarea:focus-visible]:outline-offset-2 [&_textarea:focus-visible]:outline-[#4f7cf7]${dark ? " is-dark" : ""}`}>
       <AdminSidebar
         expanded={!collapsed}
         onToggleExpanded={() => setCollapsed((value) => !value)}
         mobileOpen={mobileOpen}
         onCloseMobile={() => setMobileOpen(false)}
         onLogout={signOut}
+        dark={dark}
+        onToggleTheme={() => setDark((value) => !value)}
       />
 
       <div className="flex min-w-0 flex-1 flex-col">

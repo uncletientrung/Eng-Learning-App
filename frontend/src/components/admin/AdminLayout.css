@@ -1,0 +1,119 @@
+.admin-layout {
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.admin-layout.is-dark {
+  background-color: #0e1014;
+  color: #eef0f4;
+}
+
+.admin-layout.is-dark [class~="bg-white"],
+.admin-layout.is-dark [class~="bg-[#fff]"],
+.admin-layout.is-dark [class~="bg-[#ffffff]"] {
+  background-color: #1f232b;
+}
+
+.admin-layout.is-dark [class~="bg-[#f1f3f7]"],
+.admin-layout.is-dark [class~="bg-[#e9edf3]"] {
+  background-color: #171a20;
+}
+
+.admin-layout.is-dark [class~="text-[#1b1d22]"] {
+  color: #eef0f4;
+}
+
+.admin-layout.is-dark [class~="text-[#6b7080]"] {
+  color: #a1a7b3;
+}
+
+.admin-layout.is-dark [class~="border-[#e4e7ed]"] {
+  border-color: #2a2f39;
+}
+
+.admin-layout.is-dark [class~="hover:bg-[#f1f3f7]"]:hover {
+  background-color: #2a2f39;
+}
+
+.admin-layout table {
+  border-collapse: collapse;
+}
+
+.admin-layout table thead th {
+  padding: 11px 14px;
+  border-bottom: 1px solid #e4e7ed;
+  background-color: #f1f3f7;
+  color: #6b7080;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.admin-layout table thead th:first-child {
+  border-top-left-radius: 10px;
+}
+
+.admin-layout table thead th:last-child {
+  border-top-right-radius: 10px;
+}
+
+.admin-layout table tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e4e7ed;
+  vertical-align: middle;
+}
+
+.admin-layout table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.admin-layout.is-dark table thead th {
+  border-bottom-color: #2a2f39;
+  background-color: #232833;
+  color: #a1a7b3;
+}
+
+.admin-layout.is-dark table tbody td {
+  border-bottom-color: #2a2f39;
+}
+
+.admin-table-pagination {
+  border-top: 1px solid #e4e7ed;
+  background-color: #f1f3f7;
+}
+
+.admin-layout.is-dark .admin-table-pagination {
+  border-top-color: #2a2f39;
+  background-color: #232833;
+}
+
+.admin-layout table tbody tr:hover,
+.admin-layout.is-dark table tbody tr:hover {
+  background-color: transparent !important;
+}
+
+.admin-layout table tbody tr:hover > td,
+.admin-layout.is-dark table tbody tr:hover > td {
+  box-shadow: inset 0 2px color(srgb 0.529412 0.313726 0.216471),
+    inset 0 -2px color(srgb 0.529412 0.313726 0.216471);
+  transition: box-shadow 0.24s ease;
+}
+
+.admin-layout table tbody tr:hover > td:first-child {
+  box-shadow: inset 2px 0 color(srgb 0.529412 0.313726 0.216471),
+    inset 0 2px color(srgb 0.529412 0.313726 0.216471),
+    inset 0 -2px color(srgb 0.529412 0.313726 0.216471);
+}
+
+.admin-layout table tbody tr:hover > td:last-child {
+  box-shadow: inset -2px 0 color(srgb 0.529412 0.313726 0.216471),
+    inset 0 2px color(srgb 0.529412 0.313726 0.216471),
+    inset 0 -2px color(srgb 0.529412 0.313726 0.216471);
+}
+
+.admin-layout.is-dark input,
+.admin-layout.is-dark textarea,
+.admin-layout.is-dark select {
+  color-scheme: dark;
+}

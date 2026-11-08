@@ -134,6 +134,21 @@ public sealed class AdminSpeakingService : IAdminSpeakingService
         return _repository.SetExerciseStatusAsync(id, isActive, cancellationToken);
     }
 
+    public async Task DeleteExerciseAsync(
+        int id,
+        CancellationToken cancellationToken)
+    {
+        if (id <= 0)
+            throw new ArgumentException("ID đề Speaking không hợp lệ.");
+
+        var result = await _repository.DeleteExerciseAsync(id, cancellationToken);
+        if (!result.Exists)
+            throw new KeyNotFoundException("Không tìm thấy đề Speaking.");
+        if (result.HasAttempts)
+            throw new InvalidOperationException(
+                "Không thể xóa đề đã có bài làm. Hãy ẩn đề để giữ lịch sử học viên.");
+    }
+
     public Task<AdminPageDto<AdminSpeakingSubmissionDto>> GetSubmissionsAsync(
         AdminSpeakingSubmissionQueryDto query,
         CancellationToken cancellationToken)

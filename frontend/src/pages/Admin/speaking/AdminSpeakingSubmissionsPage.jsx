@@ -4,8 +4,8 @@ import { Link, useSearchParams } from "react-router-dom";
 import {
   deleteAdminSpeakingSubmission,
   getAdminSpeakingSubmissions,
-} from "../../services/adminApi";
-import { getTopicByModule } from "../../services/topicAPI";
+} from "../../../services/adminApi";
+import { getTopicByModule } from "../../../services/topicAPI";
 
 const typeNames = { INTRODUCTION_INTERVIEW: "Part 1", TOPIC: "Part 2", TOPIC_DISCUSS: "Part 3" };
 const statusNames = { IN_PROGRESS: "Đang làm", SUBMITTED: "Đã nộp", GRADING: "Đang chấm", GRADING_FAILED: "Chấm lỗi", GRADED: "Đã chấm", ABANDONED: "Đã bỏ" };
@@ -102,27 +102,43 @@ export default function AdminSpeakingSubmissionsPage() {
         <label className="grid gap-1 text-[10px] font-bold text-slate-500">Từ ngày<input className={controlClass} type="date" value={filters.from} onChange={(event) => changeFilter("from", event.target.value)} /></label>
         <label className="grid gap-1 text-[10px] font-bold text-slate-500">Đến ngày<input className={controlClass} type="date" value={filters.to} onChange={(event) => changeFilter("to", event.target.value)} /></label>
       </div>
-      <div className="overflow-x-auto rounded-2xl border border-[#e4e7ed] bg-white">
-        <table className="w-full min-w-[1120px] border-collapse text-left text-xs">
-          <thead className="bg-[#f7f8fa] text-[10px] uppercase tracking-wide text-[#6b7080]"><tr>{["Học viên", "Đề Speaking", "Trạng thái", "Điểm", "Thời gian", ""].map((item, index) => <th className="px-4 py-3" key={`${item}-${index}`}>{item}</th>)}</tr></thead>
-          <tbody className="divide-y divide-[#edf0f4]">
-            {loading ? <tr><td className="px-4 py-10 text-center text-slate-500" colSpan="6">Đang tải bài nộp...</td></tr>
-              : data?.items?.length ? data.items.map((item) => <tr key={item.attemptId}>
-                <td className="px-4 py-3"><strong className="block">{item.userName}</strong><span className="text-[11px] text-slate-500">{item.userEmail}</span></td>
-                <td className="px-4 py-3"><strong className="block">{item.exerciseTitle}</strong><span className="text-[11px] text-slate-500">{item.topicName} · {typeNames[item.speakingType]} · #{item.exerciseId}</span></td>
-                <td className="px-4 py-3"><StatusBadge status={item.status} /></td>
-                <td className="px-4 py-3 font-bold">{item.overallScore ?? "—"}</td>
-                <td className="px-4 py-3">{new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(item.completedAt || item.startedAt))}</td>
-                <td className="px-4 py-3"><div className="flex items-center gap-1">
-                  <Link className="inline-flex min-h-[30px] shrink-0 items-center gap-1 whitespace-nowrap rounded-lg border border-[#4f7cf7] bg-[#4f7cf7] px-2 py-1.5 text-[10px] font-extrabold text-white no-underline hover:bg-[#3d68d8]" to={`/admin/speaking/submissions/${item.attemptId}`}><ArrowUpRight size={13} />Xem chi tiết</Link>
-                  {item.status === "GRADED" && <Link className="inline-flex min-h-[30px] shrink-0 items-center gap-1 whitespace-nowrap rounded-lg border border-[#d8e2ff] bg-[#f3f6ff] px-2 py-1.5 text-[10px] font-extrabold text-[#315fc5] no-underline hover:bg-[#e8eeff]" to={`/admin/speaking/submissions/${item.attemptId}?edit=true`} aria-label={`Sửa kết quả bài nộp ${item.attemptId}`}><Pencil size={13} />Sửa</Link>}
-                  <button type="button" className="inline-flex min-h-[30px] shrink-0 items-center gap-1 whitespace-nowrap rounded-lg border border-[#f1c1c5] bg-white px-2 py-1.5 text-[10px] font-extrabold text-[#a63240] hover:bg-[#fff4f5] disabled:cursor-not-allowed disabled:opacity-55" onClick={() => deleteSubmission(item)} disabled={deletingId === item.attemptId} aria-label={`Xóa bài nộp ${item.attemptId}`}><Trash2 size={13} />{deletingId === item.attemptId ? "Đang xóa..." : "Xóa"}</button>
-                </div></td>
-              </tr>) : <tr><td className="px-4 py-10 text-center text-slate-500" colSpan="6">Chưa có bài nộp phù hợp bộ lọc.</td></tr>}
-          </tbody>
-        </table>
-      </div>
-      <div className="mt-4 flex items-center justify-between text-xs text-slate-500"><span>{data?.totalCount || 0} lượt làm</span><div className="flex items-center gap-2"><button type="button" className="rounded-lg border bg-white px-3 py-2 disabled:opacity-40" disabled={page <= 1 || loading} onClick={() => { setLoading(true); setPage((value) => value - 1); }}>Trước</button><span>Trang {page} / {pageCount}</span><button type="button" className="rounded-lg border bg-white px-3 py-2 disabled:opacity-40" disabled={page >= pageCount || loading} onClick={() => { setLoading(true); setPage((value) => value + 1); }}>Sau</button></div></div>
+      <section className="min-w-0 rounded-2xl border border-[#e4e7ed] bg-white shadow-[0_7px_22px_#17203308]">
+        {loading ? (
+          <div className="rounded-xl border border-[#e4e7ed] bg-white px-[15px] py-[35px] text-center text-xs text-[#6b7080]" role="status">Đang tải bài nộp...</div>
+        ) : data?.items?.length ? (
+          <>
+            <div className="w-full overflow-x-auto">
+              <table className="w-full min-w-[1120px] border-collapse text-left text-xs">
+                <thead className="bg-[#f7f8fa] text-[10px] uppercase tracking-wide text-[#6b7080]"><tr>{["Học viên", "Đề Speaking", "Trạng thái", "Điểm", "Thời gian", ""].map((item, index) => <th className="px-4 py-3" key={`${item}-${index}`}>{item}</th>)}</tr></thead>
+                <tbody>
+                  {data.items.map((item) => <tr key={item.attemptId}>
+                  <td className="px-4 py-3"><strong className="block">{item.userName}</strong><span className="text-[11px] text-slate-500">{item.userEmail}</span></td>
+                  <td className="px-4 py-3"><strong className="block">{item.exerciseTitle}</strong><span className="text-[11px] text-slate-500">{item.topicName} · {typeNames[item.speakingType]} · #{item.exerciseId}</span></td>
+                  <td className="px-4 py-3"><StatusBadge status={item.status} /></td>
+                  <td className="px-4 py-3 font-bold">{item.overallScore ?? "—"}</td>
+                  <td className="px-4 py-3">{new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(item.completedAt || item.startedAt))}</td>
+                  <td className="px-4 py-3"><div className="flex items-center gap-1">
+                    <Link className="inline-flex min-h-[30px] shrink-0 items-center gap-1 whitespace-nowrap rounded-lg border border-[#4f7cf7] bg-[#4f7cf7] px-2 py-1.5 text-[10px] font-extrabold text-white no-underline hover:bg-[#3d68d8]" to={`/admin/speaking/submissions/${item.attemptId}`}><ArrowUpRight size={13} />Xem chi tiết</Link>
+                    {item.status === "GRADED" && <Link className="inline-flex min-h-[30px] shrink-0 items-center gap-1 whitespace-nowrap rounded-lg border border-[#d8e2ff] bg-[#f3f6ff] px-2 py-1.5 text-[10px] font-extrabold text-[#315fc5] no-underline hover:bg-[#e8eeff]" to={`/admin/speaking/submissions/${item.attemptId}?edit=true`} aria-label={`Sửa kết quả bài nộp ${item.attemptId}`}><Pencil size={13} />Sửa</Link>}
+                    <button type="button" className="inline-flex min-h-[30px] shrink-0 items-center gap-1 whitespace-nowrap rounded-lg border border-[#f1c1c5] bg-white px-2 py-1.5 text-[10px] font-extrabold text-[#a63240] hover:bg-[#fff4f5] disabled:cursor-not-allowed disabled:opacity-55" onClick={() => deleteSubmission(item)} disabled={deletingId === item.attemptId} aria-label={`Xóa bài nộp ${item.attemptId}`}><Trash2 size={13} />{deletingId === item.attemptId ? "Đang xóa..." : "Xóa"}</button>
+                  </div></td>
+                  </tr>)}
+                </tbody>
+              </table>
+            </div>
+            <div className="admin-table-pagination flex items-center justify-between gap-3 rounded-b-2xl px-4 py-3 text-xs text-slate-500">
+              <span>{data.totalCount} lượt làm</span>
+              <div className="flex items-center gap-2">
+                <button type="button" className="rounded-lg border bg-white px-3 py-2 disabled:opacity-40" disabled={page <= 1} onClick={() => { setLoading(true); setPage((value) => value - 1); }}>Trước</button>
+                <span>Trang {page} / {pageCount}</span>
+                <button type="button" className="rounded-lg border bg-white px-3 py-2 disabled:opacity-40" disabled={page >= pageCount} onClick={() => { setLoading(true); setPage((value) => value + 1); }}>Sau</button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="rounded-xl border border-[#e4e7ed] bg-white px-[15px] py-[35px] text-center text-xs text-[#6b7080]"><strong className="mb-1 block text-[#1b1d22]">Chưa có bài nộp phù hợp</strong>Hãy thử thay đổi điều kiện tìm kiếm hoặc bộ lọc.</div>
+        )}
+      </section>
     </div>
   );
 }

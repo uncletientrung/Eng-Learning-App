@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Eye, RefreshCw, Save } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { chartFilters } from "../../constant/writingConstant";
-import { getAdminImageSrc } from "../../components/admin/adminUtils";
-import { createAdminWritingExercise, getAdminWritingExercise, updateAdminWritingExercise } from "../../services/adminApi";
-import { getTopicByModule } from "../../services/topicAPI";
+import { chartFilters } from "../../../constant/writingConstant";
+import { getAdminImageSrc } from "../../../components/admin/adminUtils";
+import { createAdminWritingExercise, getAdminWritingExercise, updateAdminWritingExercise } from "../../../services/adminApi";
+import { getTopicByModule } from "../../../services/topicAPI";
 
 const emptyForm = {
   topicId: "",

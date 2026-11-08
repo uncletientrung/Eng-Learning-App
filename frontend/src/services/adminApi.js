@@ -73,6 +73,8 @@ export const updateAdminSpeakingExerciseStatus = (id, isActive) =>
     method: "PATCH",
     body: JSON.stringify({ isActive }),
   });
+export const deleteAdminSpeakingExercise = (id) =>
+  request(`/speaking/exercises/${id}`, { method: "DELETE" });
 export const getAdminSpeakingSubmissions = (params) =>
   request(`/speaking/submissions${queryString(params)}`);
 export const getAdminSpeakingSubmission = (id) =>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Pencil } from "lucide-react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { getAdminSpeakingExercise } from "../../services/adminApi";
+import { getAdminSpeakingExercise } from "../../../services/adminApi";
 
 const typeNames = { INTRODUCTION_INTERVIEW: "Part 1", TOPIC: "Part 2", TOPIC_DISCUSS: "Part 3" };
 

@@ -24,17 +24,17 @@ import RequireAdmin from "./components/admin/RequireAdmin";
 
 const VocabularyDashboard = lazy(() => import('./pages/Vocabulary/VocabularyDashboard'))
 const AdminLayout = lazy(() => import("./components/admin/AdminLayout"))
-const AdminDashboardPage = lazy(() => import("./pages/Admin/AdminDashboardPage"))
-const AdminWritingExercisesPage = lazy(() => import("./pages/Admin/AdminWritingExercisesPage"))
-const AdminWritingExerciseFormPage = lazy(() => import("./pages/Admin/AdminWritingExerciseFormPage"))
-const AdminWritingExerciseDetailPage = lazy(() => import("./pages/Admin/AdminWritingExerciseDetailPage"))
-const AdminWritingSubmissionsPage = lazy(() => import("./pages/Admin/AdminWritingSubmissionsPage"))
-const AdminWritingSubmissionDetailPage = lazy(() => import("./pages/Admin/AdminWritingSubmissionDetailPage"))
-const AdminSpeakingExercisesPage = lazy(() => import("./pages/Admin/AdminSpeakingExercisesPage"))
-const AdminSpeakingExerciseFormPage = lazy(() => import("./pages/Admin/AdminSpeakingExerciseFormPage"))
-const AdminSpeakingExerciseDetailPage = lazy(() => import("./pages/Admin/AdminSpeakingExerciseDetailPage"))
-const AdminSpeakingSubmissionsPage = lazy(() => import("./pages/Admin/AdminSpeakingSubmissionsPage"))
-const AdminSpeakingSubmissionDetailPage = lazy(() => import("./pages/Admin/AdminSpeakingSubmissionDetailPage"))
+const AdminDashboardPage = lazy(() => import("./pages/admin/AdminDashboardPage"))
+const AdminWritingExercisesPage = lazy(() => import("./pages/admin/writing/AdminWritingExercisesPage"))
+const AdminWritingExerciseFormPage = lazy(() => import("./pages/admin/writing/AdminWritingExerciseFormPage"))
+const AdminWritingExerciseDetailPage = lazy(() => import("./pages/admin/writing/AdminWritingExerciseDetailPage"))
+const AdminWritingSubmissionsPage = lazy(() => import("./pages/admin/writing/AdminWritingSubmissionsPage"))
+const AdminWritingSubmissionDetailPage = lazy(() => import("./pages/admin/writing/AdminWritingSubmissionDetailPage"))
+const AdminSpeakingExercisesPage = lazy(() => import("./pages/admin/speaking/AdminSpeakingExercisesPage"))
+const AdminSpeakingExerciseFormPage = lazy(() => import("./pages/admin/speaking/AdminSpeakingExerciseFormPage"))
+const AdminSpeakingExerciseDetailPage = lazy(() => import("./pages/admin/speaking/AdminSpeakingExerciseDetailPage"))
+const AdminSpeakingSubmissionsPage = lazy(() => import("./pages/admin/speaking/AdminSpeakingSubmissionsPage"))
+const AdminSpeakingSubmissionDetailPage = lazy(() => import("./pages/admin/speaking/AdminSpeakingSubmissionDetailPage"))
 
 function App() {
   return (

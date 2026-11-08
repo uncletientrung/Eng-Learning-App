@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Eye, FilePlus2, Pencil, Plus, RefreshCw, Search, Trash2 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { getAdminWritingExercises, updateAdminWritingStatus, deleteAdminWritingExercise } from "../../services/adminApi";
-import { getTopicByModule } from "../../services/topicAPI";
+import { getAdminWritingExercises, updateAdminWritingStatus, deleteAdminWritingExercise } from "../../../services/adminApi";
+import { getTopicByModule } from "../../../services/topicAPI";
 
 const dateFormat = new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium" });
 const statusNames = { DRAFT: "Bản nháp", PUBLISHED: "Công khai", HIDDEN: "Đã ẩn" };
@@ -171,10 +171,11 @@ export default function AdminWritingExercisesPage() {
                 </tbody>
               </table>
             </div>
-            <div className="flex items-center justify-between gap-3 px-[14px] py-3 text-[10px] text-[#6b7080] max-[500px]:items-start max-[500px]:flex-col">
-              <span>{pageData.totalCount} đề Writing · Trang {page} / {pageCount}</span>
-              <div className="flex gap-[6px]">
+            <div className="admin-table-pagination flex items-center justify-between gap-3 rounded-b-2xl px-4 py-3 text-xs text-[#6b7080] max-[500px]:items-start max-[500px]:flex-col">
+              <span>{pageData.totalCount} đề</span>
+              <div className="flex items-center gap-[6px]">
                 <button type="button" className="inline-flex min-h-[39px] shrink-0 cursor-pointer items-center justify-center gap-[7px] rounded-[10px] border border-[#e4e7ed] bg-white px-3 py-2 text-[11px] font-extrabold text-[#1b1d22] no-underline hover:bg-[#f1f3f7] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7] disabled:cursor-not-allowed disabled:opacity-55 min-h-[30px] px-2 py-[5px] text-[10px]" disabled={page <= 1 || loading} onClick={() => changePage(page - 1)}>Trước</button>
+                <span>Trang {page} / {pageCount}</span>
                 <button type="button" className="inline-flex min-h-[39px] shrink-0 cursor-pointer items-center justify-center gap-[7px] rounded-[10px] border border-[#e4e7ed] bg-white px-3 py-2 text-[11px] font-extrabold text-[#1b1d22] no-underline hover:bg-[#f1f3f7] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7] disabled:cursor-not-allowed disabled:opacity-55 min-h-[30px] px-2 py-[5px] text-[10px]" disabled={page >= pageCount || loading} onClick={() => changePage(page + 1)}>Sau</button>
               </div>
             </div>

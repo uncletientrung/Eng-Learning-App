@@ -20,7 +20,7 @@ import {
   getAdminSpeakingSubmission,
   retryAdminSpeakingGrading,
   updateAdminSpeakingSubmission,
-} from "../../services/adminApi";
+} from "../../../services/adminApi";
 
 const statusNames = {
   IN_PROGRESS: "Đang làm",

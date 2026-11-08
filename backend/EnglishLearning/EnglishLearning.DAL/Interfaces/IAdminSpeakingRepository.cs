@@ -43,6 +43,10 @@ public interface IAdminSpeakingRepository
         bool isActive,
         CancellationToken cancellationToken);
 
+    Task<SpeakingExerciseDeleteResult> DeleteExerciseAsync(
+        int id,
+        CancellationToken cancellationToken);
+
     Task<AdminPageDto<AdminSpeakingSubmissionDto>> GetSubmissionsAsync(
         AdminSpeakingSubmissionQueryDto query,
         CancellationToken cancellationToken);
@@ -69,3 +73,5 @@ public interface IAdminSpeakingRepository
         int attemptId,
         CancellationToken cancellationToken);
 }
+
+public sealed record SpeakingExerciseDeleteResult(bool Exists, bool HasAttempts);

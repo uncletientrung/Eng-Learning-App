@@ -118,6 +118,34 @@ public sealed class AdminSpeakingServiceTests
             It.IsAny<CancellationToken>()), Times.Never);
     }
 
+    [Fact]
+    public async Task DeleteExerciseAsync_RejectsExerciseWithAttempts()
+    {
+        _repository
+            .Setup(repository => repository.DeleteExerciseAsync(
+                7,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new SpeakingExerciseDeleteResult(true, true));
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _service.DeleteExerciseAsync(7, CancellationToken.None));
+
+        Assert.Contains("đã có bài làm", exception.Message);
+    }
+
+    [Fact]
+    public async Task DeleteExerciseAsync_ThrowsWhenExerciseDoesNotExist()
+    {
+        _repository
+            .Setup(repository => repository.DeleteExerciseAsync(
+                7,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new SpeakingExerciseDeleteResult(false, false));
+
+        await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+            _service.DeleteExerciseAsync(7, CancellationToken.None));
+    }
+
     private static List<AdminSpeakingCriterionUpdateDto> ValidCriteria() =>
     [
         Criterion("FLUENCY_COHERENCE", 6),

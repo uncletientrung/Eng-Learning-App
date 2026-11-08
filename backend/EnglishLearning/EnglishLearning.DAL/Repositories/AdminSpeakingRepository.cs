@@ -147,6 +147,25 @@ public sealed class AdminSpeakingRepository : IAdminSpeakingRepository
                 cancellationToken) > 0;
     }
 
+    public async Task<SpeakingExerciseDeleteResult> DeleteExerciseAsync(
+        int id,
+        CancellationToken cancellationToken)
+    {
+        var exercise = await _db.SpeakingExercises
+            .Include(item => item.Questions)
+            .SingleOrDefaultAsync(item => item.Id == id, cancellationToken);
+        if (exercise is null)
+            return new SpeakingExerciseDeleteResult(false, false);
+
+        var hasAttempts = await HasAttemptsAsync(id, cancellationToken);
+        if (hasAttempts)
+            return new SpeakingExerciseDeleteResult(true, true);
+
+        _db.SpeakingExercises.Remove(exercise);
+        await _db.SaveChangesAsync(cancellationToken);
+        return new SpeakingExerciseDeleteResult(true, false);
+    }
+
     public async Task<AdminPageDto<AdminSpeakingSubmissionDto>> GetSubmissionsAsync(
         AdminSpeakingSubmissionQueryDto query,
         CancellationToken cancellationToken)

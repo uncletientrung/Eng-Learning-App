@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   FileText,
   LayoutDashboard,
@@ -44,8 +43,7 @@ function AdminThemeButton({ dark, onToggle }) {
   );
 }
 
-export default function AdminSidebar({ expanded, onToggleExpanded, mobileOpen, onCloseMobile, onLogout }) {
-  const [dark, setDark] = useState(false);
+export default function AdminSidebar({ expanded, onToggleExpanded, mobileOpen, onCloseMobile, onLogout, dark, onToggleTheme }) {
   const user = getCurrentUser();
   const name = user?.name || "Quản trị viên";
 
@@ -69,7 +67,7 @@ export default function AdminSidebar({ expanded, onToggleExpanded, mobileOpen, o
             <span>The IELTS Dictionary</span>
           </Link>
           <div className="admin-sidebar-tools">
-            <AdminThemeButton dark={dark} onToggle={() => setDark((value) => !value)} />
+            <AdminThemeButton dark={dark} onToggle={onToggleTheme} />
             <button
               type="button"
               className="admin-sidebar-icon admin-sidebar-expand"

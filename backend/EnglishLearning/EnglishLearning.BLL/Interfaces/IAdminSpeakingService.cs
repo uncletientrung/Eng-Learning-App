@@ -27,6 +27,10 @@ public interface IAdminSpeakingService
         bool isActive,
         CancellationToken cancellationToken);
 
+    Task DeleteExerciseAsync(
+        int id,
+        CancellationToken cancellationToken);
+
     Task<AdminPageDto<AdminSpeakingSubmissionDto>> GetSubmissionsAsync(
         AdminSpeakingSubmissionQueryDto query,
         CancellationToken cancellationToken);

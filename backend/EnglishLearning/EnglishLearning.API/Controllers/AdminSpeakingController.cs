@@ -115,6 +115,30 @@ public sealed class AdminSpeakingController : ControllerBase
         }
     }
 
+    [HttpDelete("exercises/{id:int}")]
+    public async Task<IActionResult> DeleteExercise(
+        int id,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _service.DeleteExerciseAsync(id, cancellationToken);
+            return NoContent();
+        }
+        catch (KeyNotFoundException exception)
+        {
+            return NotFound(new { message = exception.Message });
+        }
+        catch (ArgumentException exception)
+        {
+            return BadRequest(new { message = exception.Message });
+        }
+        catch (InvalidOperationException exception)
+        {
+            return Conflict(new { message = exception.Message });
+        }
+    }
+
     [HttpGet("submissions")]
     public async Task<IActionResult> GetSubmissions(
         [FromQuery] AdminSpeakingSubmissionQueryDto query,

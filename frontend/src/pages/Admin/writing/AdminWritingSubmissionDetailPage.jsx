@@ -5,8 +5,8 @@ import {
   deleteAdminWritingSubmission,
   getAdminWritingSubmission,
   updateAdminWritingSubmission,
-} from "../../services/adminApi";
-import { getAdminImageSrc } from "../../components/admin/adminUtils";
+} from "../../../services/adminApi";
+import { getAdminImageSrc } from "../../../components/admin/adminUtils";
 
 const dateFormat = new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium", timeStyle: "short" });
 const criterionNames = {

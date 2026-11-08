@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Pencil, RefreshCw, Trash2 } from "lucide-react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { deleteAdminWritingExercise, getAdminWritingExercise, updateAdminWritingStatus } from "../../services/adminApi";
-import { getAdminImageSrc } from "../../components/admin/adminUtils";
+import { deleteAdminWritingExercise, getAdminWritingExercise, updateAdminWritingStatus } from "../../../services/adminApi";
+import { getAdminImageSrc } from "../../../components/admin/adminUtils";
 
 const dateFormat = new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium", timeStyle: "short" });
 const statusNames = { DRAFT: "Bản nháp", PUBLISHED: "Công khai", HIDDEN: "Đã ẩn" };

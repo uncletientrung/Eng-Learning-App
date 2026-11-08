@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { ArrowDown, ArrowLeft, ArrowUp, Plus, RefreshCw, Save, Trash2 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { createAdminSpeakingExercise, getAdminSpeakingExercise, updateAdminSpeakingExercise } from "../../services/adminApi";
-import { getTopicByModule } from "../../services/topicAPI";
+import { createAdminSpeakingExercise, getAdminSpeakingExercise, updateAdminSpeakingExercise } from "../../../services/adminApi";
+import { getTopicByModule } from "../../../services/topicAPI";
 
 const emptyQuestion = (questionNumber = 1) => ({
   questionNumber,
