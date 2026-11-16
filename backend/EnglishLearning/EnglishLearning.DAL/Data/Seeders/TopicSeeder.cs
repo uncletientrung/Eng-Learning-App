@@ -42,7 +42,8 @@ public static class TopicSeeder
 
     public static async Task<IReadOnlyDictionary<int, int>> SeedAsync(
         AppDbContext context,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        bool includeVocabulary = true)
     {
         var existingTopics = await context.Topics
             .Where(topic => topic.CreateByUserId == null)
@@ -56,6 +57,7 @@ public static class TopicSeeder
 
         foreach (var seed in Topics)
         {
+            if (seed.ModuleType == "VOCABULARY" && !includeVocabulary) continue;
             var key = (Normalize(seed.ModuleType), Normalize(seed.Name));
             if (!known.TryGetValue(key, out var topic))
             {

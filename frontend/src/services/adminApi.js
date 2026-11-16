@@ -17,7 +17,8 @@ async function request(path, options = {}) {
     if (response.status === 401) {
       logout();
     }
-    const error = new Error(data?.message || `Yêu cầu thất bại (HTTP ${response.status}).`);
+    const validation = data?.errors ? Object.values(data.errors).flat().join(" ") : "";
+    const error = new Error(data?.message || validation || `Yêu cầu thất bại (HTTP ${response.status}).`);
     error.status = response.status;
     throw error;
   }
@@ -34,6 +35,21 @@ function queryString(params) {
 }
 
 export const getAdminDashboard = () => request("/dashboard");
+export const getAdminVocabularySets = (params) => request(`/vocabulary/sets${queryString(params)}`);
+export const getAdminVocabularySet = (id) => request(`/vocabulary/sets/${id}`);
+export const createAdminVocabularySet = (data) =>
+  request("/vocabulary/sets", { method: "POST", body: JSON.stringify(data) });
+export const updateAdminVocabularySet = (id, data) =>
+  request(`/vocabulary/sets/${id}`, { method: "PUT", body: JSON.stringify(data) });
+export const deleteAdminVocabularySet = (id) => request(`/vocabulary/sets/${id}`, { method: "DELETE" });
+export const getAdminVocabularyWords = (id, params) => request(`/vocabulary/sets/${id}/words${queryString(params)}`);
+export const getAdminVocabularyWord = (id, wordId) => request(`/vocabulary/sets/${id}/words/${wordId}`);
+export const createAdminVocabularyWord = (id, data) =>
+  request(`/vocabulary/sets/${id}/words`, { method: "POST", body: JSON.stringify(data) });
+export const updateAdminVocabularyWord = (id, wordId, data) =>
+  request(`/vocabulary/sets/${id}/words/${wordId}`, { method: "PUT", body: JSON.stringify(data) });
+export const deleteAdminVocabularyWord = (id, wordId) =>
+  request(`/vocabulary/sets/${id}/words/${wordId}`, { method: "DELETE" });
 export const getAdminWritingExercises = (params) =>
   request(`/writing${queryString(params)}`);
 export const getAdminWritingExercise = (id) => request(`/writing/${id}`);

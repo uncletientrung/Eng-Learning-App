@@ -17,9 +17,14 @@ public static class DbSeeder
         */
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
 
+        // Users survive catalog edits, so even deleting every vocabulary set must not
+        // restore the sample catalog on the next startup. Seed it only on first setup.
+        var initializeVocabulary = !await context.Users.AnyAsync(cancellationToken)
+            && !await context.Topics.AnyAsync(t => t.ModuleType == "VOCABULARY", cancellationToken);
         await UserSeeder.SeedAsync(context, cancellationToken);
-        var topicIds = await TopicSeeder.SeedAsync(context, cancellationToken);
-        await WordSeeder.SeedAsync(context, topicIds, cancellationToken);
+        var topicIds = await TopicSeeder.SeedAsync(context, cancellationToken, initializeVocabulary);
+        if (initializeVocabulary)
+            await WordSeeder.SeedAsync(context, topicIds, cancellationToken);
 
         await transaction.CommitAsync(cancellationToken);
     }

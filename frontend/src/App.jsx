@@ -35,6 +35,10 @@ const AdminSpeakingExerciseFormPage = lazy(() => import("./pages/admin/speaking/
 const AdminSpeakingExerciseDetailPage = lazy(() => import("./pages/admin/speaking/AdminSpeakingExerciseDetailPage"))
 const AdminSpeakingSubmissionsPage = lazy(() => import("./pages/admin/speaking/AdminSpeakingSubmissionsPage"))
 const AdminSpeakingSubmissionDetailPage = lazy(() => import("./pages/admin/speaking/AdminSpeakingSubmissionDetailPage"))
+const AdminVocabularySetsPage = lazy(() => import("./pages/Admin/vocabulary/AdminVocabularySetsPage"))
+const AdminVocabularySetDetailPage = lazy(() => import("./pages/Admin/vocabulary/AdminVocabularySetDetailPage"))
+const AdminVocabularySetFormPage = lazy(() => import("./pages/Admin/vocabulary/AdminVocabularySetFormPage"))
+const AdminVocabularyWordFormPage = lazy(() => import("./pages/Admin/vocabulary/AdminVocabularyWordFormPage"))
 
 function App() {
   return (
@@ -61,6 +65,12 @@ function App() {
             <Route path="speaking/submissions" element={<AdminSpeakingSubmissionsPage />} />
             <Route path="speaking/submissions/:id" element={<AdminSpeakingSubmissionDetailPage />} />
             <Route path="speaking/:id" element={<AdminSpeakingExerciseDetailPage />} />
+            <Route path="vocabulary" element={<AdminVocabularySetsPage />} />
+            <Route path="vocabulary/create" element={<AdminVocabularySetFormPage />} />
+            <Route path="vocabulary/:id" element={<AdminVocabularySetDetailPage />} />
+            <Route path="vocabulary/:id/edit" element={<AdminVocabularySetFormPage />} />
+            <Route path="vocabulary/:id/words/create" element={<AdminVocabularyWordFormPage />} />
+            <Route path="vocabulary/:id/words/:wordId/edit" element={<AdminVocabularyWordFormPage />} />
           </Route>
         </Route>
       </Route>

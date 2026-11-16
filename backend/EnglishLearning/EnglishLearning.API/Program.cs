@@ -63,6 +63,7 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<ITopicRepository, TopicRepository>();
 builder.Services.AddScoped<IVocabularyRepository, VocabularyRepository>();
+builder.Services.AddScoped<IAdminVocabularyRepository, AdminVocabularyRepository>();
 builder.Services.AddScoped<ISpeakingExerciseRepository, SpeakingExerciseRepository>();
 builder.Services.AddScoped<IAdminSpeakingRepository, AdminSpeakingRepository>();
 builder.Services.AddScoped<IGrammarRepository, GrammarRepository>();
@@ -76,6 +77,7 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<ITopicService, TopicService>();
 builder.Services.AddScoped<IVocabularyService, VocabularyService>();
+builder.Services.AddScoped<IAdminVocabularyService, AdminVocabularyService>();
 builder.Services.AddScoped<ISpeakingExerciseService, SpeakingExerciseService>();
 builder.Services.AddScoped<IAdminSpeakingService, AdminSpeakingService>();
 builder.Services.AddScoped<IReadingTestService, ReadingTestService>();

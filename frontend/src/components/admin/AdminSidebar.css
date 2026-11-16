@@ -4,14 +4,14 @@
   --admin-sidebar-ink: #1b1d22;
   --admin-sidebar-muted: #6b7080;
   --admin-sidebar-line: #e4e7ed;
-  z-index: 20;
+  z-index: 80;
   display: flex;
   flex: 0 0 80px;
   flex-direction: column;
   gap: 2px;
   width: 80px;
   height: 100%;
-  overflow: auto hidden;
+  overflow: hidden auto;
   padding: 18px 16px 14px;
   border-right: 1px solid var(--admin-sidebar-line);
   background: var(--admin-sidebar-bg);
@@ -177,7 +177,7 @@
   background: transparent;
   color: var(--admin-sidebar-ink);
   font: inherit;
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
@@ -209,44 +209,12 @@
 }
 
 .admin-sidebar-coming {
-  display: flex;
-  min-height: 34px;
-  align-items: center;
-  gap: 12px;
-  padding: 6px 8px;
-  color: var(--admin-sidebar-muted);
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.admin-sidebar:not(.is-expanded) .admin-sidebar-coming {
-  justify-content: center;
-  padding-inline: 0;
-}
-
-.admin-sidebar:not(.is-expanded) .admin-sidebar-coming > span:nth-child(2),
-.admin-sidebar:not(.is-expanded) .admin-sidebar-coming small {
-  display: none;
-}
-
-.admin-sidebar-coming > span:nth-child(2) {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.admin-sidebar-coming-dot {
-  width: 7px;
-  height: 7px;
-  flex-shrink: 0;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-}
-
-.admin-sidebar-coming small {
-  margin-left: auto;
-  font-size: 9px;
-  font-weight: 700;
+.admin-sidebar-coming:hover {
+  background: transparent;
 }
 
 .admin-sidebar-bottom {
@@ -297,19 +265,21 @@
   display: none;
 }
 
-@media (max-width: 760px) {
+@media (width < 768px) {
   .admin-sidebar {
     position: fixed;
     inset: 0 auto 0 0;
     z-index: 80;
     width: 260px;
     height: 100dvh;
+    visibility: hidden;
     padding: 18px 16px 14px;
     transform: translateX(-100%);
-    transition: transform 0.3s, background-color 0.3s;
+    transition: transform 0.3s, visibility 0.3s, background-color 0.3s;
   }
 
   .admin-sidebar.is-mobile-open {
+    visibility: visible;
     transform: translateX(0);
   }
 
@@ -323,8 +293,7 @@
   }
 
   .admin-sidebar-top {
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
   }
 
   .admin-sidebar-brand span,
@@ -362,21 +331,6 @@
 
   .admin-sidebar .admin-sidebar-coming {
     justify-content: flex-start;
-  }
-
-  .admin-sidebar .admin-sidebar-coming > span:nth-child(2) {
-    display: block;
-  }
-
-  .admin-sidebar .admin-sidebar-coming small {
-    display: block;
-  }
-}
-
-@media (max-width: 390px) {
-  .admin-sidebar.is-expanded {
-    flex-basis: 260px;
-    width: 260px;
   }
 }
 

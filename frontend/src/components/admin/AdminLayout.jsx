@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   FileText,
   ClipboardList,
@@ -21,7 +21,26 @@ const speakingNavigation = [
   { label: "Bài nộp Speaking", to: "/admin/speaking/submissions", icon: ClipboardList },
 ];
 
+function loadPreferences() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("admin-dashboard") || "{}");
+    const vocabulary = JSON.parse(localStorage.getItem("vocabulary-dashboard") || "{}");
+    return {
+      dark: typeof saved.dark === "boolean" ? saved.dark : typeof vocabulary.dark === "boolean" ? vocabulary.dark : true,
+      sidebarExpanded: typeof saved.sidebarExpanded === "boolean" ? saved.sidebarExpanded : false,
+    };
+  } catch {
+    return { dark: true, sidebarExpanded: false };
+  }
+}
+
 function currentTitle(pathname) {
+  if (pathname.startsWith("/admin/vocabulary")) {
+    if (pathname.includes("/words/")) return pathname.endsWith("/edit") ? "Chỉnh sửa từ vựng" : "Thêm từ vựng";
+    if (pathname.endsWith("/create")) return "Thêm bộ từ vựng";
+    if (pathname.endsWith("/edit")) return "Chỉnh sửa bộ từ vựng";
+    return pathname === "/admin/vocabulary" ? "Quản lý Vocabulary" : "Chi tiết bộ từ vựng";
+  }
   if (pathname.startsWith("/admin/speaking")) {
     if (pathname.includes("/submissions")) return "Bài nộp Speaking";
     if (pathname.includes("/create")) return "Thêm đề Speaking";
@@ -40,13 +59,43 @@ function currentTitle(pathname) {
 export default function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
-  const [dark, setDark] = useState(false);
+  const [preferences, setPreferences] = useState(loadPreferences);
+  const { dark, sidebarExpanded } = preferences;
   const location = useLocation();
   const navigate = useNavigate();
   const user = getCurrentUser();
   const title = currentTitle(location.pathname);
   const initials = (user?.name || "A").trim().charAt(0).toUpperCase();
+  const toggleSidebar = useCallback(() => {
+    setPreferences((previous) => ({ ...previous, sidebarExpanded: !previous.sidebarExpanded }));
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("admin-dashboard", JSON.stringify(preferences));
+    } catch { /* The sidebar still works when storage is unavailable. */ }
+  }, [preferences]);
+
+  useEffect(() => {
+    const shortcut = (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "\\") {
+        event.preventDefault();
+        toggleSidebar();
+      }
+      if (event.key === "Escape") {
+        setMobileOpen(false);
+        setAccountOpen(false);
+      }
+    };
+    const desktop = window.matchMedia("(min-width: 768px)");
+    const closeMobile = (event) => { if (event.matches) setMobileOpen(false); };
+    window.addEventListener("keydown", shortcut);
+    desktop.addEventListener("change", closeMobile);
+    return () => {
+      window.removeEventListener("keydown", shortcut);
+      desktop.removeEventListener("change", closeMobile);
+    };
+  }, [toggleSidebar]);
 
   const signOut = () => {
     logout();
@@ -56,26 +105,28 @@ export default function AdminLayout() {
   return (
     <div className={`admin-layout flex h-dvh min-h-dvh w-full overflow-hidden bg-[#e9edf3] text-[#1b1d22] font-sans [&_*]:box-border [&_button]:[font:inherit] [&_a]:[font:inherit] [&_input]:[font:inherit] [&_select]:[font:inherit] [&_textarea]:[font:inherit] [&_button]:[-webkit-tap-highlight-color:transparent] [&_a]:[-webkit-tap-highlight-color:transparent] [&_button:focus-visible]:outline-2 [&_button:focus-visible]:outline-offset-2 [&_button:focus-visible]:outline-[#4f7cf7] [&_a:focus-visible]:outline-2 [&_a:focus-visible]:outline-offset-2 [&_a:focus-visible]:outline-[#4f7cf7] [&_input:focus-visible]:outline-2 [&_input:focus-visible]:outline-offset-2 [&_input:focus-visible]:outline-[#4f7cf7] [&_select:focus-visible]:outline-2 [&_select:focus-visible]:outline-offset-2 [&_select:focus-visible]:outline-[#4f7cf7] [&_textarea:focus-visible]:outline-2 [&_textarea:focus-visible]:outline-offset-2 [&_textarea:focus-visible]:outline-[#4f7cf7]${dark ? " is-dark" : ""}`}>
       <AdminSidebar
-        expanded={!collapsed}
-        onToggleExpanded={() => setCollapsed((value) => !value)}
+        expanded={sidebarExpanded}
+        onToggleExpanded={toggleSidebar}
         mobileOpen={mobileOpen}
         onCloseMobile={() => setMobileOpen(false)}
         onLogout={signOut}
         dark={dark}
-        onToggleTheme={() => setDark((value) => !value)}
+        onToggleTheme={() => setPreferences((previous) => ({ ...previous, dark: !previous.dark }))}
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="relative z-10 flex min-h-[76px] items-center justify-between gap-[18px] border-b border-[#e4e7ed] bg-white px-[30px] py-3 max-[760px]:min-h-[68px] max-[760px]:justify-start max-[760px]:gap-2.5 max-[760px]:px-[14px] max-[760px]:py-2.5">
+        <header className="admin-header relative z-10 flex min-h-[76px] items-center justify-between gap-[18px] border-b border-[#e4e7ed] bg-white px-[30px] py-3 max-[768px]:min-h-[68px] max-[768px]:justify-start max-[768px]:gap-2.5 max-[768px]:px-[14px] max-[768px]:py-2.5">
           <button
             type="button"
-            className="hidden size-9 shrink-0 items-center justify-center rounded-[10px] bg-[#f1f3f7] text-[#1b1d22] max-[760px]:inline-flex"
+            className="hidden size-9 shrink-0 items-center justify-center rounded-[10px] bg-[#f1f3f7] text-[#1b1d22] max-[768px]:inline-flex"
             aria-label="Mở menu"
+            aria-controls="admin-sidebar"
+            aria-expanded={mobileOpen}
             onClick={() => setMobileOpen(true)}
           >
             <Menu size={21} />
           </button>
-          <div className="min-w-0 [&_p]:m-0 [&_p]:mb-[3px] [&_p]:text-[9px] [&_p]:font-black [&_p]:tracking-[.13em] [&_p]:text-[#6b7080] [&_h1]:m-0 [&_h1]:text-lg [&_h1]:font-black max-[760px]:flex-1 [&_h1]:max-[760px]:overflow-hidden [&_h1]:max-[760px]:text-ellipsis [&_h1]:max-[760px]:whitespace-nowrap [&_h1]:max-[760px]:text-[15px] [&_p]:max-[760px]:text-[8px]">
+          <div className="min-w-0 [&_p]:m-0 [&_p]:mb-[3px] [&_p]:text-[9px] [&_p]:font-black [&_p]:tracking-[.13em] [&_p]:text-[#6b7080] [&_h1]:m-0 [&_h1]:text-lg [&_h1]:font-black max-[768px]:flex-1 [&_h1]:max-[768px]:overflow-hidden [&_h1]:max-[768px]:text-ellipsis [&_h1]:max-[768px]:whitespace-nowrap [&_h1]:max-[768px]:text-[15px] [&_p]:max-[768px]:text-[8px]">
             <p>ADMIN / {title.toUpperCase()}</p>
             <h1>{title}</h1>
           </div>
@@ -87,7 +138,7 @@ export default function AdminLayout() {
               onClick={() => setAccountOpen((value) => !value)}
             >
               <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#e7edff] text-sm font-black text-[#355fc8]">{initials}</span>
-              <span className={`${"grid text-left [&_strong]:max-w-40 [&_strong]:overflow-hidden [&_strong]:text-ellipsis [&_strong]:whitespace-nowrap [&_strong]:text-xs [&_small]:text-[10px] [&_small]:text-[#6b7080] max-[760px]:hidden"} ${collapsed ? "min-[761px]:hidden" : ""}`}>
+              <span className="grid text-left [&_strong]:max-w-40 [&_strong]:overflow-hidden [&_strong]:text-ellipsis [&_strong]:whitespace-nowrap [&_strong]:text-xs [&_small]:text-[10px] [&_small]:text-[#6b7080] max-[768px]:hidden">
                 <strong>{user?.name || "Quản trị viên"}</strong>
                 <small>Admin</small>
               </span>
@@ -102,7 +153,7 @@ export default function AdminLayout() {
             )}
           </div>
         </header>
-        <main className="min-w-0 flex-1 overflow-auto px-[30px] pb-[34px] pt-[26px] max-[760px]:px-[14px] max-[760px]:pb-7 max-[760px]:pt-[19px]" key={location.pathname}>
+        <main className="min-w-0 flex-1 overflow-auto px-[30px] pb-[34px] pt-[26px] max-[768px]:px-[14px] max-[768px]:pb-7 max-[768px]:pt-[19px]" key={location.pathname}>
           {location.pathname.startsWith("/admin/writing") && (
             <nav className="mx-auto mb-5 flex w-full max-w-[1440px] gap-1 overflow-x-auto rounded-xl border border-[#e4e7ed] bg-white p-1.5" aria-label="Điều hướng quản lý Writing">
               {writingNavigation.map(({ label, to, icon: Icon }) => {
