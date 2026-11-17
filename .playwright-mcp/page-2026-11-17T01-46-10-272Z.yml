@@ -1,0 +1,37 @@
+- generic [ref=e4]:
+  - generic [ref=e7] [cursor=pointer]
+  - generic [ref=e17]:
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - img "The IELTS Dictionary Logo" [ref=e21]
+        - generic [ref=e22]:
+          - paragraph [ref=e23]: The IELTS Dictionary
+          - paragraph [ref=e24]: Trực tuyến
+      - generic [ref=e26]:
+        - button "Đăng nhập" [ref=e27]
+        - button "Đăng ký" [ref=e28]
+    - generic [ref=e29]:
+      - generic [ref=e30]:
+        - heading "Chào mừng trở lại 👋" [level=2] [ref=e31]
+        - paragraph [ref=e32]: Đăng nhập để tiếp tục lộ trình học tập của bạn.
+      - generic [ref=e33]:
+        - button "Khuyên dùng Đăng nhập bằng Google" [ref=e34]:
+          - generic [ref=e35]: Khuyên dùng
+          - text: Đăng nhập bằng Google
+        - generic [ref=e41]: Hoặc dùng email
+      - generic [ref=e46]:
+        - generic [ref=e47]:
+          - text: Email
+          - textbox "email@example.com" [ref=e52]
+        - generic [ref=e53]:
+          - generic [ref=e54]:
+            - generic [ref=e55]: Mật khẩu
+            - button "Quên mật khẩu?" [ref=e56] [cursor=pointer]
+          - textbox "••••••••" [ref=e61]
+        - button "Đăng nhập ngay" [ref=e63]
+      - generic [ref=e66]:
+        - text: Chưa có tài khoản?
+        - button "Đăng ký ngay" [ref=e67]
+      - generic [ref=e68]: Thông tin được bảo mật tuyệt đối
+  - link "← Quay về trang chủ" [ref=e72] [cursor=pointer]:
+    - /url: /

@@ -16,11 +16,15 @@ export default function AdminWritingSubmissionsPage() {
   const [searchParams] = useSearchParams();
   const exerciseId = searchParams.get("exerciseId") || "";
   const userId = searchParams.get("userId") || "";
+  const requestedStatus = searchParams.get("status");
+  const initialStatus = ["COMPLETED", "PENDING"].includes(requestedStatus)
+    ? requestedStatus
+    : "";
   const [pageData, setPageData] = useState(null);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState(initialStatus);
   const [minimumScore, setMinimumScore] = useState("");
   const [maximumScore, setMaximumScore] = useState("");
   const [from, setFrom] = useState("");

@@ -24,11 +24,11 @@ import RequireAdmin from "./components/admin/RequireAdmin";
 
 const VocabularyDashboard = lazy(() => import('./pages/Vocabulary/VocabularyDashboard'))
 const AdminLayout = lazy(() => import("./components/admin/AdminLayout"))
-const AdminDashboardPage = lazy(() => import("./pages/admin/AdminDashboardPage"))
+const AdminDashboardPage = lazy(() => import("./pages/Admin/AdminDashboardPage"))
 const AdminWritingExercisesPage = lazy(() => import("./pages/admin/writing/AdminWritingExercisesPage"))
 const AdminWritingExerciseFormPage = lazy(() => import("./pages/admin/writing/AdminWritingExerciseFormPage"))
 const AdminWritingExerciseDetailPage = lazy(() => import("./pages/admin/writing/AdminWritingExerciseDetailPage"))
-const AdminWritingSubmissionsPage = lazy(() => import("./pages/admin/writing/AdminWritingSubmissionsPage"))
+const AdminWritingSubmissionsPage = lazy(() => import("./pages/Admin/writing/AdminWritingSubmissionsPage"))
 const AdminWritingSubmissionDetailPage = lazy(() => import("./pages/admin/writing/AdminWritingSubmissionDetailPage"))
 const AdminSpeakingExercisesPage = lazy(() => import("./pages/admin/speaking/AdminSpeakingExercisesPage"))
 const AdminSpeakingExerciseFormPage = lazy(() => import("./pages/admin/speaking/AdminSpeakingExerciseFormPage"))

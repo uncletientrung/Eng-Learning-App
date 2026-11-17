@@ -27,10 +27,10 @@ function loadPreferences() {
     const vocabulary = JSON.parse(localStorage.getItem("vocabulary-dashboard") || "{}");
     return {
       dark: typeof saved.dark === "boolean" ? saved.dark : typeof vocabulary.dark === "boolean" ? vocabulary.dark : true,
-      sidebarExpanded: typeof saved.sidebarExpanded === "boolean" ? saved.sidebarExpanded : false,
+      sidebarExpanded: typeof saved.sidebarExpanded === "boolean" ? saved.sidebarExpanded : true,
     };
   } catch {
-    return { dark: true, sidebarExpanded: false };
+    return { dark: true, sidebarExpanded: true };
   }
 }
 
@@ -114,7 +114,7 @@ export default function AdminLayout() {
         onToggleTheme={() => setPreferences((previous) => ({ ...previous, dark: !previous.dark }))}
       />
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <header className="admin-header relative z-10 flex min-h-[76px] items-center justify-between gap-[18px] border-b border-[#e4e7ed] bg-white px-[30px] py-3 max-[768px]:min-h-[68px] max-[768px]:justify-start max-[768px]:gap-2.5 max-[768px]:px-[14px] max-[768px]:py-2.5">
           <button
             type="button"
@@ -126,8 +126,7 @@ export default function AdminLayout() {
           >
             <Menu size={21} />
           </button>
-          <div className="min-w-0 [&_p]:m-0 [&_p]:mb-[3px] [&_p]:text-[9px] [&_p]:font-black [&_p]:tracking-[.13em] [&_p]:text-[#6b7080] [&_h1]:m-0 [&_h1]:text-lg [&_h1]:font-black max-[768px]:flex-1 [&_h1]:max-[768px]:overflow-hidden [&_h1]:max-[768px]:text-ellipsis [&_h1]:max-[768px]:whitespace-nowrap [&_h1]:max-[768px]:text-[15px] [&_p]:max-[768px]:text-[8px]">
-            <p>ADMIN / {title.toUpperCase()}</p>
+          <div className="min-w-0 [&_h1]:m-0 [&_h1]:text-lg [&_h1]:font-black max-[768px]:flex-1 [&_h1]:max-[768px]:overflow-hidden [&_h1]:max-[768px]:text-ellipsis [&_h1]:max-[768px]:whitespace-nowrap [&_h1]:max-[768px]:text-[15px]">
             <h1>{title}</h1>
           </div>
           <div className="relative">
@@ -138,7 +137,7 @@ export default function AdminLayout() {
               onClick={() => setAccountOpen((value) => !value)}
             >
               <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#e7edff] text-sm font-black text-[#355fc8]">{initials}</span>
-              <span className="grid text-left [&_strong]:max-w-40 [&_strong]:overflow-hidden [&_strong]:text-ellipsis [&_strong]:whitespace-nowrap [&_strong]:text-xs [&_small]:text-[10px] [&_small]:text-[#6b7080] max-[768px]:hidden">
+              <span className="grid text-left [&_strong]:max-w-40 [&_strong]:overflow-hidden [&_strong]:text-ellipsis [&_strong]:whitespace-nowrap [&_strong]:text-xs [&_small]:text-xs [&_small]:text-[#6b7080] max-[768px]:hidden">
                 <strong>{user?.name || "Quản trị viên"}</strong>
                 <small>Admin</small>
               </span>
@@ -153,7 +152,7 @@ export default function AdminLayout() {
             )}
           </div>
         </header>
-        <main className="min-w-0 flex-1 overflow-auto px-[30px] pb-[34px] pt-[26px] max-[768px]:px-[14px] max-[768px]:pb-7 max-[768px]:pt-[19px]" key={location.pathname}>
+        <main className="min-h-0 min-w-0 flex-1 overflow-auto px-[30px] pb-[34px] pt-[26px] max-[768px]:px-[14px] max-[768px]:pb-7 max-[768px]:pt-[19px]" key={location.pathname}>
           {location.pathname.startsWith("/admin/writing") && (
             <nav className="mx-auto mb-5 flex w-full max-w-[1440px] gap-1 overflow-x-auto rounded-xl border border-[#e4e7ed] bg-white p-1.5" aria-label="Điều hướng quản lý Writing">
               {writingNavigation.map(({ label, to, icon: Icon }) => {
