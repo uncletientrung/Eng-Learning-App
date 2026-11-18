@@ -38,6 +38,19 @@ public interface ISpeakingAssessmentService
     Task<IReadOnlyList<int>> GetUnfinishedAttemptIdsAsync(
         CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<int>> GetAttemptedExerciseIdsAsync(
+        int userId,
+        CancellationToken cancellationToken = default);
+
+    Task<List<SpeakingAttemptSummaryDto>> GetHistoryAsync(
+        int userId,
+        CancellationToken cancellationToken = default);
+
+    Task<bool> DeleteHistoryAttemptAsync(
+        int userId,
+        int attemptId,
+        CancellationToken cancellationToken = default);
+
     Task ProcessGradingAsync(
         int attemptId,
         CancellationToken cancellationToken = default);

@@ -4,17 +4,14 @@ import SpeakingScoreSummary from './SpeakingScoreSummary'
 
 export default function SpeakingInlineAssessment({
   attempt,
-  questionId,
   isFinalAnswer,
   onRetry,
   onRetryError,
+  readOnly = false,
 }) {
   const [isRetrying, setIsRetrying] = useState(false)
   const status = attempt?.status
   const result = attempt?.result
-  const answerFeedback = result?.answerFeedback?.find(
-    (item) => item.questionId === questionId
-  )?.feedback
 
   const handleRetry = async () => {
     setIsRetrying(true)
@@ -56,20 +53,22 @@ export default function SpeakingInlineAssessment({
               Chấm bài chưa thành công. Bài làm vẫn được lưu.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={handleRetry}
-            disabled={isRetrying}
-            className="mt-2 rounded-lg border-2 border-[#111] bg-[#ffc926] px-3 py-1.5 text-xs font-extrabold disabled:opacity-60"
-          >
-            {isRetrying ? 'ĐANG GỬI...' : 'THỬ CHẤM LẠI'}
-          </button>
+          {!readOnly && (
+            <button
+              type="button"
+              onClick={handleRetry}
+              disabled={isRetrying}
+              className="mt-2 rounded-lg border-2 border-[#111] bg-[#ffc926] px-3 py-1.5 text-xs font-extrabold disabled:opacity-60"
+            >
+              {isRetrying ? 'ĐANG GỬI...' : 'THỬ CHẤM LẠI'}
+            </button>
+          )}
         </div>
       </div>
     )
   }
 
-  if (status !== 'GRADED' || !result) return null
+  if (status !== 'GRADED' || !result || !isFinalAnswer) return null
 
   return (
     <div className="my-3 flex w-full justify-center">
@@ -80,31 +79,18 @@ export default function SpeakingInlineAssessment({
             Nhận xét từ giám khảo AI
           </p>
         </div>
-        {answerFeedback && (
-          <div className="rounded-xl border border-[#d6dfc2] bg-white p-3">
-          <p className="text-[10px] font-black uppercase tracking-wide text-[#6f8f4b]">
-            Nhận xét câu trả lời
-          </p>
-          <p className="mt-1 text-xs leading-relaxed text-[#45443e]">
-            {answerFeedback}
-          </p>
+        <SpeakingScoreSummary result={result} />
+        {!readOnly && (
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={handleRetry}
+              disabled={isRetrying}
+              className="rounded-lg border border-[#111] bg-white px-3 py-1.5 text-[10px] font-extrabold disabled:opacity-60"
+            >
+              {isRetrying ? 'ĐANG GỬI...' : 'CHẤM LẠI BÀI NÀY'}
+            </button>
           </div>
-        )}
-
-        {isFinalAnswer && (
-          <>
-            <SpeakingScoreSummary result={result} />
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={handleRetry}
-                disabled={isRetrying}
-                className="rounded-lg border border-[#111] bg-white px-3 py-1.5 text-[10px] font-extrabold disabled:opacity-60"
-              >
-                {isRetrying ? 'ĐANG GỬI...' : 'CHẤM LẠI BÀI NÀY'}
-              </button>
-            </div>
-          </>
         )}
       </div>
     </div>

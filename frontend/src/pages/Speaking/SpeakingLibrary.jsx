@@ -1,14 +1,21 @@
 import { useMemo, useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import SpeakingHeader from '../../components/sections/speaking/SpeakingHeader'
 import SpeakingTopicFilters from '../../components/sections/speaking/SpeakingTopicFilters'
 import SpeakingTestList from '../../components/sections/speaking/SpeakingTestList'
+import SpeakingHistoryList from '../../components/sections/speaking/SpeakingHistoryList'
 import MainLayout from '../../components/layout/MainLayout'
 
 import WritingPagination from '../../components/sections/writing/WritingPagination'
-import { getSpeakingExercisesWithQuestions } from '../../services/speakingAPI.js'
+import {
+  deleteSpeakingAttemptHistory,
+  getAttemptedSpeakingExerciseIds,
+  getSpeakingAttemptHistory,
+  getSpeakingExercisesWithQuestions,
+} from '../../services/speakingAPI.js'
 import { getTopicByModule } from '../../services/topicAPI';
+import { getAuthenticatedToken } from '../../services/authApi.js'
 
 const PAGE_SIZE = 6
 
@@ -16,9 +23,20 @@ function SpeakingLibrary() {
   const [activeTopicGroup, setActiveTopicGroup] = useState('ALL')
   const [activePart, setActivePart] = useState('ALL')
   const [currentPage, setCurrentPage] = useState(1)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const requestedStatus = searchParams.get('status')
+  const practiceStatus = ['ALL', 'NOT_STARTED', 'PRACTICED'].includes(requestedStatus)
+    ? requestedStatus
+    : 'ALL'
 
   const [tests, setTests] = useState([]);
   const [topics, setTopics] = useState([]);
+  const [attemptedExerciseIds, setAttemptedExerciseIds] = useState([]);
+  const [history, setHistory] = useState([]);
+  const [deletingAttemptId, setDeletingAttemptId] = useState(null);
+  const [deleteError, setDeleteError] = useState('');
+  const [attemptStatusLoading, setAttemptStatusLoading] = useState(false);
+  const [attemptStatusError, setAttemptStatusError] = useState('');
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -42,7 +60,7 @@ function SpeakingLibrary() {
           setTopics(safeTopics);
         } catch (err) {
             console.error('Lỗi tải dữ liệu:', err);
-            setError('Không thể tải dữ liệu Writing.');
+            setError('Không thể tải dữ liệu Speaking.');
         } finally {
             setLoading(false);
           }
@@ -50,6 +68,48 @@ function SpeakingLibrary() {
   
       fetchData();
   }, []);
+
+  useEffect(() => {
+    if (practiceStatus === 'ALL') return undefined;
+
+    if (!getAuthenticatedToken()) {
+      navigate('/login', {
+        replace: true,
+        state: { from: `/speaking?status=${practiceStatus}` },
+      });
+      return undefined;
+    }
+
+    let cancelled = false;
+    async function fetchAttemptedExercises() {
+      setAttemptStatusLoading(true);
+      setAttemptStatusError('');
+      try {
+        if (practiceStatus === 'PRACTICED') {
+          const attempts = await getSpeakingAttemptHistory();
+          if (!cancelled) {
+            setHistory(Array.isArray(attempts) ? attempts : []);
+          }
+        } else {
+          const exerciseIds = await getAttemptedSpeakingExerciseIds();
+          if (!cancelled) {
+            setAttemptedExerciseIds(
+              Array.isArray(exerciseIds) ? exerciseIds.map(Number) : []
+            );
+          }
+        }
+      } catch (requestError) {
+        if (!cancelled) setAttemptStatusError(requestError.message);
+      } finally {
+        if (!cancelled) setAttemptStatusLoading(false);
+      }
+    }
+
+    fetchAttemptedExercises();
+    return () => {
+      cancelled = true;
+    };
+  }, [practiceStatus, navigate]);
 
   // Lọc bộ câu hỏi theo nhóm chủ đề và Part
   const filteredTests = useMemo(() => {
@@ -63,28 +123,51 @@ function SpeakingLibrary() {
 
     if (activePart !== 'ALL') {
       result = result.filter(
-        (test) => test.speakingType == activePart
+        (test) => test.speakingType === activePart
+      )
+    }
+
+    if (practiceStatus === 'NOT_STARTED') {
+      result = result.filter(
+        (test) => !attemptedExerciseIds.includes(Number(test.id))
       )
     }
 
     return result
-  }, [activeTopicGroup, activePart, tests])
+  }, [activeTopicGroup, activePart, attemptedExerciseIds, practiceStatus, tests])
+
+  const filteredHistory = useMemo(
+    () =>
+      history.filter((attempt) => {
+        if (
+          activeTopicGroup !== 'ALL' &&
+          Number(attempt.topicId) !== Number(activeTopicGroup)
+        ) {
+          return false
+        }
+        return activePart === 'ALL' || attempt.speakingType === activePart
+      }),
+    [activePart, activeTopicGroup, history]
+  )
+
+  const displayedItems =
+    practiceStatus === 'PRACTICED' ? filteredHistory : filteredTests
 
   // Tính số trang
   const totalPages = Math.max(
     1,
-    Math.ceil(filteredTests.length / PAGE_SIZE)
+    Math.ceil(displayedItems.length / PAGE_SIZE)
   )
 
   // Lấy dữ liệu của trang hiện tại
-  const paginatedTests = useMemo(() => {
+  const paginatedItems = useMemo(() => {
     const startIndex = (currentPage - 1) * PAGE_SIZE
 
-    return filteredTests.slice(
+    return displayedItems.slice(
       startIndex,
       startIndex + PAGE_SIZE
     )
-  }, [filteredTests, currentPage])
+  }, [displayedItems, currentPage])
 
   const handleTopicGroupChange = (group) => {
     setActiveTopicGroup(group)
@@ -94,6 +177,18 @@ function SpeakingLibrary() {
   const handlePartChange = (part) => {
     setActivePart(part)
     setCurrentPage(1)
+  }
+
+  const handlePracticeStatusChange = (status) => {
+    setCurrentPage(1)
+    if (status !== 'ALL' && !getAuthenticatedToken()) {
+      navigate('/login', {
+        state: { from: `/speaking?status=${status}` },
+      })
+      return
+    }
+
+    setSearchParams(status === 'ALL' ? {} : { status })
   }
 
   const partRoutes = {
@@ -109,6 +204,40 @@ function SpeakingLibrary() {
     navigate(`/speaking/${part}/${test.id}`, {
       state: { startNewAttempt: true },
     })
+  }
+
+  const handleHistoryClick = (attempt) => {
+    const part = partRoutes[attempt.speakingType]
+    if (!part) return
+
+    navigate(
+      `/speaking/${part}/${attempt.exerciseId}?attemptId=${attempt.attemptId}&history=1`
+    )
+  }
+
+  const handleDeleteAttempt = async (attempt) => {
+    const confirmed = window.confirm(
+      `Bạn có chắc muốn xóa lượt làm Speaking "${attempt.exerciseTitle}" không?`
+    )
+    if (!confirmed) return
+
+    setDeletingAttemptId(attempt.attemptId)
+    setDeleteError('')
+    try {
+      await deleteSpeakingAttemptHistory(attempt.attemptId)
+      setHistory((previousHistory) =>
+        previousHistory.filter(
+          (item) => item.attemptId !== attempt.attemptId
+        )
+      )
+      setCurrentPage(
+        Math.max(1, Math.ceil((filteredHistory.length - 1) / PAGE_SIZE))
+      )
+    } catch (requestError) {
+      setDeleteError(requestError.message || 'Không thể xóa lượt làm Speaking.')
+    } finally {
+      setDeletingAttemptId(null)
+    }
   }
 
   return (
@@ -139,12 +268,14 @@ function SpeakingLibrary() {
           "
         >
           <SpeakingHeader
-            activePart={activePart}
-            onPartChange={handlePartChange}
+            practiceStatus={practiceStatus}
+            onPracticeStatusChange={handlePracticeStatusChange}
           />
 
           <SpeakingTopicFilters
             topics={topics}
+            activePart={activePart}
+            onPartChange={handlePartChange}
             activeTopicGroup={activeTopicGroup}
             onTopicGroupChange={handleTopicGroupChange}
           />
@@ -154,12 +285,32 @@ function SpeakingLibrary() {
             </p>
           ) : error ? (
             <p className="py-6 text-red-600">{error}</p>
+          ) : practiceStatus !== 'ALL' && attemptStatusLoading ? (
+            <p className="py-6 text-slate-500">
+              {practiceStatus === 'PRACTICED'
+                ? 'Đang tải lịch sử bài luyện...'
+                : 'Đang tải trạng thái bài luyện...'}
+            </p>
+          ) : practiceStatus !== 'ALL' && attemptStatusError ? (
+            <p className="py-6 text-red-600">{attemptStatusError}</p>
           ) : (
             <>
-              <SpeakingTestList
-                tests={paginatedTests}
-                onTestClick={handleTestClick}
-              />
+              {practiceStatus === 'PRACTICED' ? (
+                <SpeakingHistoryList
+                  attempts={paginatedItems}
+                  loading={false}
+                  error=""
+                  deleteError={deleteError}
+                  deletingAttemptId={deletingAttemptId}
+                  onAttemptClick={handleHistoryClick}
+                  onDeleteAttempt={handleDeleteAttempt}
+                />
+              ) : (
+                <SpeakingTestList
+                  tests={paginatedItems}
+                  onTestClick={handleTestClick}
+                />
+              )}
 
               <WritingPagination
                 currentPage={currentPage}

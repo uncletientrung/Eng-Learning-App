@@ -5,6 +5,7 @@ import { useEffect, useCallback } from 'react'
 export default function SpeakingP2Content({
   question,
   onSpeak,
+  autoSpeak = true,
 }) {
   
   const handleReadCueCard = useCallback(() => {
@@ -28,10 +29,10 @@ export default function SpeakingP2Content({
 
   // Tự động đọc đề khi dữ liệu câu hỏi được tải
   useEffect(() => {
-    if (question) {
+    if (autoSpeak && question) {
       handleReadCueCard()
     }
-  }, [question, handleReadCueCard])
+  }, [autoSpeak, question, handleReadCueCard])
   
 
   if (!question) {

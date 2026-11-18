@@ -16,6 +16,11 @@ export default function SpeakingPart2() {
   const navigate = useNavigate()
   const location = useLocation()
   const { id: speakingExerciseId } = useParams()
+  const searchParams = new URLSearchParams(location.search)
+  const isHistoryView = searchParams.get('history') === '1'
+  const initialAttemptId = isHistoryView
+    ? searchParams.get('attemptId')
+    : location.state?.attemptId
 
   const [speakingExercise, setSpeakingExercise] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -34,8 +39,9 @@ export default function SpeakingPart2() {
   const [practiceError, setPracticeError] = useState('')
   const speakingAttempt = useSpeakingAttempt(
     speakingExerciseId,
-    location.state?.attemptId,
-    Boolean(speakingExercise?.questions?.length),
+    initialAttemptId,
+    Boolean(speakingExercise?.questions?.length) &&
+      (!isHistoryView || Boolean(initialAttemptId)),
     Boolean(location.state?.startNewAttempt)
   )
   const recorder = useSpeakingRecorder(setCurrentAnswer)
@@ -246,12 +252,15 @@ export default function SpeakingPart2() {
         onSubmit={handleSubmitAttempt}
         speakingExercise={speakingExercise}
         showFinishButton={false}
+        isHistoryView={isHistoryView}
+        completedAt={speakingAttempt.attempt?.completedAt}
       />
 
       <section className="min-h-0 flex-1 space-y-8 overflow-y-auto scroll-smooth px-4 pb-4 pt-1 md:px-10 md:pb-10 md:pt-6">
         <SpeakingP2Content
           question={speakingExercise.questions?.[0]}
           onSpeak={handleTextToSpeech}
+          autoSpeak={!isHistoryView}
         />
 
         {conversationHistory.map((conversationItem, index) => (
@@ -271,6 +280,7 @@ export default function SpeakingPart2() {
               isFinalAnswer={index === conversationHistory.length - 1}
               onRetry={speakingAttempt.retry}
               onRetryError={setPracticeError}
+              readOnly={isHistoryView}
             />
           </div>
         ))}
@@ -303,14 +313,16 @@ export default function SpeakingPart2() {
           isSaving={isSavingAnswer}
         />
       )}
-      <SpeakingAttemptActionFooter
-        status={speakingAttempt.attempt?.status}
-        allAnswersSaved={conversationHistory.length === 1}
-        isSubmitting={isActionBusy}
-        isRestarting={isActionBusy}
-        onSubmit={handleSubmitAttempt}
-        onRestart={handleRestartAttempt}
-      />
+      {!isHistoryView && (
+        <SpeakingAttemptActionFooter
+          status={speakingAttempt.attempt?.status}
+          allAnswersSaved={conversationHistory.length === 1}
+          isSubmitting={isActionBusy}
+          isRestarting={isActionBusy}
+          onSubmit={handleSubmitAttempt}
+          onRestart={handleRestartAttempt}
+        />
+      )}
     </main>
   )
 }

@@ -31,6 +31,27 @@ public sealed class SpeakingAttemptStatusDto
     public List<SpeakingAnswerResultDto> Answers { get; set; } = [];
 }
 
+public sealed class SpeakingAttemptSummaryDto
+{
+    public int AttemptId { get; set; }
+
+    public int ExerciseId { get; set; }
+
+    public int TopicId { get; set; }
+
+    public string ExerciseTitle { get; set; } = "";
+
+    public string TopicName { get; set; } = "";
+
+    public string SpeakingType { get; set; } = "";
+
+    public string Status { get; set; } = "";
+
+    public decimal? OverallScore { get; set; }
+
+    public DateTime? CompletedAt { get; set; }
+}
+
 public sealed class SpeakingGradingResultDto
 {
     public decimal OverallScore { get; set; }

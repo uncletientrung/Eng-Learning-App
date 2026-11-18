@@ -1,27 +1,7 @@
-import { ArrowLeft, Check, Layers } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import LinkButton from '../../ui/LinkButton';
 
-const speakingParts = [
-  { id: 'ALL', label: 'Tất cả' },
-  { id: 'INTRODUCTION_INTERVIEW', label: 'Introduction & Interview' },
-  { id: 'TOPIC', label: 'Topic' },
-  { id: 'TOPIC_DISCUSS', label: 'Topic Discussion' },
-];
-
-function SpeakingHeader({ activePart, onPartChange }) {
-  const baseButtonClass = `
-    inline-flex shrink-0 items-center justify-center gap-1.5
-    border-2 border-[#111] px-3.5 py-2
-    text-sm font-bold text-[#111]
-    shadow-[2px_2px_0_rgba(0,0,0,0.15)]
-    transition-all duration-150
-    hover:-translate-y-px
-    hover:shadow-[3px_3px_0_rgba(0,0,0,0.15)]
-    active:translate-y-0 active:shadow-none
-    focus-visible:outline-none focus-visible:ring-2
-    focus-visible:ring-[#ffc926] focus-visible:ring-offset-2
-  `;
-
+function SpeakingHeader({ practiceStatus, onPracticeStatusChange }) {
   return (
     <header className="mb-8">
       <LinkButton
@@ -34,7 +14,7 @@ function SpeakingHeader({ activePart, onPartChange }) {
         Trở về
       </LinkButton>
 
-      <div className="mt-5 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+      <div className="mt-5 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         {/* Left: Page title */}
         <div className="min-w-0 flex-1">
           <h1 
@@ -52,48 +32,17 @@ function SpeakingHeader({ activePart, onPartChange }) {
           </p>
         </div>
 
-        {/* Right: Speaking type filters */}
-        <section className="w-full lg:w-auto lg:max-w-[560px] lg:shrink-0">
-          <div className="mb-3 flex items-center gap-2">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center border-2 border-[#111] bg-[#ffc926]">
-              <Layers size={16} />
-            </div>
-
-            <div>
-              <h2 className="text-sm font-black text-[#111]">
-                Loại bài luyện tập
-              </h2>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-2.5">
-            {speakingParts.map((part) => {
-              const isActive = activePart === part.id;
-
-              return (
-                <button
-                  key={part.id}
-                  type="button"
-                  aria-pressed={isActive}
-                  onClick={() => onPartChange(part.id)}
-                  className={`
-                    ${baseButtonClass}
-                    ${
-                      isActive
-                        ? 'bg-[#ffc926]'
-                        : 'bg-white hover:bg-[#fff8df]'
-                    }
-                  `}
-                >
-                  {isActive && (
-                    <Check size={14} strokeWidth={3} />
-                  )}
-                  {part.label}
-                </button>
-              );
-            })}
-          </div>
-        </section>
+        <label className="flex w-full flex-col gap-2 md:mb-1 md:w-auto md:min-w-56">
+          <select
+            value={practiceStatus}
+            onChange={(event) => onPracticeStatusChange(event.target.value)}
+            className="w-full cursor-pointer rounded-xl border-2 border-[#111] bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-[3px_3px_0_rgba(0,0,0,0.12)] outline-none transition focus-visible:ring-2 focus-visible:ring-[#ffc926] focus-visible:ring-offset-2"
+          >
+            <option className='text-sm font-semibold text-slate-700' value="ALL">Mọi trạng thái</option>
+            <option className='text-sm font-semibold text-slate-700' value="NOT_STARTED">Chưa làm</option>
+            <option className='text-sm font-semibold text-slate-700' value="PRACTICED">Đã luyện</option>
+          </select>
+        </label>
       </div>
     </header>
   );

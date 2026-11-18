@@ -8,7 +8,7 @@ import WritingPagination from '../../components/sections/writing/WritingPaginati
 import WritingHistoryList from '../../components/sections/writing/WritingHistoryList'
 import MainLayout from '../../components/layout/MainLayout'
 
-import { getWritingExercises } from '../../services/writingApi.js';
+import { getWritingExercises } from '../../services/writingAPI.js';
 import { getTopicByModule } from '../../services/topicAPI';
 import { getAccessToken } from '../../services/authApi.js'
 import {

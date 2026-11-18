@@ -157,6 +157,95 @@ public sealed class SpeakingAssessmentServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task GetAttemptedExerciseIdsAsync_ReturnsIdsForTheRequestedUser()
+    {
+        IReadOnlyList<int> exerciseIds = [11, 17];
+        _repository
+            .Setup(repository => repository.GetAttemptedExerciseIdsAsync(
+                3,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(exerciseIds);
+
+        var result = await _service.GetAttemptedExerciseIdsAsync(3);
+
+        Assert.Equal(exerciseIds, result);
+        _repository.Verify(repository => repository.GetAttemptedExerciseIdsAsync(
+            3,
+            It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetHistoryAsync_MapsCompletedAttemptSummaries()
+    {
+        _attempt.Status = "GRADED";
+        _attempt.CompletedAt = DateTime.UtcNow;
+        _attempt.Exercise.Title = "Family member";
+        _attempt.Exercise.SpeakingType = "INTRODUCTION_INTERVIEW";
+        _attempt.Exercise.TopicId = 8;
+        _attempt.Exercise.Topic = new Topic { Id = 8, Name = "Family" };
+        _repository
+            .Setup(repository => repository.GetHistoryByUserIdAsync(
+                3,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync([_attempt]);
+
+        var history = await _service.GetHistoryAsync(3);
+
+        var summary = Assert.Single(history);
+        Assert.Equal(_attempt.Id, summary.AttemptId);
+        Assert.Equal(_attempt.ExerciseId, summary.ExerciseId);
+        Assert.Equal("Family member", summary.ExerciseTitle);
+        Assert.Equal("Family", summary.TopicName);
+        Assert.Equal("INTRODUCTION_INTERVIEW", summary.SpeakingType);
+        Assert.Equal(_attempt.OverallScore, summary.OverallScore);
+    }
+
+    [Fact]
+    public async Task DeleteHistoryAttemptAsync_DeletesOwnedAttemptAndAudio()
+    {
+        _repository
+            .Setup(repository => repository.GetOwnedAttemptAsync(
+                3,
+                _attempt.Id,
+                true,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_attempt);
+        _repository
+            .Setup(repository => repository.DeleteAttemptAsync(
+                _attempt,
+                It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        var audioPath = Path.Combine(_audioRoot, "3", "5", "12.wav");
+
+        var deleted = await _service.DeleteHistoryAttemptAsync(3, _attempt.Id);
+
+        Assert.True(deleted);
+        Assert.False(File.Exists(audioPath));
+        _repository.Verify(repository => repository.DeleteAttemptAsync(
+            _attempt,
+            It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteHistoryAttemptAsync_ReturnsFalseForUnownedAttempt()
+    {
+        _repository
+            .Setup(repository => repository.GetOwnedAttemptAsync(
+                3,
+                _attempt.Id,
+                true,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((UserSpeakingAttempt?)null);
+
+        var deleted = await _service.DeleteHistoryAttemptAsync(3, _attempt.Id);
+
+        Assert.False(deleted);
+        _repository.Verify(repository => repository.DeleteAttemptAsync(
+            It.IsAny<UserSpeakingAttempt>(),
+            It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
     public async Task ProcessGradingAsync_InvalidAiResultMarksAttemptFailed()
     {
         _llm

@@ -13,6 +13,11 @@ export default function SpeakingPart3() {
   const navigate = useNavigate()
   const location = useLocation()
   const { id: speakingExerciseId } = useParams()
+  const searchParams = new URLSearchParams(location.search)
+  const isHistoryView = searchParams.get('history') === '1'
+  const initialAttemptId = isHistoryView
+    ? searchParams.get('attemptId')
+    : location.state?.attemptId
 
   const [speakingExercise, setSpeakingExercise] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -32,8 +37,9 @@ export default function SpeakingPart3() {
 
   const speakingAttempt = useSpeakingAttempt(
     speakingExerciseId,
-    location.state?.attemptId,
-    Boolean(speakingExercise?.questions?.length),
+    initialAttemptId,
+    Boolean(speakingExercise?.questions?.length) &&
+      (!isHistoryView || Boolean(initialAttemptId)),
     Boolean(location.state?.startNewAttempt)
   )
   const recorder = useSpeakingRecorder(setCurrentAnswer)
@@ -248,6 +254,8 @@ export default function SpeakingPart3() {
         onSubmit={handleSubmitAttempt}
         speakingExercise={speakingExercise}
         showFinishButton={false}
+        isHistoryView={isHistoryView}
+        completedAt={speakingAttempt.attempt?.completedAt}
       />
 
       {/* Khu vực nội dung cuộn */}
@@ -268,12 +276,13 @@ export default function SpeakingPart3() {
               isFinalAnswer: conversationIndex === conversationHistory.length - 1,
               onRetry: speakingAttempt.retry,
               onRetryError: setPracticeError,
+              readOnly: isHistoryView,
             }}
           />
         ))}
 
         {/* Câu hỏi hiện tại: chưa truyền câu trả lời đang nhập */}
-        {!isFinished && currentSpeakingQuestion && (
+        {!isFinished && !isHistoryView && currentSpeakingQuestion && (
           <SpeakingP3Content
             key={`current-${currentSpeakingQuestion.id}`}
             question={currentSpeakingQuestion.questionText}
@@ -311,7 +320,7 @@ export default function SpeakingPart3() {
           isSaving={isSavingAnswer}
         />
       )}
-      {!isFinished && (
+      {!isFinished && !isHistoryView && (
         <SpeakingAttemptActionFooter
           status={speakingAttempt.attempt?.status}
           allAnswersSaved={allAnswersSaved}

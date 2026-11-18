@@ -23,6 +23,48 @@ public sealed class SpeakingAssessmentController : ControllerBase
         _gradingQueue = gradingQueue;
     }
 
+    [HttpGet("exercise-ids")]
+    public async Task<IActionResult> GetAttemptedExerciseIds(
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(out var userId))
+            return Unauthorized(new { message = "Không xác định được người dùng." });
+
+        var exerciseIds = await _service.GetAttemptedExerciseIdsAsync(
+            userId,
+            cancellationToken);
+        return Ok(exerciseIds);
+    }
+
+    [HttpGet("history")]
+    public async Task<IActionResult> GetHistory(
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(out var userId))
+            return Unauthorized(new { message = "Không xác định được người dùng." });
+
+        var history = await _service.GetHistoryAsync(userId, cancellationToken);
+        return Ok(history);
+    }
+
+    [HttpDelete("history/{attemptId:int}")]
+    public async Task<IActionResult> DeleteHistoryAttempt(
+        int attemptId,
+        CancellationToken cancellationToken)
+    {
+        if (!TryGetUserId(out var userId))
+            return Unauthorized(new { message = "Không xác định được người dùng." });
+
+        var deleted = await _service.DeleteHistoryAttemptAsync(
+            userId,
+            attemptId,
+            cancellationToken);
+
+        return deleted
+            ? NoContent()
+            : NotFound(new { message = "Không tìm thấy lượt làm Speaking." });
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateAttempt(
         [FromBody] CreateSpeakingAttemptRequestDto request,

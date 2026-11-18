@@ -103,6 +103,20 @@ export function getSpeakingAttempt(attemptId) {
   return authorizedRequest(`/speaking-attempts/${attemptId}`);
 }
 
+export function getAttemptedSpeakingExerciseIds() {
+  return authorizedRequest('/speaking-attempts/exercise-ids');
+}
+
+export function getSpeakingAttemptHistory() {
+  return authorizedRequest('/speaking-attempts/history');
+}
+
+export function deleteSpeakingAttemptHistory(attemptId) {
+  return authorizedRequest(`/speaking-attempts/history/${attemptId}`, {
+    method: 'DELETE',
+  });
+}
+
 export function retrySpeakingGrading(attemptId) {
   return authorizedRequest(
     `/speaking-attempts/${attemptId}/retry-grading`,

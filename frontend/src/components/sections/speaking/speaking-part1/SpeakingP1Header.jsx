@@ -31,12 +31,21 @@ export default function SpeakingP1Header({
   onSubmit,
   speakingExercise,
   showFinishButton = true,
+  isHistoryView = false,
+  completedAt,
 }) {
   if (!speakingExercise) {
     console.log(speakingExercise);
     
     return null
   }
+
+  const formattedCompletedAt = completedAt
+    ? new Intl.DateTimeFormat('en-US', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      }).format(new Date(completedAt))
+    : null
 
   return (
     <>
@@ -52,18 +61,27 @@ export default function SpeakingP1Header({
 
           <div>
             <h1 className="text-lg font-extrabold uppercase tracking-tight text-[#111]">
-              IELTS Mock Interview
+              {isHistoryView ? 'Speaking History Review' : 'IELTS Mock Interview'}
             </h1>
 
-            <p className="mt-0.5 flex items-center text-[11px] font-bold uppercase text-[#8a8672] md:text-xs">
-              <span className="mr-2 h-2 w-2 animate-pulse rounded-full bg-[#2f8f3f]" />
-              Practice Type:{' '}
+            <div className="mt-0.5">
+              <p className="flex items-center text-[11px] font-bold uppercase text-[#8a8672] md:text-xs">
+                <span className="mr-2 h-2 w-2 animate-pulse rounded-full bg-[#2f8f3f]" />
+                Practice Type:{' '}
                 {speakingParts.find(
                   (part) => part.id === speakingExercise.speakingType
                 )?.label ?? 'Chưa phân loại'}
-              {' - Topic: '}
-              {speakingExercise.title ?? 'Chưa có chủ đề'}
-            </p>
+                {' - Topic: '}
+                {speakingExercise.title ?? 'Chưa có chủ đề'}
+              </p>
+              {isHistoryView && formattedCompletedAt && (
+                <p className="flex items-center text-[11px] font-bold text-[#8a8672] md:text-xs">
+                  <span className="mr-2 h-2 w-2 animate-pulse rounded-full bg-[#2f8f3f]" />
+                  <span className="uppercase">Submitted:</span>{' '}
+                  {formattedCompletedAt}
+                </p>
+              )}
+            </div>
           </div>
         </div>
 

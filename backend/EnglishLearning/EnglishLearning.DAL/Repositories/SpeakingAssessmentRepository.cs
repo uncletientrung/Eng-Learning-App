@@ -189,4 +189,41 @@ public sealed class SpeakingAssessmentRepository : ISpeakingAssessmentRepository
             .Select(attempt => attempt.Id)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<IReadOnlyList<int>> GetAttemptedExerciseIdsAsync(
+        int userId,
+        CancellationToken cancellationToken = default)
+    {
+        return await _db.UserSpeakingAttempts
+            .AsNoTracking()
+            .Where(attempt => attempt.UserId == userId)
+            .Select(attempt => attempt.ExerciseId)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+    }
+
+    public Task<List<UserSpeakingAttempt>> GetHistoryByUserIdAsync(
+        int userId,
+        CancellationToken cancellationToken = default)
+    {
+        return _db.UserSpeakingAttempts
+            .AsNoTracking()
+            .Include(attempt => attempt.Exercise)
+                .ThenInclude(exercise => exercise.Topic)
+            .Where(attempt =>
+                attempt.UserId == userId &&
+                attempt.CompletedAt != null &&
+                attempt.Status != "ABANDONED")
+            .OrderByDescending(attempt => attempt.CompletedAt)
+            .ThenByDescending(attempt => attempt.Id)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task DeleteAttemptAsync(
+        UserSpeakingAttempt attempt,
+        CancellationToken cancellationToken = default)
+    {
+        _db.UserSpeakingAttempts.Remove(attempt);
+        await _db.SaveChangesAsync(cancellationToken);
+    }
 }

@@ -348,6 +348,72 @@ public sealed class SpeakingAssessmentService : ISpeakingAssessmentService
         return await _repository.GetUnfinishedAttemptIdsAsync(cancellationToken);
     }
 
+    public Task<IReadOnlyList<int>> GetAttemptedExerciseIdsAsync(
+        int userId,
+        CancellationToken cancellationToken = default)
+    {
+        if (userId <= 0)
+            throw new ArgumentException("Người dùng không hợp lệ.", nameof(userId));
+
+        return _repository.GetAttemptedExerciseIdsAsync(userId, cancellationToken);
+    }
+
+    public async Task<List<SpeakingAttemptSummaryDto>> GetHistoryAsync(
+        int userId,
+        CancellationToken cancellationToken = default)
+    {
+        if (userId <= 0)
+            throw new ArgumentException("Người dùng không hợp lệ.", nameof(userId));
+
+        var attempts = await _repository.GetHistoryByUserIdAsync(
+            userId,
+            cancellationToken);
+
+        return attempts.Select(attempt => new SpeakingAttemptSummaryDto
+        {
+            AttemptId = attempt.Id,
+            ExerciseId = attempt.ExerciseId,
+            TopicId = attempt.Exercise.TopicId,
+            ExerciseTitle = attempt.Exercise.Title,
+            TopicName = attempt.Exercise.Topic.Name,
+            SpeakingType = attempt.Exercise.SpeakingType,
+            Status = attempt.Status,
+            OverallScore = attempt.OverallScore,
+            CompletedAt = attempt.CompletedAt
+        }).ToList();
+    }
+
+    public async Task<bool> DeleteHistoryAttemptAsync(
+        int userId,
+        int attemptId,
+        CancellationToken cancellationToken = default)
+    {
+        if (userId <= 0)
+            throw new ArgumentException("Người dùng không hợp lệ.", nameof(userId));
+        if (attemptId <= 0)
+            throw new ArgumentException("ID lượt làm không hợp lệ.", nameof(attemptId));
+
+        var attempt = await _repository.GetOwnedAttemptAsync(
+            userId,
+            attemptId,
+            includeAnswers: true,
+            cancellationToken: cancellationToken);
+        if (attempt is null)
+            return false;
+
+        var audioPaths = attempt.UserSpeakingAnswers
+            .Select(answer => answer.AudioUrl)
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .ToList();
+
+        await _repository.DeleteAttemptAsync(attempt, cancellationToken);
+
+        foreach (var audioPath in audioPaths)
+            DeleteStoredAudio(audioPath);
+
+        return true;
+    }
+
     public async Task ProcessGradingAsync(
         int attemptId,
         CancellationToken cancellationToken = default)

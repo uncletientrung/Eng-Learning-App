@@ -1,6 +1,19 @@
 import { Layers, Check } from 'lucide-react';
 
-function SpeakingTopicFilters({ topics=[], activeTopicGroup,onTopicGroupChange,}) {
+const speakingParts = [
+  { id: 'ALL', label: 'Tất cả' },
+  { id: 'INTRODUCTION_INTERVIEW', label: 'Introduction & Interview' },
+  { id: 'TOPIC', label: 'Topic' },
+  { id: 'TOPIC_DISCUSS', label: 'Topic Discussion' },
+];
+
+function SpeakingTopicFilters({
+  topics = [],
+  activePart,
+  onPartChange,
+  activeTopicGroup,
+  onTopicGroupChange,
+}) {
   const isAllActive = activeTopicGroup === 'ALL';
   const baseClass = `
     inline-flex shrink-0 items-center gap-1.5
@@ -14,62 +27,96 @@ function SpeakingTopicFilters({ topics=[], activeTopicGroup,onTopicGroupChange,}
   `;
 
   return (
-    <section className="mb-8">
-      {/* Section heading */}
-      <div className="mb-3 flex items-center gap-2">
-        <div className="flex h-8 w-8 items-center justify-center border-2 border-[#111] bg-[#ffc926]">
-          <Layers size={16} />
+    <section className="mb-8 space-y-6">
+      <div>
+        <div className="mb-3 flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center border-2 border-[#111] bg-[#ffc926]">
+            <Layers size={16} />
+          </div>
+          <h2 className="text-sm font-black text-[#111] sm:text-base">
+            Loại bài luyện tập
+          </h2>
         </div>
 
-        <div>
+        <div className="flex flex-wrap gap-2.5">
+          {speakingParts.map((part) => {
+            const isActive = activePart === part.id;
+
+            return (
+              <button
+                key={part.id}
+                type="button"
+                aria-pressed={isActive}
+                onClick={() => onPartChange(part.id)}
+                className={`
+                  ${baseClass}
+                  ${
+                    isActive
+                      ? 'bg-[#ffc926] text-[#111]'
+                      : 'bg-white text-[#111] hover:bg-[#fff8df]'
+                  }
+                `}
+              >
+                {isActive && <Check size={14} strokeWidth={3} />}
+                {part.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div>
+        <div className="mb-3 flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center border-2 border-[#111] bg-[#ffc926]">
+            <Layers size={16} />
+          </div>
           <h2 className="text-sm font-black text-[#111] sm:text-base">
             Chủ đề luyện tập
           </h2>
         </div>
-      </div>
 
-      {/* Filter buttons */}
-      <div className="flex flex-wrap gap-2.5">
-        <button
-          type="button"
-          aria-pressed={isAllActive}
-          onClick={() => onTopicGroupChange('ALL')}
-          className={`
-            ${baseClass}
-            ${
-              isAllActive
-                ? 'bg-[#ffc926] text-[#111]'
-                : 'bg-white text-[#111] hover:bg-[#fff8df]'
-            }
-          `}
-        >
-          {isAllActive && <Check size={14} strokeWidth={3} />}
-          Tất cả
-        </button>
+        <div className="flex flex-wrap gap-2.5">
+          <button
+            type="button"
+            aria-pressed={isAllActive}
+            onClick={() => onTopicGroupChange('ALL')}
+            className={`
+              ${baseClass}
+              ${
+                isAllActive
+                  ? 'bg-[#ffc926] text-[#111]'
+                  : 'bg-white text-[#111] hover:bg-[#fff8df]'
+              }
+            `}
+          >
+            {isAllActive && <Check size={14} strokeWidth={3} />}
+            Tất cả
+          </button>
 
-        {topics.map((topic) => {
-          const isActive = activeTopicGroup === topic.id;
+          {topics.map((topic) => {
+            const isActive = Number(activeTopicGroup) === Number(topic.id);
 
-          return (
-            <button
-              key={topic.id}
-              type="button"
-              aria-pressed={isActive}
-              onClick={() => onTopicGroupChange(topic.id)}
-              className={`
-                ${baseClass}
-                ${
-                  isActive
-                    ? 'bg-[#ffc926] text-[#111]'
-                    : 'bg-white text-[#111] hover:bg-[#fff8df]'
-                }
-              `}
-            >
-              {isActive && <Check size={14} strokeWidth={3} />}
-              {topic.name}
-            </button>
-          );
-        })}
+            return (
+              <button
+                key={topic.id}
+                type="button"
+                aria-pressed={isActive}
+                onClick={() => onTopicGroupChange(topic.id)}
+                className={`
+                  ${baseClass}
+                  ${
+                    isActive
+                      ? 'bg-[#ffc926] text-[#111]'
+                      : 'bg-white text-[#111] hover:bg-[#fff8df]'
+                  }
+                `}
+              >
+                {isActive && <Check size={14} strokeWidth={3} />}
+                {topic.name}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
