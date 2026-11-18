@@ -10,7 +10,7 @@ import WritingPagination from '../../components/sections/writing/WritingPaginati
 import { getSpeakingExercisesWithQuestions } from '../../services/speakingAPI.js'
 import { getTopicByModule } from '../../services/topicAPI';
 
-const PAGE_SIZE = 8
+const PAGE_SIZE = 6
 
 function SpeakingLibrary() {
   const [activeTopicGroup, setActiveTopicGroup] = useState('ALL')
@@ -113,26 +113,42 @@ function SpeakingLibrary() {
 
   return (
     <MainLayout>
-      <main
-        className="
-          z-10 mx-auto
-          w-full max-w-7xl
-          flex-grow
-          px-6 pb-25 pt-25
-          lg:px-8
-        "
-      >
-        <SpeakingHeader
-          activePart={activePart}
-          onPartChange={handlePartChange}
+      <section className="relative flex min-h-[101vh] w-full flex-col overflow-hidden bg-brand">
+        <div
+          className="pointer-events-none absolute inset-0 z-0 opacity-[0.15]"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgb(255,255,255) 1px, transparent 1px),
+              linear-gradient(90deg, rgb(255,255,255) 1px, transparent 1px)
+            `,
+            backgroundSize: '32px 32px',
+          }}
         />
+        <main
+          className="
+            relative z-10 mx-auto
+            mt-32 w-[calc(100%-2rem)]
+            max-w-[1400px]
+            flex-grow
+            rounded-[24px] bg-white
+            px-6 pb-20 pt-8
+            shadow-[0_18px_50px_rgba(31,41,55,0.10)]
+            md:w-[calc(100%-3rem)]
+            md:px-10
+            lg:px-12
+          "
+        >
+          <SpeakingHeader
+            activePart={activePart}
+            onPartChange={handlePartChange}
+          />
 
-        <SpeakingTopicFilters
-          topics = {topics}
-          activeTopicGroup={activeTopicGroup}
-          onTopicGroupChange={handleTopicGroupChange}
-        />
-        {loading ? (
+          <SpeakingTopicFilters
+            topics={topics}
+            activeTopicGroup={activeTopicGroup}
+            onTopicGroupChange={handleTopicGroupChange}
+          />
+          {loading ? (
             <p className="py-6 text-slate-500">
               Đang tải dữ liệu...
             </p>
@@ -149,10 +165,12 @@ function SpeakingLibrary() {
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={setCurrentPage}
+                variant="green"
               />
             </>
           )}
-      </main>
+        </main>
+      </section>
     </MainLayout>
   )
 }

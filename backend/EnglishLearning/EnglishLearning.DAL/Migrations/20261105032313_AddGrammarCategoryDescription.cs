@@ -1,9 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using EnglishLearning.DAL.Data;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace EnglishLearning.DAL.Migrations
 {
+    [DbContext(typeof(AppDbContext))]
+    [Migration("20261105032313_AddGrammarCategoryDescription")]
     /// <inheritdoc />
     public partial class AddGrammarCategoryDescription : Migration
     {

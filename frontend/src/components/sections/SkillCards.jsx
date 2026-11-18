@@ -1,11 +1,17 @@
 import SkillCard from './SkillCard'
 import { skills } from '../../data/skills'
 import { useNavigate } from 'react-router-dom'
+import { getAuthenticatedToken } from '../../services/authApi'
 
 function SkillCards({ onOpenReadingModal, onMascotSmile }) {
   const navigate = useNavigate()
 
   const handleSkillClick = (skill) => {
+    if (!getAuthenticatedToken()) {
+      navigate('/login', { state: { from: skill.path } })
+      return
+    }
+
     if (skill.action === 'open-reading-modal') {
       onOpenReadingModal()
       return

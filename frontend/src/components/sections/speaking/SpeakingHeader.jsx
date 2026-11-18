@@ -37,14 +37,16 @@ function SpeakingHeader({ activePart, onPartChange }) {
       <div className="mt-5 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         {/* Left: Page title */}
         <div className="min-w-0 flex-1">
-          <h1 className="text-3xl font-black tracking-tight text-[#111] sm:text-4xl">
-            Thư viện{' '}
-            <span className="underline decoration-[#ffc926] decoration-4 underline-offset-4">
-              Speaking Practice
-            </span>
-          </h1>
+          <h1 
+            className="text-4xl md:text-5xl font-black text-[#1e3006] mb-4 tracking-tight leading-tight" 
+            style={{ fontFamily: '"Segoe UI Black", "Segoe UI", sans-serif' }}>
+                IELTS {' '}
+                <span className="text-brand-dark">
+                  Speaking
+                </span>
+            </h1>
 
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
+          <p className="mt-3 text-slate-500 text-md font-medium" style={{ fontFamily: '"Segoe UI Semibold", "Segoe UI", sans-serif' }}>
             Luyện nói tiếng Anh với bộ câu hỏi theo chủ đề,
             rèn luyện phản xạ và phát triển khả năng diễn đạt.
           </p>

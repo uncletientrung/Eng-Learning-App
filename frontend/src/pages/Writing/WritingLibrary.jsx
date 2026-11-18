@@ -207,14 +207,30 @@ function WritingLibrary() {
   }
 
   return (
-      <MainLayout>
+      <MainLayout >
+        <section className="relative flex min-h-[101vh] w-full flex-col overflow-hidden bg-brand">
+        <div
+          className="pointer-events-none absolute inset-0 z-0 opacity-[0.15]"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgb(255,255,255) 1px, transparent 1px),
+              linear-gradient(90deg, rgb(255,255,255) 1px, transparent 1px)
+            `,
+            backgroundSize: '32px 32px',
+          }}
+        />
         <main
           className="
-            z-10 mx-auto
-            w-full max-w-7xl
+            relative z-10 mx-auto
+            mt-32 w-[calc(100%-2rem)]
+            max-w-[1400px]
             flex-grow
-            px-6 pb-25 pt-25
-            lg:px-8
+            rounded-[24px] bg-white
+            px-6 pb-20 pt-8
+            shadow-[0_18px_50px_rgba(31,41,55,0.10)]
+            md:w-[calc(100%-3rem)]
+            md:px-10
+            lg:px-12
           "
         >
           <WritingHeader
@@ -262,10 +278,12 @@ function WritingLibrary() {
                   Math.ceil(filteredTests.length / 10)
                 )}
                 onPageChange={setCurrentPage}
+                variant="green"
               />
             </>
           )}
         </main>
+        </section>
       </MainLayout>
     )
 }

@@ -24,14 +24,20 @@ function WritingHeader({ practiceStatus, onPracticeStatusChange }) {
         "
       >
         <div className='mt-5'>
-          <h1 className="text-3xl font-black tracking-tight text-[#111] sm:text-4xl">
-            Thư viện{' '}
-            <span className="underline decoration-[#ffc926] decoration-4 underline-offset-4">
-              Writing-tests
-            </span>
-          </h1>
+           <h1 
+              className="text-4xl md:text-5xl font-black text-[#1e3006] mb-4 tracking-tight leading-tight" 
+              style={{ fontFamily: '"Segoe UI Black", "Segoe UI", sans-serif' }}>
+                  IELTS {' '}
+                  <span className="text-brand-dark
+                  
+                   "
+                   >
+                    Writing
+                  </span>
+            </h1>
 
-          <p className="mt-3 text-lg text-slate-600">
+
+          <p className="mt-3 text-slate-500 text-lg font-medium" style={{ fontFamily: '"Segoe UI Semibold", "Segoe UI", sans-serif' }}>
             Phát triển kỹ năng Writing-tests với bộ đề thi
             được mô phỏng bám sát định dạng thực tế.
           </p>

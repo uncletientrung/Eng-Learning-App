@@ -1,6 +1,7 @@
 import { BookText, PenLine, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import { getAuthenticatedToken } from '../../services/authApi'
 
 
 function ReadingSelectionModal({ onClose }) {
@@ -15,6 +16,10 @@ function ReadingSelectionModal({ onClose }) {
 
   const handleNavigate = (path) => {
     onClose()
+    if (!getAuthenticatedToken()) {
+      navigate('/login', { state: { from: path } })
+      return
+    }
     navigate(path)
   }
 
