@@ -8,9 +8,17 @@ const LoginPage = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
+    const [toast, setToast] = useState(location.state?.toast || '');
     const mascotRef = useRef(null);
     const faceGroupRef = useRef(null);
     const eyePathRef = useRef(null);
+
+    useEffect(() => {
+        if (!location.state?.toast) return;
+        setToast(location.state.toast);
+        const timeout = window.setTimeout(() => setToast(''), 4500);
+        return () => window.clearTimeout(timeout);
+    }, [location.state?.toast]);
 
     useEffect(() => {
         const mascot = mascotRef.current;
@@ -141,6 +149,8 @@ const LoginPage = () => {
 
     return (
         <div className="min-h-screen w-full bg-[#fafaf7] flex flex-col items-center justify-center relative overflow-hidden font-sans px-4 py-10">
+
+            {toast && <div role="status" aria-live="polite" className="fixed right-4 top-4 z-50 max-w-sm rounded-xl border border-amber-200 bg-white px-5 py-4 text-sm font-semibold text-slate-800 shadow-lg">{toast}</div>}
 
 
 

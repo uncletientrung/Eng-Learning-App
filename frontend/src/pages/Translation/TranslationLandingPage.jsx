@@ -77,21 +77,30 @@ export default function TranslationLandingPage() {
                             const Icon = style.icon;
                             return (
                                 <a key={item.id} href={`/translation/${encodeURIComponent(item.id)}`} className="group block">
-                                    <div className={`flex cursor-pointer items-center justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md ${style.hoverBorder}`}>
-                                        <div className="flex items-center gap-5">
-                                            <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border transition-transform duration-200 group-hover:scale-105 ${style.iconBg}`}>
-                                                <Icon size={24} />
-                                            </div>
-                                            <div>
-                                                <div className="mb-1 flex items-center gap-2">
-                                                    <span className="text-[11px] font-black uppercase tracking-widest text-slate-400">Bước {index + 1}</span>
+                                    <div className={`flex cursor-pointer flex-col gap-3 rounded-2xl border border-violet-100 bg-violet-50/50 p-6 shadow-sm transition-all duration-200 hover:bg-violet-50 hover:shadow-md ${style.hoverBorder}`}>
+                                        <div className="flex w-full items-center justify-between gap-4">
+                                            <div className="flex min-w-0 w-full items-center gap-5">
+                                                <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border transition-transform duration-200 group-hover:scale-105 ${style.iconBg}`}>
+                                                    <Icon size={24} />
                                                 </div>
-                                                <h2 className="text-lg font-bold tracking-tight text-slate-800 transition-colors group-hover:text-slate-900">{item.title}</h2>
+                                                <div className="min-w-0 flex flex-col w-1/2">
+                                                    <div className="mb-1 flex items-center gap-2">
+                                                        <span className="text-[11px] font-black uppercase tracking-widest text-slate-400">Bước {index + 1}</span>
+                                                    </div>
+                                                    <h2 className="text-lg font-bold tracking-tight text-slate-800 transition-colors group-hover:text-slate-900">{item.title}</h2>
+                                                    <div className="flex w-full items-center justify-between text-[11px] font-bold tabular-nums text-violet-700 mt-1 mb-1">
+                                                        <span>Hoàn thành {item.completedExerciseCount ?? 0}/{item.exerciseCount} bài</span>
+                                                        <span>{item.completionPercent ?? 0}%</span>
+                                                    </div>
+                                                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-violet-100" aria-label={`Tiến độ ${item.title}`} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={item.completionPercent ?? 0}>
+                                                        <div className="h-full rounded-full bg-violet-500 transition-all duration-500" style={{ width: `${item.completionPercent ?? 0}%` }} />
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="flex shrink-0 items-center gap-1.5 text-xs font-bold text-slate-400 transition-colors group-hover:text-slate-600">
-                                            <span>{item.exerciseCount} mục</span>
-                                            <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                                            <div className="flex shrink-0 items-center gap-1.5 text-xs font-bold text-slate-400 transition-colors group-hover:text-slate-600">
+                                                <span>{item.exerciseCount} mục</span>
+                                                <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                                            </div>
                                         </div>
                                     </div>
                                 </a>

@@ -40,6 +40,7 @@ public class AppDbContext : DbContext
     public DbSet<UserSpeakingAnswer> UserSpeakingAnswers => Set<UserSpeakingAnswer>();
     public DbSet<UserSpeakingAttempt> UserSpeakingAttempts => Set<UserSpeakingAttempt>();
     public DbSet<UserTranslationAttempt> UserTranslationAttempts => Set<UserTranslationAttempt>();
+    public DbSet<UserTranslationContentProgress> UserTranslationContentProgresses => Set<UserTranslationContentProgress>();
     public DbSet<UserWordProgress> UserWordProgresses => Set<UserWordProgress>();
     public DbSet<UserWritingAttempt> UserWritingAttempts => Set<UserWritingAttempt>();
     public DbSet<UserWritingCriterionScore> UserWritingCriterionScores => Set<UserWritingCriterionScore>();
@@ -84,6 +85,34 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(attempt => attempt.ContentId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<UserTranslationContentProgress>()
+            .HasIndex(progress => new { progress.UserId, progress.ContentId })
+            .IsUnique();
+
+        modelBuilder.Entity<UserTranslationContentProgress>()
+            .HasIndex(progress => progress.ExerciseId);
+
+        modelBuilder.Entity<UserTranslationContentProgress>()
+            .HasIndex(progress => new { progress.UserId, progress.IsCompleted, progress.ExerciseId });
+
+        modelBuilder.Entity<UserTranslationContentProgress>()
+            .HasOne(progress => progress.User)
+            .WithMany()
+            .HasForeignKey(progress => progress.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<UserTranslationContentProgress>()
+            .HasOne(progress => progress.Content)
+            .WithMany()
+            .HasForeignKey(progress => progress.ContentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<UserTranslationContentProgress>()
+            .HasOne(progress => progress.Exercise)
+            .WithMany()
+            .HasForeignKey(progress => progress.ExerciseId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<UserWritingCriterionScore>()
             .HasOne(s => s.Attempt)

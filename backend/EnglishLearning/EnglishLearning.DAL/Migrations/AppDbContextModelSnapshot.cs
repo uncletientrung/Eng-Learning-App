@@ -1117,6 +1117,48 @@ namespace EnglishLearning.DAL.Migrations
                     b.ToTable("user_translation_attempts");
                 });
 
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.UserTranslationContentProgress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ContentId")
+                        .HasColumnType("int")
+                        .HasColumnName("content_id");
+
+                    b.Property<int>("ExerciseId")
+                        .HasColumnType("int")
+                        .HasColumnName("exercise_id");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("is_completed");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContentId");
+
+                    b.HasIndex("ExerciseId");
+
+                    b.HasIndex("UserId", "ContentId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId", "IsCompleted", "ExerciseId");
+
+                    b.ToTable("user_translation_content_progress");
+                });
+
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserWordProgress", b =>
                 {
                     b.Property<int>("Id")
@@ -1666,6 +1708,33 @@ namespace EnglishLearning.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Content");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.UserTranslationContentProgress", b =>
+                {
+                    b.HasOne("EnglishLearning.DAL.Entities.TranslationExerciseContent", "Content")
+                        .WithMany()
+                        .HasForeignKey("ContentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EnglishLearning.DAL.Entities.TranslationExercise", "Exercise")
+                        .WithMany()
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EnglishLearning.DAL.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Content");
+
+                    b.Navigation("Exercise");
 
                     b.Navigation("User");
                 });

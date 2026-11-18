@@ -106,6 +106,8 @@ builder.Services.AddHttpClient<
     ISpeakingGradingLlmService,
     GeminiGradingSpeakingService>(
     client => client.Timeout = TimeSpan.FromSeconds(geminiTimeoutSeconds));
+builder.Services.AddHttpClient<ITranslationGradingService, GeminiTranslationGradingService>(
+    client => client.Timeout = TimeSpan.FromSeconds(geminiTimeoutSeconds));
 builder.Services.AddSingleton<SpeakingGradingQueue>();
 builder.Services.AddHostedService<SpeakingGradingWorker>();
 
