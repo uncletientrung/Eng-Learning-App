@@ -7,6 +7,7 @@ import WordSetsTab from "./dashboard/word-sets/WordSetsTab";
 import FlashcardTab from "./dashboard/flashcard/FlashcardTab";
 import NotebookTab from "./dashboard/notebook/NotebookTab";
 import NotebookFlashcards from "./dashboard/flashcard/NotebookFlashcards";
+import IdiomFlashcards from "./dashboard/flashcard/IdiomFlashcards";
 import ReviewNotifications from "./dashboard/ReviewNotifications";
 import DashboardDialog from "./dashboard/DashboardDialog";
 import { logout } from "../../services/authApi";
@@ -42,6 +43,7 @@ export default function VocabularyDashboard({ flashcardPage = false }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const tab = searchParams.get("tab");
   const folderId = searchParams.get("folder");
+  const idiomTopicId = searchParams.get("idiomTopic");
   const setId = searchParams.get("set");
   const view = flashcardPage ? "flashcard" : tab === "botu" ? "sets" : tab === "flashcard" ? "flashcard" : tab === "notebook" ? "notebook" : "overview";
   const [notice, setNotice] = useState(null);
@@ -124,11 +126,11 @@ export default function VocabularyDashboard({ flashcardPage = false }) {
           <ReviewNotifications />
           <DashboardThemeButton dark={preferences.dark} onToggle={toggleTheme} />
         </header>
-        <main ref={contentRef} className={`vd-main${view === "flashcard" && folderId ? " vd-main-study" : ""}`} onClick={handleAction}>
+        <main ref={contentRef} className={`vd-main${view === "flashcard" && (folderId || idiomTopicId) ? " vd-main-study" : ""}`} onClick={handleAction}>
           {view === "overview"
             ? <OverviewTab preferences={preferences} onBandChange={changeBand} onExamDateChange={(examDate) => setPreferences((previous) => ({ ...previous, examDate }))} today={today} />
             : view === "flashcard"
-              ? folderId ? <NotebookFlashcards key={`${folderId}:${searchParams.get("review") || ""}`} folderId={folderId} /> : <FlashcardTab onChooseSet={() => navigateView("sets")} />
+              ? idiomTopicId ? <IdiomFlashcards key={idiomTopicId} topicId={idiomTopicId} /> : folderId ? <NotebookFlashcards key={`${folderId}:${searchParams.get("review") || ""}`} folderId={folderId} /> : <FlashcardTab onChooseSet={() => navigateView("sets")} />
               : view === "notebook"
                 ? <NotebookTab onBack={() => navigateView("sets")} />
                 : <WordSetsTab key={view} />}

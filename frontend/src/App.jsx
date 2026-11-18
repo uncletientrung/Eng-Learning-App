@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import WritingLibrary from './pages/Writing/WritingLibrary'
 import WritingTest from './pages/Writing/WritingTest'
 import TranslationLandingPage from './pages/Translation/TranslationLandingPage'
+import TranslationExercisePage from './pages/Translation/TranslationExercisePage'
 import SpeakingLibrary from './pages/Speaking/SpeakingLibrary'
 import SpeakingPart1 from './pages/Speaking/SpeakingPart1'
 import SpeakingPart2 from './pages/Speaking/SpeakingPart2'
@@ -20,7 +21,7 @@ import ReviewPage from "./pages/Reading/ReviewPage.jsx";
 import RequireAuth from './components/layout/RequireAuth';
 import ListeningResultPage from "./components/sections/listening/Result/ListeningResultPage.jsx";
 import ListeningExamPage from "./pages/Listening/ListeningExamPage.jsx";
-import RequireAdmin from "./components/admin/RequireAdmin";
+import RequireAdmin from "./components/layout/RequireAdmin";
 
 const VocabularyDashboard = lazy(() => import('./pages/Vocabulary/VocabularyDashboard'))
 const AdminLayout = lazy(() => import("./components/admin/AdminLayout"))
@@ -83,6 +84,8 @@ function App() {
         element={<WritingTest />}
           />
       <Route path="/translation" element={<TranslationLandingPage />}/>
+      <Route path="/translation/:parentId" element={<TranslationExercisePage />} />
+      <Route path="/translation/:parentId/exercises/:exerciseId" element={<TranslationExercisePage />} />
       <Route
         path="/speaking"
         element={<SpeakingLibrary />}

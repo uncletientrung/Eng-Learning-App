@@ -31,6 +31,7 @@ public class AppDbContext : DbContext
     public DbSet<SpeakingQuestion> SpeakingQuestions => Set<SpeakingQuestion>();
     public DbSet<Topic> Topics => Set<Topic>();
     public DbSet<TranslationExercise> TranslationExercises => Set<TranslationExercise>();
+    public DbSet<TranslationExerciseContent> TranslationExerciseContents => Set<TranslationExerciseContent>();
     public DbSet<User> Users => Set<User>();
     public DbSet<UserListeningAnswer> UserListeningAnswers => Set<UserListeningAnswer>();
     public DbSet<UserListeningAttempt> UserListeningAttempts => Set<UserListeningAttempt>();
@@ -77,6 +78,12 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(a => a.ExerciseId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<UserTranslationAttempt>()
+            .HasOne(attempt => attempt.Content)
+            .WithMany()
+            .HasForeignKey(attempt => attempt.ContentId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<UserWritingCriterionScore>()
             .HasOne(s => s.Attempt)

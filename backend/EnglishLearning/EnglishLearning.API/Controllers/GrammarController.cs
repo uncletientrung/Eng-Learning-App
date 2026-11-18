@@ -22,4 +22,24 @@ public class GrammarController : ControllerBase
 
         return Ok(categories);
     }
+
+    [HttpGet("categories/{id:int}/topics")]
+    public async Task<IActionResult> GetTopicsByCategory(int id)
+    {
+        if (id <= 0)
+            return BadRequest();
+
+        var topics = await _service.GetTopicByCategoryAsync(id);
+        return Ok(topics);
+    }
+
+    [HttpGet("categories/{categoryId:int}/sections")]
+    public async Task<IActionResult> GetSectionsByCategory(int categoryId)
+    {
+        if (categoryId <= 0)
+            return BadRequest();
+
+        var sections = await _service.GetSectionsByCategoryAsync(categoryId);
+        return Ok(sections);
+    }
 }

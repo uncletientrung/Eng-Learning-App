@@ -24,6 +24,7 @@ public class TopicService : ITopicService
             Id = t.Id,
             Name = t.Name,
             Description = t.Description,
+            ImageURL = t.ImageURL,
             ModuleType = t.ModuleType,
             CreateBy = t.CreateBy,
             CreateByUserId = t.CreateByUserId
@@ -40,6 +41,7 @@ public class TopicService : ITopicService
             Id = t.Id,
             Name = t.Name,
             Description = t.Description,
+            ImageURL = t.ImageURL,
             ModuleType = t.ModuleType,
             CreateBy = t.CreateBy,
             CreateByUserId = t.CreateByUserId
@@ -60,6 +62,7 @@ public class TopicService : ITopicService
             Id = topic.Id,
             Name = topic.Name,
             Description = topic.Description,
+            ImageURL = topic.ImageURL,
             ModuleType = topic.ModuleType,
             CreateBy = topic.CreateBy,
             CreateByUserId = topic.CreateByUserId

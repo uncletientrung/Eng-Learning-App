@@ -10,7 +10,7 @@ public sealed record VocabularyWordDto( // record -> ko phải viết { get; ini
 // 1 bộ từ
 public sealed record VocabularySetDto(
     int Id, string Name, string? Description, int? CreateByUserId,
-    int WordCount, List<VocabularyWordDto>? Words = null); // Số từ của bộ từ đấy, List từ
+    int WordCount, List<VocabularyWordDto>? Words = null, string? ImageURL = null); // Số từ của bộ từ đấy, List từ
 
 public sealed class SaveVocabularySetRequest
 {

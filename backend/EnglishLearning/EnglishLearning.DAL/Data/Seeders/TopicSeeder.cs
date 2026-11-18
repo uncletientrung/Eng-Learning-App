@@ -37,8 +37,57 @@ public static class TopicSeeder
         (28, "Đô thị & Kiến trúc", "VOCABULARY"),
         (29, "Truyền thông & Báo chí", "VOCABULARY"),
         (30, "Vấn đề Toàn cầu", "VOCABULARY"),
-        (31, "Nghệ thuật & Giải trí", "VOCABULARY")
+        (31, "Nghệ thuật & Giải trí", "VOCABULARY"),
+        (32, "Emotions & Feelings", "IDIOM"),
+        (33, "Money & Business", "IDIOM"),
+        (34, "Time", "IDIOM"),
+        (35, "Communication", "IDIOM"),
+        (36, "Success & Achievement", "IDIOM"),
+        (37, "Failure & Difficulty", "IDIOM"),
+        (38, "People & Relationships", "IDIOM"),
+        (39, "Work & Effort", "IDIOM"),
+        (40, "Food-related Idioms", "IDIOM"),
+        (41, "Animal Idioms", "IDIOM"),
+        (42, "Body Idioms", "IDIOM"),
+        (43, "Weather Idioms", "IDIOM"),
+        (44, "Decision Making & Opinion", "IDIOM"),
+        (45, "Quantity & Degree", "IDIOM"),
+        (46, "Knowledge & Understanding", "IDIOM"),
+        (47, "Trouble & Risk", "IDIOM"),
+        (48, "General & Everyday Idioms", "IDIOM")
     ];
+
+    private static readonly IReadOnlyDictionary<int, string> TopicImageUrls = new Dictionary<int, string>
+    {
+        [21] = "/assets/topics/tech.webp",
+        [22] = "/assets/topics/forest.webp",
+        [23] = "/assets/topics/people.webp",
+        [24] = "/assets/topics/ruins.webp",
+        [25] = "/assets/topics/business.webp",
+        [26] = "/assets/topics/doctor.webp",
+        [27] = "/assets/topics/students.webp",
+        [28] = "/assets/topics/city.webp",
+        [29] = "/assets/topics/news.webp",
+        [30] = "/assets/topics/earth.webp",
+        [31] = "/assets/topics/concert.webp",
+        [32] = "/assets/topics/happy.webp",
+        [33] = "/assets/topics/money.webp",
+        [34] = "/assets/topics/clock.webp",
+        [35] = "/assets/topics/talk.webp",
+        [36] = "/assets/topics/concert.webp",
+        [37] = "/assets/topics/storm.webp",
+        [38] = "/assets/topics/people.webp",
+        [39] = "/assets/topics/construct.webp",
+        [40] = "/assets/topics/food.webp",
+        [41] = "/assets/topics/fox.webp",
+        [42] = "/assets/topics/hands.webp",
+        [43] = "/assets/topics/clouds.webp",
+        [44] = "/assets/topics/road.webp",
+        [45] = "/assets/topics/coins.webp",
+        [46] = "/assets/topics/brain.webp",
+        [47] = "/assets/topics/storm.webp",
+        [48] = "/assets/topics/people.webp"
+    };
 
     public static async Task<IReadOnlyDictionary<int, int>> SeedAsync(
         AppDbContext context,
@@ -54,6 +103,7 @@ public static class TopicSeeder
             .ToDictionary(group => group.Key, group => group.First());
         var seededTopics = new Dictionary<int, Topic>();
         var additions = new List<Topic>();
+        var imageUpdates = 0;
 
         foreach (var seed in Topics)
         {
@@ -65,6 +115,7 @@ public static class TopicSeeder
                 {
                     Name = seed.Name,
                     Description = null,
+                    ImageURL = TopicImageUrls.GetValueOrDefault(seed.SourceId),
                     ModuleType = seed.ModuleType,
                     CreateBy = "ADMIN",
                     CreateByUserId = null
@@ -73,10 +124,16 @@ public static class TopicSeeder
                 known.Add(key, topic);
             }
 
+            if (TopicImageUrls.TryGetValue(seed.SourceId, out var imageUrl) && topic.ImageURL != imageUrl)
+            {
+                topic.ImageURL = imageUrl;
+                imageUpdates++;
+            }
+
             seededTopics.Add(seed.SourceId, topic);
         }
 
-        if (additions.Count > 0)
+        if (additions.Count > 0 || imageUpdates > 0)
         {
             context.Topics.AddRange(additions);
             await context.SaveChangesAsync(cancellationToken);

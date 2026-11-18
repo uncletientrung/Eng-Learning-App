@@ -16,6 +16,10 @@ namespace EnglishLearning.DAL.Entities
         [Column(TypeName = "text")]
         public string? Description { get; set; }
 
+        [StringLength(255)]
+        [Column("image_url")]
+        public string? ImageURL { get; set; }
+
         [Required, StringLength(255)]
         [Column("module_type")]
         public string ModuleType { get; set; } = string.Empty;

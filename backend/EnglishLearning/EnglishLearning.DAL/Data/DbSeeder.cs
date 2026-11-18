@@ -1,4 +1,4 @@
-﻿
+
 using Microsoft.EntityFrameworkCore;
 using EnglishLearning.DAL.Data.Seeders;
 
@@ -21,11 +21,16 @@ public static class DbSeeder
         // restore the sample catalog on the next startup. Seed it only on first setup.
         var initializeVocabulary = !await context.Users.AnyAsync(cancellationToken)
             && !await context.Topics.AnyAsync(t => t.ModuleType == "VOCABULARY", cancellationToken);
+
+        await GrammarSeeder.SeedAsync(context, cancellationToken);
         await UserSeeder.SeedAsync(context, cancellationToken);
         var topicIds = await TopicSeeder.SeedAsync(context, cancellationToken, initializeVocabulary);
+        await IdiomSeeder.SeedAsync(context, topicIds, cancellationToken);
+        await TranslationExerciseSeeder.SeedAsync(context, cancellationToken);
         if (initializeVocabulary)
             await WordSeeder.SeedAsync(context, topicIds, cancellationToken);
 
         await transaction.CommitAsync(cancellationToken);
     }
 }
+

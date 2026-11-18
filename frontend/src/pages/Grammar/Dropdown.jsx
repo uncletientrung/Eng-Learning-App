@@ -1,9 +1,7 @@
 
 import { useState, useEffect, useRef } from "react";
-import { topics } from './Mock Data/Topics';
 export default function Dropdown({
-    parent_id,
-    options = topics.filter((topic) => topic.parentId == parent_id), //Data mặc định, mốt đổi
+    options = [],
     value,
     onChange,
 }) {
@@ -16,6 +14,12 @@ export default function Dropdown({
     const selectedId = value ?? internalValue;
     const selected =
         options.find((item) => item.id === selectedId) ?? options[0];
+
+    useEffect(() => {
+        if (!options.some((item) => item.id === internalValue)) {
+            setInternalValue(options[0]?.id ?? "");
+        }
+    }, [options, internalValue]);
 
     useEffect(() => {
         function handleClickOutside(event) {

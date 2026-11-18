@@ -1,4 +1,4 @@
-import PersonalWordSetCard from "./PersonalWordSetCard";
+﻿import PersonalWordSetCard from "./PersonalWordSetCard";
 import { Link, useSearchParams } from "react-router-dom";
 
 const artwork = {
@@ -15,7 +15,7 @@ const artwork = {
   "Nghệ thuật & Giải trí": ["rgb(191, 230, 195)", "concert"],
 };
 
-export default function DashboardTopicCards({ search = "", topics = [] }) {
+export default function DashboardTopicCards({ search = "", topics = [], idiomTopics = [], onChooseIdiom }) {
   const normalize = (value) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\u0111/g, "d").toLowerCase();
   const matches = (title) => normalize(title).includes(normalize(search));
   const personalMatches = matches("Bộ từ của bản thân Thêm từ của bạn Cá nhân");
@@ -29,35 +29,20 @@ export default function DashboardTopicCards({ search = "", topics = [] }) {
             desc: topic.description,
             meta: `${topic.wordCount} từ`,
             bg,
-            img: image ? `https://media.theieltsdictionary.com/dashboard/vocab-v1/${image}.webp` : null,
+            img: topic.imageURL || (image ? `https://media.theieltsdictionary.com/dashboard/vocab-v1/${image}.webp` : null),
         };
     });
-    const idiomTopics = [
-        {
-            title: "Cảm xúc",
-            desc: "Thành ngữ về cảm xúc và tâm trạng.",
-            meta: "17 thành ngữ",
-            bg: "rgb(255, 182, 193)",
-            img: "https://media.theieltsdictionary.com/dashboard/vocab-v1/happy.webp",
-        },
-        {
-            title: "Tiền bạc và kinh doanh",
-            desc: "Diễn tả sắc thái cảm xúc chân thật và đắt giá trong bài thi.",
-            meta: "60 thành ngữ · 0% thuộc",
-            bg: "rgb(255, 222, 173)",
-            img: "https://media.theieltsdictionary.com/dashboard/vocab-v1/money.webp",
-        },
-        {
-            title: "Thời gian",
-            desc: "Diễn tả sắc thái cảm xúc chân thật và đắt giá trong bài thi.",
-            meta: "60 thành ngữ · 0% thuộc",
-            bg: "rgb(191, 230, 195)",
-            img: "https://media.theieltsdictionary.com/dashboard/vocab-v1/clock.webp",
-        },
-    ];
+    const idiomItems = idiomTopics.map((topic, index) => ({
+        id: topic.id,
+        title: topic.title,
+        desc: topic.description || "Thành ngữ tiếng Anh theo chủ đề.",
+        meta: `${topic.count} thành ngữ`,
+        bg: ["rgb(255, 182, 193)", "rgb(255, 222, 173)", "rgb(191, 230, 195)"][index % 3],
+        img: topic.imageURL || null,
+    }));
     const isIdioms = activeCat === "idioms";
     const Card = isIdioms ? "a" : Link;
-    const currentItems = isIdioms ? idiomTopics : standardTopics;
+    const currentItems = isIdioms ? idiomItems : standardTopics;
     const filteredItems = currentItems.filter((item) => matches(item.title));
     const hasResults = personalMatches || currentItems.some((item) => matches(item.title));
     return (<><div className="vd-topic-grid">
@@ -67,10 +52,9 @@ export default function DashboardTopicCards({ search = "", topics = [] }) {
                 key={item.id ?? item.title}
                 className="td-pop group relative isolate flex min-h-[400px] w-full flex-col overflow-hidden rounded-[26px] text-center select-none cursor-pointer transition-transform duration-200 hover:-translate-y-[5px] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-d-accent"
                 {...(isIdioms ? {
-                    href: "#",
-                    "data-dashboard-action": "set-preview",
-                    "data-set-title": item.title,
+                    href: `/vocabulary/flashcard?idiomTopic=${encodeURIComponent(item.id)}`,
                 } : { to: `/vocabulary/flashcard?folder=${encodeURIComponent(item.id)}` })}
+                onClick={isIdioms ? (event) => { event.preventDefault(); onChooseIdiom?.(item.id); } : undefined}
                 style={{
                     animationDelay: `${index * 40}ms`,
                     background: item.bg,

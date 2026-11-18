@@ -79,11 +79,11 @@ public sealed class VocabularyService(IVocabularyRepository repository, TimeProv
         {
             var words = (await repository.GetWordsAsync(ids, ct)).ToLookup(w => w.TopicId);
             return sets.Select(t => new VocabularySetDto(t.Id, t.Name, t.Description,
-                t.CreateByUserId, words[t.Id].Count(), words[t.Id].Select(ToDto).ToList())).ToList();
+                t.CreateByUserId, words[t.Id].Count(), words[t.Id].Select(ToDto).ToList(), t.ImageURL)).ToList();
         }
         var counts = await repository.GetWordCountsAsync(ids, ct);
         return sets.Select(t => new VocabularySetDto(t.Id, t.Name, t.Description,
-            t.CreateByUserId, counts.GetValueOrDefault(t.Id))).ToList();
+            t.CreateByUserId, counts.GetValueOrDefault(t.Id), ImageURL: t.ImageURL)).ToList();
     }
 
     public async Task<VocabularySetDto?> GetSetAsync(int id, int userId, CancellationToken ct)
@@ -97,7 +97,8 @@ public sealed class VocabularyService(IVocabularyRepository repository, TimeProv
             topic.Description, 
             topic.CreateByUserId,
             words.Count, 
-            words.Select(ToDto).ToList());
+            words.Select(ToDto).ToList(),
+            topic.ImageURL);
     }
 
     public async Task<VocabularySetDto> CreateSetAsync(int userId, SaveVocabularySetRequest request, CancellationToken ct)

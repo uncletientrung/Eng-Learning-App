@@ -15,17 +15,17 @@ namespace EnglishLearning.DAL.Entities
         [Column("user_id")]
         public int UserId { get; set; }
 
-        [Column("exercise_id")]
-        public int ExerciseId { get; set; }
-
         [Required, Column("user_response", TypeName = "text")]
         public string UserResponse { get; set; } = string.Empty;
 
         [Column(TypeName = "tinyint")]
-        public byte Score { get; set; }
+        public sbyte? Score { get; set; }
 
-        [Required, Column("llm_feedback", TypeName = "longtext")]
-        public string LlmFeedback { get; set; } = string.Empty;
+        [Column("llm_feedback", TypeName = "longtext")]
+        public string? LlmFeedback { get; set; }
+
+        [Column("content_id")]
+        public int? ContentId { get; set; }
 
         [Required, Column("created_at", TypeName = "timestamp")]
         public DateTime CreatedAt { get; set; }
@@ -33,7 +33,7 @@ namespace EnglishLearning.DAL.Entities
         [ForeignKey(nameof(UserId))]
         public User User { get; set; } = null!;
 
-        [ForeignKey(nameof(ExerciseId))]
-        public TranslationExercise Exercise { get; set; } = null!;
+        [ForeignKey(nameof(ContentId))]
+        public TranslationExerciseContent? Content { get; set; }
     }
 }

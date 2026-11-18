@@ -375,7 +375,7 @@
     border-radius: 15px;
     border: 1px solid transparent;
     background: transparent;
-    color: white;
+    color: var(--d-ink);
     font-weight: 700;
     cursor: default;
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;

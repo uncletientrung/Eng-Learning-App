@@ -1,4 +1,5 @@
-﻿using EnglishLearning.DAL.Data;
+﻿using System.Data;
+using EnglishLearning.DAL.Data;
 using EnglishLearning.DAL.Entities;
 using EnglishLearning.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -25,13 +26,19 @@ public class GrammarRepository : IGrammarRepository
 
     public async Task<List<GrammarCategory>> GetTopicByCategoryAsync(int id)
     {
-        var category = await _context.GrammarCategories
+        return await _context.GrammarCategories
             .AsNoTracking()
-            .Include(e => e.Children)
-            .FirstOrDefaultAsync(e => e.Id == id);
+            .Where(e => e.ParentId == id)
+            .OrderBy(section => section.DisplayOrder)
+            .ToListAsync();
+    }
 
-        return category?.Children
-            .OrderBy(e => e.DisplayOrder)
-            .ToList() ?? new List<GrammarCategory>();
+    public async Task<List<GrammarSection>> GetSectionsByCategoryAsync(int categoryId)
+    {
+        return await _context.GrammarSections
+            .AsNoTracking()
+            .Where(section => section.CategoryId == categoryId)
+            .OrderBy(section => section.DisplayOrder)
+            .ToListAsync();
     }
 }

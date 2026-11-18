@@ -8,22 +8,24 @@ import { ArrowLeft, ArrowRight } from 'lucide-react'
 export default function GrammarReferencePage() {
     const [categoryIcons, setCategoryIcons] = useState([]);
     const [grammarCategories, setGrammarCategories] = useState([])
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         async function fetchData() {
             try {
-                /*setLoading(true);
-                setError('');*/
+                setError('');
                 const fetchGrammarCategories = await getGrammarCategories();
+                const categories = Array.isArray(fetchGrammarCategories) ? fetchGrammarCategories : [];
 
-                setGrammarCategories(fetchGrammarCategories);
-                setCategoryIcons(getRandomIcons(fetchGrammarCategories.length, "education"))
+                setGrammarCategories(categories);
+                setCategoryIcons(getRandomIcons(categories.length, "education"))
             } catch (err) {
                 console.error('Lỗi tải dữ liệu:', err);
-/*                setError('Không thể tải dữ liệu Writing.');
-*/            } finally {
-/*                setLoading(false);
-*/            }
+                setError('Không thể tải danh sách chủ đề ngữ pháp. Vui lòng thử lại sau.');
+            } finally {
+                setIsLoading(false);
+            }
         }
 
         fetchData();
@@ -72,7 +74,19 @@ export default function GrammarReferencePage() {
                     
                     {/* Main Layout */}
                     <div className="flex flex-col gap-3">
-                        {grammarCategories.map((category, index) => {
+                        {isLoading ? (
+                            <p className="rounded-2xl border-2 border-[#111] bg-[#fffdf5] px-4 py-6 text-center font-semibold text-[#555]" role="status">
+                                Đang tải danh sách chủ đề ngữ pháp...
+                            </p>
+                        ) : error ? (
+                            <p className="rounded-2xl border-2 border-[#111] bg-[#fff0f0] px-4 py-6 text-center font-semibold text-[#9b2c2c]" role="alert">
+                                {error}
+                            </p>
+                        ) : grammarCategories.length === 0 ? (
+                            <p className="rounded-2xl border-2 border-[#111] bg-[#fffdf5] px-4 py-6 text-center font-semibold text-[#555]" role="status">
+                                Hiện chưa có chủ đề ngữ pháp nào.
+                            </p>
+                        ) : grammarCategories.map((category, index) => {
                             const Icon = categoryIcons[index];
 
                             return (
@@ -80,7 +94,7 @@ export default function GrammarReferencePage() {
                                     key={category.id}
                                     state={{
                                         parent_id: category.id,
-                                        parent_title: category.title,
+                                        parent_title: category.name,
                                         parent_description: category.description
                                     }}
                                     to="/grammar/theory"

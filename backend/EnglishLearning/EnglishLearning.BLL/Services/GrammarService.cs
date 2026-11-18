@@ -25,4 +25,12 @@ public class GrammarService : IGrammarService
 
         return _repository.GetTopicByCategoryAsync(id);
     }
+
+    public Task<List<GrammarSection>> GetSectionsByCategoryAsync(int categoryId)
+    {
+        if (categoryId <= 0)
+            throw new ArgumentException("ID không hợp lệ.");
+
+        return _repository.GetSectionsByCategoryAsync(categoryId);
+    }
 }

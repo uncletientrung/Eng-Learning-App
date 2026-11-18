@@ -17,6 +17,9 @@ namespace EnglishLearning.DAL.Entities
         [Column("idiom_text")]
         public string IdiomText { get; set; } = string.Empty;
 
+        [Column("topic_id")]
+        public int TopicId { get; set; }
+
         [Required, StringLength(1)] 
         [Column("first_letter")]
         public string FirstLetter { get; set; } = string.Empty;
@@ -31,7 +34,10 @@ namespace EnglishLearning.DAL.Entities
         public string MeaningVi { get; set; } = string.Empty;
 
         [Column(TypeName = "text")]
-        public string? Example { get; set; }
+        public string? example_en { get; set; }
+
+        [Column(TypeName = "text")]
+        public string? example_vi { get; set; }
 
         [Required]
         [Column("created_at", TypeName = "timestamp")]

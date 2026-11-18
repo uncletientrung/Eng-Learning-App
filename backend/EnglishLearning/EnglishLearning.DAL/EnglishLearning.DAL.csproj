@@ -23,4 +23,7 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Data\Seeders\TranslationExerciseContentSeed.json" />
+  </ItemGroup>
 </Project>

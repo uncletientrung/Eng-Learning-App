@@ -102,9 +102,6 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnType("timestamp")
                         .HasColumnName("created_at");
 
-                    b.Property<string>("Example")
-                        .HasColumnType("text");
-
                     b.Property<string>("FirstLetter")
                         .IsRequired()
                         .HasMaxLength(1)
@@ -130,6 +127,16 @@ namespace EnglishLearning.DAL.Migrations
                     b.Property<string>("Phonetic")
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
+
+                    b.Property<int>("TopicId")
+                        .HasColumnType("int")
+                        .HasColumnName("topic_id");
+
+                    b.Property<string>("example_en")
+                        .HasColumnType("text");
+
+                    b.Property<string>("example_vi")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -678,6 +685,11 @@ namespace EnglishLearning.DAL.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<string>("ImageURL")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("image_url");
+
                     b.Property<string>("ModuleType")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -704,38 +716,68 @@ namespace EnglishLearning.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<sbyte>("ExerciseType")
-                        .HasColumnType("tinyint")
-                        .HasColumnName("type");
-
-                    b.Property<string>("Explanation")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int")
+                        .HasColumnName("display_order");
 
                     b.Property<string>("Level")
-                        .IsRequired()
                         .HasMaxLength(2)
                         .HasColumnType("varchar(2)");
 
-                    b.Property<string>("ReferenceTranslation")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("reference_translation");
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int")
+                        .HasColumnName("parent_id");
 
-                    b.Property<string>("SourceText")
+                    b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("source_text");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("title");
 
-                    b.Property<int>("TopicId")
+                    b.Property<int?>("TopicId")
                         .HasColumnType("int")
                         .HasColumnName("topic_id");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ParentId");
+
                     b.HasIndex("TopicId");
 
                     b.ToTable("translation_exercises");
+                });
+
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.TranslationExerciseContent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Answer")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("answer");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int")
+                        .HasColumnName("display_order");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int")
+                        .HasColumnName("parent_id");
+
+                    b.Property<string>("viText")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("vi");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("translation_exercises_content");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.User", b =>
@@ -1042,20 +1084,19 @@ namespace EnglishLearning.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ContentId")
+                        .HasColumnType("int")
+                        .HasColumnName("content_id");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp")
                         .HasColumnName("created_at");
 
-                    b.Property<int>("ExerciseId")
-                        .HasColumnType("int")
-                        .HasColumnName("exercise_id");
-
                     b.Property<string>("LlmFeedback")
-                        .IsRequired()
                         .HasColumnType("longtext")
                         .HasColumnName("llm_feedback");
 
-                    b.Property<sbyte>("Score")
+                    b.Property<sbyte?>("Score")
                         .HasColumnType("tinyint");
 
                     b.Property<int>("UserId")
@@ -1069,7 +1110,7 @@ namespace EnglishLearning.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ExerciseId");
+                    b.HasIndex("ContentId");
 
                     b.HasIndex("UserId");
 
@@ -1475,13 +1516,26 @@ namespace EnglishLearning.DAL.Migrations
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.TranslationExercise", b =>
                 {
+                    b.HasOne("EnglishLearning.DAL.Entities.TranslationExercise", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId");
+
                     b.HasOne("EnglishLearning.DAL.Entities.Topic", "Topic")
                         .WithMany()
-                        .HasForeignKey("TopicId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TopicId");
+
+                    b.Navigation("Parent");
 
                     b.Navigation("Topic");
+                });
+
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.TranslationExerciseContent", b =>
+                {
+                    b.HasOne("EnglishLearning.DAL.Entities.TranslationExercise", "Parent")
+                        .WithMany("Contents")
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserListeningAnswer", b =>
@@ -1600,11 +1654,10 @@ namespace EnglishLearning.DAL.Migrations
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserTranslationAttempt", b =>
                 {
-                    b.HasOne("EnglishLearning.DAL.Entities.TranslationExercise", "Exercise")
+                    b.HasOne("EnglishLearning.DAL.Entities.TranslationExerciseContent", "Content")
                         .WithMany()
-                        .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ContentId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("EnglishLearning.DAL.Entities.User", "User")
                         .WithMany()
@@ -1612,7 +1665,7 @@ namespace EnglishLearning.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Exercise");
+                    b.Navigation("Content");
 
                     b.Navigation("User");
                 });
@@ -1696,6 +1749,13 @@ namespace EnglishLearning.DAL.Migrations
             modelBuilder.Entity("EnglishLearning.DAL.Entities.SpeakingExercise", b =>
                 {
                     b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.TranslationExercise", b =>
+                {
+                    b.Navigation("Children");
+
+                    b.Navigation("Contents");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserSpeakingAttempt", b =>

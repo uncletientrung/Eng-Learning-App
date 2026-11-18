@@ -33,6 +33,28 @@ export function normalizeVocabularySet(set) {
     words: (set.words || []).map((word) => ({ ...word, id: String(word.id), type: word.partOfSpeech })) };
 }
 
+export async function idiomsRequest(path, signal) {
+  const token = getAccessToken();
+  if (!token) throw new Error("Vui lòng đăng nhập để xem thành ngữ.");
+  let response;
+  try {
+    response = await fetch(`${API_URL}/idioms${path}`, {
+      signal,
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch (error) {
+    if (error.name === "AbortError") throw error;
+    throw new Error("Không kết nối được máy chủ. Vui lòng thử lại.", { cause: error });
+  }
+  if (response.status === 401 && getAccessToken() === token) logout();
+  const data = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(data?.message || "Chưa tải được dữ liệu thành ngữ.");
+  return data;
+}
+
+export const getIdiomTopics = (signal) => idiomsRequest("/topics", signal);
+export const getIdiomsByTopic = (id, signal) => idiomsRequest(`/topics/${encodeURIComponent(id)}`, signal);
+
 export async function getVocabularySets(signal) {
   return (await vocabularyRequest("", { signal })).map(normalizeVocabularySet);
 }
