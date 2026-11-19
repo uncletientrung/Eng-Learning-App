@@ -111,7 +111,6 @@ export default function AdminWritingExercisesPage() {
     setError("");
     setRefreshVersion((version) => version + 1);
   };
-
   return (
     <div className="mx-auto w-full max-w-[1440px]">
       <div className="mb-[22px] flex items-start justify-between gap-4 [&_h2]:m-0 [&_h2]:text-[clamp(20px,2vw,25px)] [&_h2]:font-black [&_h2]:tracking-[-.025em] [&_p]:mt-[5px] [&_p]:mb-0 [&_p]:text-[13px] [&_p]:text-[#6b7080] max-[760px]:mb-4 max-[760px]:items-stretch max-[760px]:flex-col">
@@ -138,7 +137,6 @@ export default function AdminWritingExercisesPage() {
           <option value="">Tất cả trạng thái</option>
           <option value="PUBLISHED">Công khai</option><option value="DRAFT">Bản nháp</option><option value="HIDDEN">Đã ẩn</option>
         </select>
-        <button type="button" className="inline-flex min-h-[39px] shrink-0 cursor-pointer items-center justify-center gap-[7px] rounded-[10px] border border-[#e4e7ed] bg-white px-3 py-2 text-[11px] font-extrabold text-[#1b1d22] no-underline hover:bg-[#f1f3f7] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7] disabled:cursor-not-allowed disabled:opacity-55" onClick={refresh} aria-label="Làm mới danh sách"><RefreshCw size={15} /> Làm mới</button>
       </div>
 
       <section className="min-w-0 rounded-2xl border border-[#e4e7ed] bg-white shadow-[0_7px_22px_#17203308]">

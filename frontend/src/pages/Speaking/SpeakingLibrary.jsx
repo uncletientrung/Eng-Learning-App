@@ -256,7 +256,7 @@ function SpeakingLibrary() {
         <main
           className="
             relative z-10 mx-auto
-            mt-32 w-[calc(100%-2rem)]
+            mt-32 mb-10 w-[calc(100%-2rem)]
             max-w-[1400px]
             flex-grow
             rounded-[24px] bg-white
@@ -265,6 +265,7 @@ function SpeakingLibrary() {
             md:w-[calc(100%-3rem)]
             md:px-10
             lg:px-12
+            border-4 border-[#111]
           "
         >
           <SpeakingHeader
