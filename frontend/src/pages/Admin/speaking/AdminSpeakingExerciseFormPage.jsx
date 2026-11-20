@@ -17,7 +17,12 @@ const typeNames = {
   TOPIC: "Part 2 — Cue card",
   TOPIC_DISCUSS: "Part 3 — Topic Discussion",
 };
-const inputClass = "min-h-10 w-full rounded-[10px] border border-[#e4e7ed] bg-white px-3 py-2 text-sm text-[#1b1d22] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7] disabled:bg-slate-100";
+const inputClass = [
+  "min-h-10 w-full rounded-[10px] border border-[#e4e7ed] bg-white px-3 py-2",
+  "text-sm text-[#1b1d22] focus-visible:outline-2",
+  "focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7]",
+  "disabled:bg-slate-100",
+].join(" ");
 
 export default function AdminSpeakingExerciseFormPage() {
   const { id } = useParams();
@@ -137,7 +142,10 @@ export default function AdminSpeakingExerciseFormPage() {
 
   return (
     <div className="mx-auto w-full max-w-[1000px]">
-      <header className="mb-5 flex flex-wrap items-start justify-between gap-3"><div><h2 className="m-0 text-2xl font-black">{editing ? "Chỉnh sửa đề Speaking" : "Tạo đề Speaking"}</h2><p className="mb-0 mt-1 text-sm text-slate-500">Thiết lập đề và từng câu hỏi theo cấu trúc Speaking.</p></div><Link className="inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-xs font-bold text-slate-700 no-underline" to="/admin/speaking"><ArrowLeft size={15} />Danh sách đề</Link></header>
+      <header className="mb-5 flex flex-wrap items-start justify-between gap-3"><div><h2 className="m-0 text-2xl font-black">{editing ? "Chỉnh sửa đề Speaking" : "Tạo đề Speaking"}</h2><p className="mb-0 mt-1 text-sm text-slate-500">Thiết lập đề và từng câu hỏi theo cấu trúc Speaking.</p></div><Link className="
+        inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-xs
+        font-bold text-slate-700 no-underline
+      " to="/admin/speaking"><ArrowLeft size={15} />Danh sách đề</Link></header>
       {locked && <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900" role="status">Đề này đã có {exercise.submissionCount} lượt làm. Nội dung bị khóa để bảo toàn lịch sử học viên; chỉ có thể đổi trạng thái hoạt động ở danh sách đề.</div>}
       {error && <p className="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700" role="alert">{error}</p>}
       <form className="grid gap-4" onSubmit={submit}>
@@ -157,7 +165,13 @@ export default function AdminSpeakingExerciseFormPage() {
             <div className="grid gap-3 sm:grid-cols-2"><label className="grid gap-1.5 text-xs font-bold text-slate-700">Thời gian chuẩn bị (giây)<input className={inputClass} type="number" min="0" disabled={disabled || form.speakingType !== "TOPIC"} value={question.preparationTime} onChange={(event) => updateQuestion(index, "preparationTime", event.target.value)} /></label><label className="grid gap-1.5 text-xs font-bold text-slate-700">Thời gian trả lời (giây)<input className={inputClass} type="number" min="0" disabled={disabled} value={question.responseTime} onChange={(event) => updateQuestion(index, "responseTime", event.target.value)} /></label></div>
           </section>
         ))}
-        <div className="flex flex-wrap justify-between gap-2">{form.speakingType !== "TOPIC" && <button type="button" disabled={disabled} className="inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-xs font-bold disabled:opacity-50" onClick={addQuestion}><Plus size={15} />Thêm câu hỏi</button>}<button type="submit" disabled={disabled} className="ml-auto inline-flex items-center gap-2 rounded-lg bg-[#4f7cf7] px-4 py-2.5 text-xs font-extrabold text-white disabled:opacity-50"><Save size={15} />{saving ? "Đang lưu..." : "Lưu đề Speaking"}</button></div>
+        <div className="flex flex-wrap justify-between gap-2">{form.speakingType !== "TOPIC" && <button type="button" disabled={disabled} className="
+          inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-xs
+          font-bold disabled:opacity-50
+        " onClick={addQuestion}><Plus size={15} />Thêm câu hỏi</button>}<button type="submit" disabled={disabled} className="
+          ml-auto inline-flex items-center gap-2 rounded-lg bg-[#4f7cf7] px-4 py-2.5
+          text-xs font-extrabold text-white disabled:opacity-50
+        "><Save size={15} />{saving ? "Đang lưu..." : "Lưu đề Speaking"}</button></div>
       </form>
     </div>
   );

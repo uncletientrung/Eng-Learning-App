@@ -25,6 +25,7 @@ const navigation = [
   { label: "Quản lý Writing", to: "/admin/writing", icon: FileText },
   { label: "Quản lý Speaking", to: "/admin/speaking", icon: Mic },
   { label: "Quản lý Vocabulary", to: "/admin/vocabulary", icon: LibraryBig },
+  { label: "Quản lý Users", to: "/admin/users", icon: Users },
 ];
 
 const comingSoon = [
@@ -32,7 +33,6 @@ const comingSoon = [
   { label: "Quản lý Listening", icon: Headphones },
   { label: "Quản lý Grammar", icon: BookText },
   { label: "Quản lý Idioms", icon: Quote },
-  { label: "Quản lý Users", icon: Users },
 ];
 
 function AdminThemeButton({ dark, onToggle }) {

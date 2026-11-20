@@ -84,7 +84,11 @@ export default function AdminSpeakingSubmissionsPage() {
       setDeletingId(null);
     }
   }
-  const controlClass = "min-h-10 rounded-[10px] border border-[#e4e7ed] bg-white px-3 py-2 text-xs text-[#1b1d22] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7]";
+  const controlClass = [
+    "min-h-10 rounded-[10px] border border-[#e4e7ed] bg-white px-3 py-2 text-xs text-[#1b1d22]",
+    "focus-visible:outline-2 focus-visible:outline-offset-2",
+    "focus-visible:outline-[#4f7cf7]",
+  ].join(" ");
   const pageCount = Math.max(1, Math.ceil((data?.totalCount || 0) / (data?.pageSize || 10)));
 
   return (
@@ -102,9 +106,15 @@ export default function AdminSpeakingSubmissionsPage() {
         <label className="grid gap-1 text-[10px] font-bold text-slate-500">Từ ngày<input className={controlClass} type="date" value={filters.from} onChange={(event) => changeFilter("from", event.target.value)} /></label>
         <label className="grid gap-1 text-[10px] font-bold text-slate-500">Đến ngày<input className={controlClass} type="date" value={filters.to} onChange={(event) => changeFilter("to", event.target.value)} /></label>
       </div>
-      <section className="min-w-0 rounded-2xl border border-[#e4e7ed] bg-white shadow-[0_7px_22px_#17203308]">
+      <section className="
+        min-w-0 rounded-2xl border border-[#e4e7ed] bg-white
+        shadow-[0_7px_22px_#17203308]
+      ">
         {loading ? (
-          <div className="rounded-xl border border-[#e4e7ed] bg-white px-[15px] py-[35px] text-center text-xs text-[#6b7080]" role="status">Đang tải bài nộp...</div>
+          <div className="
+            rounded-xl border border-[#e4e7ed] bg-white px-[15px] py-[35px] text-center
+            text-xs text-[#6b7080]
+          " role="status">Đang tải bài nộp...</div>
         ) : data?.items?.length ? (
           <>
             <div className="w-full overflow-x-auto">
@@ -118,15 +128,31 @@ export default function AdminSpeakingSubmissionsPage() {
                   <td className="px-4 py-3 font-bold">{item.overallScore ?? "—"}</td>
                   <td className="px-4 py-3">{new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(item.completedAt || item.startedAt))}</td>
                   <td className="px-4 py-3"><div className="flex items-center gap-1">
-                    <Link className="inline-flex min-h-[30px] shrink-0 items-center gap-1 whitespace-nowrap rounded-lg border border-[#4f7cf7] bg-[#4f7cf7] px-2 py-1.5 text-[10px] font-extrabold text-white no-underline hover:bg-[#3d68d8]" to={`/admin/speaking/submissions/${item.attemptId}`}><ArrowUpRight size={13} />Xem chi tiết</Link>
-                    {item.status === "GRADED" && <Link className="inline-flex min-h-[30px] shrink-0 items-center gap-1 whitespace-nowrap rounded-lg border border-[#d8e2ff] bg-[#f3f6ff] px-2 py-1.5 text-[10px] font-extrabold text-[#315fc5] no-underline hover:bg-[#e8eeff]" to={`/admin/speaking/submissions/${item.attemptId}?edit=true`} aria-label={`Sửa kết quả bài nộp ${item.attemptId}`}><Pencil size={13} />Sửa</Link>}
-                    <button type="button" className="inline-flex min-h-[30px] shrink-0 items-center gap-1 whitespace-nowrap rounded-lg border border-[#f1c1c5] bg-white px-2 py-1.5 text-[10px] font-extrabold text-[#a63240] hover:bg-[#fff4f5] disabled:cursor-not-allowed disabled:opacity-55" onClick={() => deleteSubmission(item)} disabled={deletingId === item.attemptId} aria-label={`Xóa bài nộp ${item.attemptId}`}><Trash2 size={13} />{deletingId === item.attemptId ? "Đang xóa..." : "Xóa"}</button>
+                    <Link className="
+                      inline-flex min-h-[30px] shrink-0 items-center gap-1 whitespace-nowrap
+                      rounded-lg border border-[#4f7cf7] bg-[#4f7cf7] px-2 py-1.5 text-[10px]
+                      font-extrabold text-white no-underline hover:bg-[#3d68d8]
+                    " to={`/admin/speaking/submissions/${item.attemptId}`}><ArrowUpRight size={13} />Xem chi tiết</Link>
+                    {item.status === "GRADED" && <Link className="
+                      inline-flex min-h-[30px] shrink-0 items-center gap-1 whitespace-nowrap
+                      rounded-lg border border-[#d8e2ff] bg-[#f3f6ff] px-2 py-1.5 text-[10px]
+                      font-extrabold text-[#315fc5] no-underline hover:bg-[#e8eeff]
+                    " to={`/admin/speaking/submissions/${item.attemptId}?edit=true`} aria-label={`Sửa kết quả bài nộp ${item.attemptId}`}><Pencil size={13} />Sửa</Link>}
+                    <button type="button" className="
+                      inline-flex min-h-[30px] shrink-0 items-center gap-1 whitespace-nowrap
+                      rounded-lg border border-[#f1c1c5] bg-white px-2 py-1.5 text-[10px]
+                      font-extrabold text-[#a63240] hover:bg-[#fff4f5] disabled:cursor-not-allowed
+                      disabled:opacity-55
+                    " onClick={() => deleteSubmission(item)} disabled={deletingId === item.attemptId} aria-label={`Xóa bài nộp ${item.attemptId}`}><Trash2 size={13} />{deletingId === item.attemptId ? "Đang xóa..." : "Xóa"}</button>
                   </div></td>
                   </tr>)}
                 </tbody>
               </table>
             </div>
-            <div className="admin-table-pagination flex items-center justify-between gap-3 rounded-b-2xl px-4 py-3 text-xs text-slate-500">
+            <div className="
+              admin-table-pagination flex items-center justify-between gap-3 rounded-b-2xl
+              px-4 py-3 text-xs text-slate-500
+            ">
               <span>{data.totalCount} lượt làm</span>
               <div className="flex items-center gap-2">
                 <button type="button" className="rounded-lg border bg-white px-3 py-2 disabled:opacity-40" disabled={page <= 1} onClick={() => { setLoading(true); setPage((value) => value - 1); }}>Trước</button>
@@ -136,7 +162,10 @@ export default function AdminSpeakingSubmissionsPage() {
             </div>
           </>
         ) : (
-          <div className="rounded-xl border border-[#e4e7ed] bg-white px-[15px] py-[35px] text-center text-xs text-[#6b7080]"><strong className="mb-1 block text-[#1b1d22]">Chưa có bài nộp phù hợp</strong>Hãy thử thay đổi điều kiện tìm kiếm hoặc bộ lọc.</div>
+          <div className="
+            rounded-xl border border-[#e4e7ed] bg-white px-[15px] py-[35px] text-center
+            text-xs text-[#6b7080]
+          "><strong className="mb-1 block text-[#1b1d22]">Chưa có bài nộp phù hợp</strong>Hãy thử thay đổi điều kiện tìm kiếm hoặc bộ lọc.</div>
         )}
       </section>
     </div>

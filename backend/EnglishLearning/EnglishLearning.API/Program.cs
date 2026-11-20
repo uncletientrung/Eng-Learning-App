@@ -61,6 +61,7 @@ builder.Services.AddScoped<
     IWritingExerciseRepository,
     WritingExerciseRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped<IAdminUserRepository, AdminUserRepository>();
 builder.Services.AddScoped<ITopicRepository, TopicRepository>();
 builder.Services.AddScoped<IVocabularyRepository, VocabularyRepository>();
 builder.Services.AddScoped<IAdminVocabularyRepository, AdminVocabularyRepository>();
@@ -75,6 +76,8 @@ builder.Services.AddScoped<
     IWritingExerciseService,
     WritingExerciseService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IAdminUserService, AdminUserService>();
+builder.Services.AddScoped<IAdminUserPasswordHasher, AdminUserPasswordHasher>();
 builder.Services.AddScoped<ITopicService, TopicService>();
 builder.Services.AddScoped<IVocabularyService, VocabularyService>();
 builder.Services.AddScoped<IAdminVocabularyService, AdminVocabularyService>();

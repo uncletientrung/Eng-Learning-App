@@ -35,6 +35,17 @@ function queryString(params) {
 }
 
 export const getAdminDashboard = () => request("/dashboard");
+export const getAdminUsers = (params) => request(`/users${queryString(params)}`);
+export const getAdminUser = (id) => request(`/users/${id}`);
+export const createAdminUser = (data) =>
+  request("/users", { method: "POST", body: JSON.stringify(data) });
+export const updateAdminUserProfile = (id, data) =>
+  request(`/users/${id}`, { method: "PUT", body: JSON.stringify(data) });
+export const updateAdminUserStatus = (id, isActive) =>
+  request(`/users/${id}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({ isActive }),
+  });
 export const getAdminVocabularySets = (params) => request(`/vocabulary/sets${queryString(params)}`);
 export const getAdminVocabularySet = (id) => request(`/vocabulary/sets/${id}`);
 export const createAdminVocabularySet = (data) =>

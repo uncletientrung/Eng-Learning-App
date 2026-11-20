@@ -44,7 +44,11 @@ const criterionFields = [
   { key: "suggestions", label: "Gợi ý" },
 ];
 const controlClass =
-  "mt-1 min-h-10 w-full rounded-lg border border-[#e4e7ed] bg-white px-3 py-2 text-xs text-[#1b1d22] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7]";
+  [
+  "mt-1 min-h-10 w-full rounded-lg border border-[#e4e7ed] bg-white px-3 py-2",
+  "  text-xs text-[#1b1d22] focus-visible:outline-2",
+  "  focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7]",
+].join(" ");
 
 function makeDraftCriteria(submission) {
   const savedCriteria = new Map(
@@ -111,7 +115,10 @@ function AudioAnswer({ answer }) {
         <button
           type="button"
           disabled={loading}
-          className="inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-xs font-bold disabled:opacity-50"
+          className="
+            inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-xs
+            font-bold disabled:opacity-50
+          "
           onClick={loadAudio}
         >
           <Headphones size={15} />
@@ -306,7 +313,10 @@ export default function AdminSpeakingSubmissionDetailPage() {
             <button
               type="button"
               onClick={startEditing}
-              className="inline-flex items-center gap-2 rounded-lg bg-[#4f7cf7] px-3 py-2 text-xs font-bold text-white"
+              className="
+                inline-flex items-center gap-2 rounded-lg bg-[#4f7cf7] px-3 py-2 text-xs
+                font-bold text-white
+              "
             >
               <Pencil size={14} /> Sửa kết quả
             </button>
@@ -316,7 +326,10 @@ export default function AdminSpeakingSubmissionDetailPage() {
               type="button"
               disabled={saving}
               onClick={cancelEditing}
-              className="inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-xs font-bold disabled:opacity-50"
+              className="
+                inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-xs
+                font-bold disabled:opacity-50
+              "
             >
               <X size={14} /> Hủy sửa
             </button>
@@ -326,7 +339,10 @@ export default function AdminSpeakingSubmissionDetailPage() {
               type="button"
               disabled={busy || deleting}
               onClick={retry}
-              className="inline-flex items-center gap-2 rounded-lg bg-[#4f7cf7] px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
+              className="
+                inline-flex items-center gap-2 rounded-lg bg-[#4f7cf7] px-3 py-2 text-xs
+                font-bold text-white disabled:opacity-50
+              "
             >
               <RefreshCw size={14} />
               {busy ? "Đang gửi..." : "Chấm lại"}
@@ -336,13 +352,19 @@ export default function AdminSpeakingSubmissionDetailPage() {
             type="button"
             disabled={deleting || saving || busy}
             onClick={deleteSubmission}
-            className="inline-flex items-center gap-2 rounded-lg border border-rose-200 bg-white px-3 py-2 text-xs font-bold text-rose-700 disabled:opacity-50"
+            className="
+              inline-flex items-center gap-2 rounded-lg border border-rose-200 bg-white
+              px-3 py-2 text-xs font-bold text-rose-700 disabled:opacity-50
+            "
           >
             <Trash2 size={14} />
             {deleting ? "Đang xóa..." : "Xóa bài nộp"}
           </button>
           <Link
-            className="inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-xs font-bold text-slate-700 no-underline"
+            className="
+              inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-xs
+              font-bold text-slate-700 no-underline
+            "
             to="/admin/speaking/submissions"
           >
             <ArrowLeft size={15} />
@@ -517,7 +539,10 @@ export default function AdminSpeakingSubmissionDetailPage() {
                 type="button"
                 disabled={saving}
                 onClick={cancelEditing}
-                className="inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-xs font-bold disabled:opacity-50"
+                className="
+                  inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-xs
+                  font-bold disabled:opacity-50
+                "
               >
                 Hủy
               </button>
@@ -530,7 +555,10 @@ export default function AdminSpeakingSubmissionDetailPage() {
                     Number(criterion.score) > 9 ||
                     Number(criterion.score) * 2 % 1 !== 0,
                 )}
-                className="inline-flex items-center gap-2 rounded-lg bg-[#4f7cf7] px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
+                className="
+                  inline-flex items-center gap-2 rounded-lg bg-[#4f7cf7] px-3 py-2 text-xs
+                  font-bold text-white disabled:opacity-50
+                "
               >
                 <Save size={14} />
                 {saving ? "Đang lưu..." : "Lưu kết quả"}

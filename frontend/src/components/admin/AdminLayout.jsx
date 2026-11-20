@@ -35,6 +35,12 @@ function loadPreferences() {
 }
 
 function currentTitle(pathname) {
+  if (pathname.startsWith("/admin/users")) {
+    if (pathname.endsWith("/create")) return "Thêm người dùng";
+    if (pathname.endsWith("/edit")) return "Chỉnh sửa người dùng";
+    if (/\/admin\/users\/\d+/.test(pathname)) return "Chi tiết người dùng";
+    return "Quản lý Users";
+  }
   if (pathname.startsWith("/admin/vocabulary")) {
     if (pathname.includes("/words/")) return pathname.endsWith("/edit") ? "Chỉnh sửa từ vựng" : "Thêm từ vựng";
     if (pathname.endsWith("/create")) return "Thêm bộ từ vựng";
