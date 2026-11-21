@@ -50,6 +50,14 @@ body:has(.admin-layout) {
   color: #eef0f4;
 }
 
+.admin-layout.is-dark [class~="text-[#1e3006]"] {
+  color: #eef0f4;
+}
+
+.admin-layout.is-dark [class~="text-brand-dark"] {
+  color: #8da65c;
+}
+
 .admin-layout.is-dark [class~="text-[#6b7080]"] {
   color: #a1a7b3;
 }

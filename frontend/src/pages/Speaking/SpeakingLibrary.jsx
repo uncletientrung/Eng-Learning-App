@@ -257,9 +257,9 @@ function SpeakingLibrary() {
           className="
             relative z-10 mx-auto
             mt-32 mb-10 w-[calc(100%-2rem)]
-            max-w-[1400px]
-            flex-grow
-            rounded-[24px] bg-white
+            max-w-350
+            grow
+            rounded-3xl bg-white
             px-6 pb-20 pt-8
             shadow-[0_18px_50px_rgba(31,41,55,0.10)]
             md:w-[calc(100%-3rem)]

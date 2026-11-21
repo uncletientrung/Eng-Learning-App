@@ -5,6 +5,7 @@ import { chartFilters } from "../../../constant/writingConstant";
 import { getAdminImageSrc } from "../../../components/admin/adminUtils";
 import { createAdminWritingExercise, getAdminWritingExercise, updateAdminWritingExercise } from "../../../services/adminApi";
 import { getTopicByModule } from "../../../services/topicAPI";
+import AdminPageTitle from "../../../components/admin/AdminPageTitle";
 
 const emptyForm = {
   topicId: "",
@@ -151,13 +152,11 @@ export default function AdminWritingExerciseFormPage() {
   return (
     <div className="mx-auto w-full max-w-[1440px]">
       <div className="
-        mb-[22px] flex items-start justify-between gap-4 [&_h2]:m-0
-        [&_h2]:text-[clamp(20px,2vw,25px)] [&_h2]:font-black
-        [&_h2]:tracking-[-.025em] [&_p]:mt-[5px] [&_p]:mb-0 [&_p]:text-[13px]
+        mb-[22px] flex items-start justify-between gap-4 [&_p]:mt-[5px] [&_p]:mb-0 [&_p]:text-[13px]
         [&_p]:text-[#6b7080] max-[760px]:mb-4 max-[760px]:items-stretch
         max-[760px]:flex-col
       ">
-        <div><h2>{editing ? "Chỉnh sửa đề Writing" : "Tạo đề Writing"}</h2><p>Thông tin được kiểm tra trước khi lưu vào hệ thống.</p></div>
+        <div><AdminPageTitle title={editing ? "Chỉnh sửa đề Writing" : "Tạo đề Writing"} /><p>Thông tin được kiểm tra trước khi lưu vào hệ thống.</p></div>
         <Link className="
           inline-flex min-h-[39px] shrink-0 cursor-pointer items-center justify-center
           gap-[7px] rounded-[10px] border border-[#e4e7ed] bg-white px-3 py-2

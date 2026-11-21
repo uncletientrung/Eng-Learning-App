@@ -3,6 +3,7 @@ import { Eye, Pencil, RefreshCw, Search, ShieldCheck, ShieldOff, UserPlus } from
 import { Link, useLocation } from "react-router-dom";
 import { getCurrentUser } from "../../../services/authApi";
 import { getAdminUsers, updateAdminUserStatus } from "../../../services/adminApi";
+import AdminPageTitle from "../../../components/admin/AdminPageTitle";
 
 const pageSize = 10;
 
@@ -102,14 +103,12 @@ export default function AdminUsersPage() {
   return (
     <div className="mx-auto w-full max-w-[1440px]">
       <div className="
-        mb-[22px] flex items-start justify-between gap-4 [&_h2]:m-0
-        [&_h2]:text-[clamp(20px,2vw,25px)] [&_h2]:font-black
-        [&_h2]:tracking-[-.025em] [&_p]:mt-[5px] [&_p]:mb-0 [&_p]:text-[13px]
+        mb-[22px] flex items-start justify-between gap-4 [&_p]:mt-[5px] [&_p]:mb-0 [&_p]:text-[13px]
         [&_p]:text-[#6b7080] max-[760px]:mb-4 max-[760px]:items-stretch
         max-[760px]:flex-col
       ">
         <div>
-          <h2>Quản lý người dùng</h2>
+          <AdminPageTitle title="Quản lý Users" />
           <p>Tra cứu hồ sơ, hoạt động học tập và trạng thái tài khoản.</p>
         </div>
         <Link className="
@@ -198,7 +197,7 @@ export default function AdminUsersPage() {
               <table className="
                 w-full border-collapse text-left text-xs [&_th]:whitespace-nowrap
                 [&_th]:border-b [&_th]:border-[#e4e7ed] [&_th]:bg-[#f1f3f7] [&_th]:px-[14px]
-                [&_th]:py-[11px] [&_th]:text-[10px] [&_th]:font-black
+                [&_th]:py-[11px] [&_th]:text-xs! [&_th]:font-black
                 [&_th]:tracking-[.04em] [&_th]:text-[#6b7080] [&_td]:border-b
                 [&_td]:border-[#e4e7ed] [&_td]:px-[14px] [&_td]:py-3 [&_td]:align-middle
                 [&_tbody_tr:last-child_td]:border-b-0 [&_tbody_tr:hover]:bg-[#f7f8fb]

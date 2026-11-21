@@ -21,6 +21,14 @@ const speakingNavigation = [
   { label: "Bài nộp Speaking", to: "/admin/speaking/submissions", icon: ClipboardList },
 ];
 
+const adminGridStyle = {
+  backgroundImage: `
+    linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)
+  `,
+  backgroundSize: "32px 32px",
+};
+
 function loadPreferences() {
   try {
     const saved = JSON.parse(localStorage.getItem("admin-dashboard") || "{}");
@@ -158,9 +166,13 @@ export default function AdminLayout() {
             )}
           </div>
         </header>
-        <main className="min-h-0 min-w-0 flex-1 overflow-auto px-[30px] pb-[34px] pt-[26px] max-[768px]:px-[14px] max-[768px]:pb-7 max-[768px]:pt-[19px]" key={location.pathname}>
+        <main
+          className="min-h-0 min-w-0 flex-1 overflow-auto bg-brand px-[30px] pb-[34px] pt-[26px] max-[768px]:px-[14px] max-[768px]:pb-7 max-[768px]:pt-[19px]"
+          style={adminGridStyle}
+          key={location.pathname}
+        >
           {location.pathname.startsWith("/admin/writing") && (
-            <nav className="mx-auto mb-5 flex w-full max-w-[1440px] gap-1 overflow-x-auto rounded-xl border border-[#e4e7ed] bg-white p-1.5" aria-label="Điều hướng quản lý Writing">
+            <nav className="mx-auto mb-5 flex w-full max-w-[1440px] gap-1 overflow-x-auto rounded-2xl border-3 border-[#111] bg-white p-1.5" aria-label="Điều hướng quản lý Writing">
               {writingNavigation.map(({ label, to, icon: Icon }) => {
                 const active = to.endsWith("/submissions")
                   ? location.pathname.startsWith(to)
@@ -180,7 +192,7 @@ export default function AdminLayout() {
             </nav>
           )}
           {location.pathname.startsWith("/admin/speaking") && (
-            <nav className="mx-auto mb-5 flex w-full max-w-[1440px] gap-1 overflow-x-auto rounded-xl border border-[#e4e7ed] bg-white p-1.5" aria-label="Điều hướng quản lý Speaking">
+            <nav className="mx-auto mb-5 flex w-full max-w-[1440px] gap-1 overflow-x-auto rounded-2xl border-3 border-[#111] bg-white p-1.5" aria-label="Điều hướng quản lý Speaking">
               {speakingNavigation.map(({ label, to, icon: Icon }) => {
                 const active = to.endsWith("/submissions")
                   ? location.pathname.startsWith(to)
@@ -199,7 +211,9 @@ export default function AdminLayout() {
               })}
             </nav>
           )}
-          <Outlet />
+          <div className="mx-auto w-full max-w-[1440px] rounded-3xl border-3 border-[#111] bg-white p-6 max-[760px]:p-4">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

@@ -21,6 +21,7 @@ import {
   retryAdminSpeakingGrading,
   updateAdminSpeakingSubmission,
 } from "../../../services/adminApi";
+import AdminPageTitle from "../../../components/admin/AdminPageTitle";
 
 const statusNames = {
   IN_PROGRESS: "Đang làm",
@@ -303,7 +304,7 @@ export default function AdminSpeakingSubmissionDetailPage() {
             {submission.userEmail} · {submission.topicName} ·{" "}
             {submission.speakingType}
           </p>
-          <h2 className="m-0 text-2xl font-black">{submission.userName}</h2>
+          <AdminPageTitle title={submission.userName} />
           <p className="mb-0 mt-1 text-sm text-slate-600">
             {submission.exerciseTitle} · Lượt #{submission.attemptId}
           </p>

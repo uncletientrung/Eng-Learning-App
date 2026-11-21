@@ -3,6 +3,7 @@ import { Eye, FilePlus2, Pencil, Plus, RefreshCw, Search, Trash2 } from "lucide-
 import { Link, useLocation } from "react-router-dom";
 import { getAdminWritingExercises, updateAdminWritingStatus, deleteAdminWritingExercise } from "../../../services/adminApi";
 import { getTopicByModule } from "../../../services/topicAPI";
+import AdminPageTitle from "../../../components/admin/AdminPageTitle";
 
 const dateFormat = new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium" });
 const statusNames = { DRAFT: "Bản nháp", PUBLISHED: "Công khai", HIDDEN: "Đã ẩn" };
@@ -17,8 +18,8 @@ function StatusBadge({ status }) {
   return (
     <span
       className={`
-        inline-flex min-h-[23px] items-center whitespace-nowrap
-        rounded-full px-2 py-[3px] text-[9px] font-black
+        inline-flex min-h-5.75 items-center whitespace-nowrap
+        rounded-full px-2 py-0.75 text-[9px] font-black
         ${statusClass}
       `}
     >
@@ -126,35 +127,31 @@ export default function AdminWritingExercisesPage() {
   return (
     <div
       className="
-        mx-auto w-full max-w-[1440px]
+        mx-auto w-full max-w-360
       "
     >
       <div
         className="
-          mb-[22px] flex items-start justify-between gap-4
-          [&_h2]:m-0 [&_h2]:text-[clamp(20px,2vw,25px)]
-          [&_h2]:font-black [&_h2]:tracking-[-.025em]
-          [&_p]:mt-[5px] [&_p]:mb-0 [&_p]:text-[13px]
+          mb-5.5 flex items-start justify-between gap-4
+          [&_p]:mt-1.25 [&_p]:mb-0 [&_p]:text-[13px]
           [&_p]:text-[#6b7080]
           max-[760px]:mb-4 max-[760px]:items-stretch
           max-[760px]:flex-col
         "
       >
         <div>
-          <h2>Quản lý đề Writing</h2>
-          <p>Tìm kiếm, phân loại và cập nhật đề bài.</p>
+          <AdminPageTitle title="Quản lý đề Writing" />
+          {/* <p>Tìm kiếm, phân loại và cập nhật đề bài.</p> */}
         </div>
         <Link
           className="
-            inline-flex min-h-[39px] shrink-0 cursor-pointer
-            items-center justify-center gap-[7px] rounded-[10px]
-            border border-[#e4e7ed] bg-white px-3 py-2
-            text-[11px] font-extrabold text-[#1b1d22] no-underline
-            hover:bg-[#f1f3f7] focus-visible:outline-2
-            focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7]
-            disabled:cursor-not-allowed disabled:opacity-55
-            !border-[#4f7cf7] !bg-[#4f7cf7] !text-white
-            hover:!border-[#3d68d8] hover:!bg-[#3d68d8]
+            inline-flex min-h-9.75 shrink-0 cursor-pointer
+            items-center justify-center gap-1.75 rounded-[10px]
+            border border-[#4f7cf7] bg-[#4f7cf7] px-3 py-2
+            text-[11px] font-extrabold text-white no-underline
+            hover:border-[#3d68d8] hover:bg-[#3d68d8]
+            focus-visible:outline-2 focus-visible:outline-offset-2
+            focus-visible:outline-[#4f7cf7]
           "
           to="/admin/writing/create"
         >
@@ -166,8 +163,8 @@ export default function AdminWritingExercisesPage() {
       {notice && (
         <div
           className="
-            mb-[13px] rounded-xl border border-[#b9e8cc]
-            bg-[#effaf3] px-[15px] py-[13px] text-xs text-[#187347]
+            mb-3.25 rounded-xl border border-[#b9e8cc]
+            bg-[#effaf3] px-3.75 py-3.25 text-xs text-[#187347]
           "
           role="status"
         >
@@ -178,8 +175,8 @@ export default function AdminWritingExercisesPage() {
       {error && (
         <div
           className="
-            mb-[13px] rounded-xl border border-[#f1c1c5]
-            bg-[#fff4f5] px-[15px] py-[13px] text-xs text-[#a63240]
+            mb-3.25 rounded-xl border border-[#f1c1c5]
+            bg-[#fff4f5] px-3.75 py-3.25 text-xs text-[#a63240]
             [&_p]:mb-2 [&_p]:mt-0
           "
           role="alert"
@@ -188,8 +185,8 @@ export default function AdminWritingExercisesPage() {
           <button
             type="button"
             className="
-              inline-flex min-h-[39px] shrink-0 cursor-pointer
-              items-center justify-center gap-[7px] rounded-[10px]
+              inline-flex min-h-9.75 shrink-0 cursor-pointer
+              items-center justify-center gap-1.75 rounded-[10px]
               border border-[#e4e7ed] bg-white px-3 py-2
               text-[11px] font-extrabold text-[#1b1d22] no-underline
               hover:bg-[#f1f3f7] focus-visible:outline-2
@@ -206,7 +203,7 @@ export default function AdminWritingExercisesPage() {
 
       <div
         className="
-          mb-[14px] flex flex-wrap items-center gap-[9px]
+          mb-3.5 flex flex-wrap items-center gap-2.25
           [&>select]:max-[760px]:min-w-[calc(50%-5px)]
           [&>select]:max-[760px]:flex-[1_1_130px]
         "
@@ -216,14 +213,14 @@ export default function AdminWritingExercisesPage() {
             relative min-w-[min(100%,250px)] flex-[1_1_245px]
             [&_svg]:absolute [&_svg]:left-3 [&_svg]:top-1/2
             [&_svg]:-translate-y-1/2 [&_svg]:text-[#6b7080]
-            [&_input]:pl-[37px]
+            [&_input]:pl-9.25
           "
         >
           <Search size={16} />
           <input
             className="
               min-h-10 w-full rounded-[10px] border border-[#e4e7ed]
-              bg-white px-[11px] py-[9px] text-xs text-[#1b1d22]
+              bg-white px-2.75 py-2.25 text-xs text-[#1b1d22]
               placeholder:text-[#9aa0ad] focus-visible:outline-2
               focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7]
             "
@@ -239,8 +236,8 @@ export default function AdminWritingExercisesPage() {
 
         <select
           className="
-            min-h-10 w-auto min-w-[125px] rounded-[10px]
-            border border-[#e4e7ed] bg-white px-[11px] py-[9px]
+            min-h-10 w-auto min-w-31.25 rounded-[10px]
+            border border-[#e4e7ed] bg-white px-2.75 py-2.25
             text-xs text-[#1b1d22] focus-visible:outline-2
             focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7]
           "
@@ -261,8 +258,8 @@ export default function AdminWritingExercisesPage() {
 
         <select
           className="
-            min-h-10 w-auto min-w-[125px] rounded-[10px]
-            border border-[#e4e7ed] bg-white px-[11px] py-[9px]
+            min-h-10 w-auto min-w-31.25 rounded-[10px]
+            border border-[#e4e7ed] bg-white px-2.75 py-2.25
             text-xs text-[#1b1d22] focus-visible:outline-2
             focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7]
           "
@@ -290,7 +287,7 @@ export default function AdminWritingExercisesPage() {
           <div
             className="
               rounded-xl border border-[#e4e7ed] bg-white
-              px-[15px] py-[35px] text-center text-xs text-[#6b7080]
+              px-3.75 py-8.75 text-center text-xs text-[#6b7080]
               [&_strong]:mb-1 [&_strong]:block [&_strong]:text-[#1b1d22]
             "
             role="status"
@@ -305,13 +302,13 @@ export default function AdminWritingExercisesPage() {
                   w-full border-collapse text-left text-xs
                   [&_th]:whitespace-nowrap [&_th]:border-b
                   [&_th]:border-[#e4e7ed] [&_th]:bg-[#f1f3f7]
-                  [&_th]:px-[14px] [&_th]:py-[11px] [&_th]:text-[10px]
+                  [&_th]:px-3.5 [&_th]:py-2.75 [&_th]:text-xs!
                   [&_th]:font-black [&_th]:tracking-[.04em]
                   [&_th]:text-[#6b7080]
                   [&_th:first-child]:rounded-tl-[10px]
                   [&_th:last-child]:rounded-tr-[10px]
                   [&_td]:border-b [&_td]:border-[#e4e7ed]
-                  [&_td]:px-[14px] [&_td]:py-3 [&_td]:align-middle
+                  [&_td]:px-3.5 [&_td]:py-3 [&_td]:align-middle
                   [&_tbody_tr:last-child_td]:border-b-0
                   [&_tbody_tr:hover]:bg-[#f7f8fb]
                 "
@@ -335,10 +332,8 @@ export default function AdminWritingExercisesPage() {
                       <td>
                         <Link
                           className="
-                            block max-w-[320px] overflow-hidden
-                            text-ellipsis whitespace-nowrap
-                            font-extrabold text-[#1b1d22] text-[11px]
-                            font-extrabold text-[#355fc8]
+                            block max-w-[320px] truncate
+                            text-[11px] font-extrabold text-[#355fc8]
                             no-underline hover:underline
                           "
                           to={`/admin/writing/${exercise.id}`}
@@ -356,10 +351,10 @@ export default function AdminWritingExercisesPage() {
                         <div className="flex items-center gap-1">
                           <Link
                             className="
-                              inline-flex min-h-[30px] shrink-0 cursor-pointer
-                              items-center justify-center gap-1 rounded-[8px]
+                              inline-flex min-h-7.5 shrink-0 cursor-pointer
+                              items-center justify-center gap-1 rounded-lg
                               border border-[#4f7cf7] bg-[#4f7cf7]
-                              px-2 py-[5px] text-[10px] font-extrabold
+                              px-2 py-1.25 text-[10px] font-extrabold
                               text-white no-underline hover:border-[#3d68d8]
                               hover:bg-[#3d68d8] focus-visible:outline-2
                               focus-visible:outline-offset-2
@@ -372,10 +367,10 @@ export default function AdminWritingExercisesPage() {
                           </Link>
                           <Link
                             className="
-                              inline-flex min-h-[30px] shrink-0 cursor-pointer
-                              items-center justify-center gap-1 rounded-[8px]
+                              inline-flex min-h-7.5 shrink-0 cursor-pointer
+                              items-center justify-center gap-1 rounded-lg
                               border border-[#d8e2ff] bg-[#f3f6ff]
-                              px-2 py-[5px] text-[10px] font-extrabold
+                              px-2 py-1.25 text-[10px] font-extrabold
                               text-[#315fc5] no-underline hover:bg-[#e8eeff]
                               focus-visible:outline-2 focus-visible:outline-offset-2
                               focus-visible:outline-[#4f7cf7]
@@ -388,9 +383,9 @@ export default function AdminWritingExercisesPage() {
                           <button
                             type="button"
                             className="
-                              inline-flex min-h-[30px] shrink-0 cursor-pointer
-                              items-center justify-center gap-1 rounded-[8px]
-                              border border-[#e4e7ed] bg-white px-2 py-[5px]
+                              inline-flex min-h-7.5 shrink-0 cursor-pointer
+                              items-center justify-center gap-1 rounded-lg
+                              border border-[#e4e7ed] bg-white px-2 py-1.25
                               text-[10px] font-extrabold text-[#1b1d22]
                               hover:bg-[#f1f3f7] focus-visible:outline-2
                               focus-visible:outline-offset-2
@@ -406,9 +401,9 @@ export default function AdminWritingExercisesPage() {
                           <button
                             type="button"
                             className="
-                              inline-flex min-h-[30px] shrink-0 cursor-pointer
-                              items-center justify-center gap-1 rounded-[8px]
-                              border border-[#f1c1c5] bg-white px-2 py-[5px]
+                              inline-flex min-h-7.5 shrink-0 cursor-pointer
+                              items-center justify-center gap-1 rounded-lg
+                              border border-[#f1c1c5] bg-white px-2 py-1.25
                               text-[10px] font-extrabold text-[#a63240]
                               hover:bg-[#fff4f5] focus-visible:outline-2
                               focus-visible:outline-offset-2
@@ -439,18 +434,17 @@ export default function AdminWritingExercisesPage() {
               "
             >
               <span>{pageData.totalCount} đề</span>
-              <div className="flex items-center gap-[6px]">
+              <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   className="
-                    inline-flex min-h-[39px] shrink-0 cursor-pointer
-                    items-center justify-center gap-[7px] rounded-[10px]
-                    border border-[#e4e7ed] bg-white px-3 py-2
-                    text-[11px] font-extrabold text-[#1b1d22] no-underline
+                    inline-flex min-h-7.5 shrink-0 cursor-pointer
+                    items-center justify-center gap-1.75 rounded-[10px]
+                    border border-[#e4e7ed] bg-white px-2 py-1.25
+                    text-[10px] font-extrabold text-[#1b1d22] no-underline
                     hover:bg-[#f1f3f7] focus-visible:outline-2
                     focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7]
                     disabled:cursor-not-allowed disabled:opacity-55
-                    min-h-[30px] px-2 py-[5px] text-[10px]
                   "
                   disabled={page <= 1 || loading}
                   onClick={() => changePage(page - 1)}
@@ -461,14 +455,13 @@ export default function AdminWritingExercisesPage() {
                 <button
                   type="button"
                   className="
-                    inline-flex min-h-[39px] shrink-0 cursor-pointer
-                    items-center justify-center gap-[7px] rounded-[10px]
-                    border border-[#e4e7ed] bg-white px-3 py-2
-                    text-[11px] font-extrabold text-[#1b1d22] no-underline
+                    inline-flex min-h-7.5 shrink-0 cursor-pointer
+                    items-center justify-center gap-1.75 rounded-[10px]
+                    border border-[#e4e7ed] bg-white px-2 py-1.25
+                    text-[10px] font-extrabold text-[#1b1d22] no-underline
                     hover:bg-[#f1f3f7] focus-visible:outline-2
                     focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7]
                     disabled:cursor-not-allowed disabled:opacity-55
-                    min-h-[30px] px-2 py-[5px] text-[10px]
                   "
                   disabled={page >= pageCount || loading}
                   onClick={() => changePage(page + 1)}
@@ -482,7 +475,7 @@ export default function AdminWritingExercisesPage() {
           <div
             className="
               rounded-xl border border-[#e4e7ed] bg-white
-              px-[15px] py-[35px] text-center text-xs text-[#6b7080]
+              px-3.75 py-8.75 text-center text-xs text-[#6b7080]
               [&_strong]:mb-1 [&_strong]:block [&_strong]:text-[#1b1d22]
             "
           >

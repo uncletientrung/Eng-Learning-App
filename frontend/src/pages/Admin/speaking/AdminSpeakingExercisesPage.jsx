@@ -3,6 +3,7 @@ import { Eye, Mic, Plus, RefreshCw, Search, ToggleLeft, ToggleRight, Trash2 } fr
 import { Link } from "react-router-dom";
 import { deleteAdminSpeakingExercise, getAdminSpeakingExercises, updateAdminSpeakingExerciseStatus } from "../../../services/adminApi";
 import { getTopicByModule } from "../../../services/topicAPI";
+import AdminPageTitle from "../../../components/admin/AdminPageTitle";
 
 const typeNames = {
   INTRODUCTION_INTERVIEW: "Part 1",
@@ -98,7 +99,7 @@ export default function AdminSpeakingExercisesPage() {
   return (
     <div className="mx-auto w-full max-w-[1440px]">
       <header className="mb-5 flex flex-wrap items-start justify-between gap-4">
-        <div><h2 className="m-0 text-2xl font-black">Quản lý đề Speaking</h2><p className="mb-0 mt-1 text-[13px] text-[#6b7080]">Tạo đề, quản lý câu hỏi và trạng thái hoạt động.</p></div>
+        <div><AdminPageTitle title="Quản lý đề Speaking" /><p className="mb-0 mt-1 text-[13px] text-[#6b7080]">Tạo đề, quản lý câu hỏi và trạng thái hoạt động.</p></div>
         <Link to="/admin/speaking/create" className="
           inline-flex min-h-10 items-center gap-2 rounded-[10px] bg-[#4f7cf7] px-4
           text-xs font-extrabold text-white no-underline hover:bg-[#3d68d8]
@@ -133,7 +134,7 @@ export default function AdminSpeakingExercisesPage() {
               <table className="
                 w-full min-w-[900px] border-collapse text-left text-xs
                 [&_th]:whitespace-nowrap [&_th]:border-b [&_th]:border-[#e4e7ed]
-                [&_th]:bg-[#f1f3f7] [&_th]:px-[14px] [&_th]:py-[11px] [&_th]:text-[10px]
+                [&_th]:bg-[#f1f3f7] [&_th]:px-[14px] [&_th]:py-[11px] [&_th]:text-xs!
                 [&_th]:font-black [&_th]:tracking-[.04em] [&_th]:text-[#6b7080]
                 [&_th:first-child]:rounded-tl-[10px] [&_th:last-child]:rounded-tr-[10px]
                 [&_td]:border-b [&_td]:border-[#e4e7ed] [&_td]:px-[14px] [&_td]:py-3

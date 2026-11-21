@@ -3,6 +3,7 @@ import { ArrowDown, ArrowLeft, ArrowUp, Plus, RefreshCw, Save, Trash2 } from "lu
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { createAdminSpeakingExercise, getAdminSpeakingExercise, updateAdminSpeakingExercise } from "../../../services/adminApi";
 import { getTopicByModule } from "../../../services/topicAPI";
+import AdminPageTitle from "../../../components/admin/AdminPageTitle";
 
 const emptyQuestion = (questionNumber = 1) => ({
   questionNumber,
@@ -142,7 +143,7 @@ export default function AdminSpeakingExerciseFormPage() {
 
   return (
     <div className="mx-auto w-full max-w-[1000px]">
-      <header className="mb-5 flex flex-wrap items-start justify-between gap-3"><div><h2 className="m-0 text-2xl font-black">{editing ? "Chỉnh sửa đề Speaking" : "Tạo đề Speaking"}</h2><p className="mb-0 mt-1 text-sm text-slate-500">Thiết lập đề và từng câu hỏi theo cấu trúc Speaking.</p></div><Link className="
+      <header className="mb-5 flex flex-wrap items-start justify-between gap-3"><div><AdminPageTitle title={editing ? "Chỉnh sửa đề Speaking" : "Tạo đề Speaking"} /><p className="mb-0 mt-1 text-sm text-slate-500">Thiết lập đề và từng câu hỏi theo cấu trúc Speaking.</p></div><Link className="
         inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-xs
         font-bold text-slate-700 no-underline
       " to="/admin/speaking"><ArrowLeft size={15} />Danh sách đề</Link></header>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ArrowLeft, Save } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { createAdminUser } from "../../../services/adminApi";
+import AdminPageTitle from "../../../components/admin/AdminPageTitle";
 
 const inputClass = [
   "min-h-10 w-full rounded-[10px] border border-[#e4e7ed] bg-white px-3 py-2",
@@ -46,7 +47,7 @@ export default function AdminUserCreatePage() {
     <div className="mx-auto w-full max-w-[900px]">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="m-0 text-[clamp(20px,2vw,25px)] font-black tracking-[-.025em]">Thêm người dùng</h2>
+          <AdminPageTitle title="Thêm người dùng" />
           <p className="mb-0 mt-[5px] text-[13px] text-[#6b7080]">Tạo tài khoản học viên mới trong hệ thống.</p>
         </div>
         <Link className="

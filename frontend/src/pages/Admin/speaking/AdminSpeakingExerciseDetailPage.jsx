@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Pencil } from "lucide-react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { getAdminSpeakingExercise } from "../../../services/adminApi";
+import AdminPageTitle from "../../../components/admin/AdminPageTitle";
 
 const typeNames = { INTRODUCTION_INTERVIEW: "Part 1", TOPIC: "Part 2", TOPIC_DISCUSS: "Part 3" };
 
@@ -25,7 +26,7 @@ export default function AdminSpeakingExerciseDetailPage() {
   return (
     <div className="mx-auto w-full max-w-[1100px]">
       {location.state?.notice && <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800" role="status">{location.state.notice}</p>}
-      <header className="mb-5 flex flex-wrap items-start justify-between gap-3"><div><div className="mb-2 flex gap-2 text-xs text-slate-500"><span>{exercise.topicName}</span><span>·</span><span>{typeNames[exercise.speakingType]}</span></div><h2 className="m-0 text-2xl font-black">{exercise.title}</h2><p className="text-sm text-slate-500">{exercise.questionCount} câu hỏi · {exercise.submissionCount} lượt làm · {exercise.isActive ? "Đang hoạt động" : "Đã ẩn"}</p></div><div className="flex gap-2"><Link className="
+      <header className="mb-5 flex flex-wrap items-start justify-between gap-3"><div><div className="mb-2 flex gap-2 text-xs text-slate-500"><span>{exercise.topicName}</span><span>·</span><span>{typeNames[exercise.speakingType]}</span></div><AdminPageTitle title={exercise.title} /><p className="text-sm text-slate-500">{exercise.questionCount} câu hỏi · {exercise.submissionCount} lượt làm · {exercise.isActive ? "Đang hoạt động" : "Đã ẩn"}</p></div><div className="flex gap-2"><Link className="
         inline-flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-xs
         font-bold text-slate-700 no-underline
       " to="/admin/speaking"><ArrowLeft size={15} />Danh sách</Link>{!exercise.submissionCount && <Link className="

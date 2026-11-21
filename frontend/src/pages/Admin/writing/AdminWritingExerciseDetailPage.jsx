@@ -3,6 +3,7 @@ import { ArrowLeft, Pencil, RefreshCw, Trash2 } from "lucide-react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteAdminWritingExercise, getAdminWritingExercise, updateAdminWritingStatus } from "../../../services/adminApi";
 import { getAdminImageSrc } from "../../../components/admin/adminUtils";
+import AdminPageTitle from "../../../components/admin/AdminPageTitle";
 
 const dateFormat = new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium", timeStyle: "short" });
 const statusNames = { DRAFT: "Bản nháp", PUBLISHED: "Công khai", HIDDEN: "Đã ẩn" };
@@ -87,13 +88,11 @@ export default function AdminWritingExerciseDetailPage() {
   return (
     <div className="mx-auto w-full max-w-[1440px]">
       <div className="
-        mb-[22px] flex items-start justify-between gap-4 [&_h2]:m-0
-        [&_h2]:text-[clamp(20px,2vw,25px)] [&_h2]:font-black
-        [&_h2]:tracking-[-.025em] [&_p]:mt-[5px] [&_p]:mb-0 [&_p]:text-[13px]
+        mb-[22px] flex items-start justify-between gap-4 [&_p]:mt-[5px] [&_p]:mb-0 [&_p]:text-[13px]
         [&_p]:text-[#6b7080] max-[760px]:mb-4 max-[760px]:items-stretch
         max-[760px]:flex-col
       ">
-        <div><h2>{exercise.title}</h2><p>Đề Writing #{exercise.id} · {exercise.submissionCount} bài nộp</p></div>
+        <div><AdminPageTitle title={exercise.title} /><p>Đề Writing #{exercise.id} · {exercise.submissionCount} bài nộp</p></div>
         <div className="flex flex-wrap gap-[5px]">
           <Link className="
             inline-flex min-h-[39px] shrink-0 cursor-pointer items-center justify-center

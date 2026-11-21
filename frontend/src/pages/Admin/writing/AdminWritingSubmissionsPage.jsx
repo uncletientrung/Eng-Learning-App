@@ -5,6 +5,7 @@ import {
   deleteAdminWritingSubmission,
   getAdminWritingSubmissions,
 } from "../../../services/adminApi";
+import AdminPageTitle from "../../../components/admin/AdminPageTitle";
 
 const dateFormat = new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium", timeStyle: "short" });
 
@@ -96,14 +97,12 @@ export default function AdminWritingSubmissionsPage() {
   return (
     <div className="mx-auto w-full max-w-[1440px]">
       <div className="
-        mb-[22px] flex items-start justify-between gap-4 [&_h2]:m-0
-        [&_h2]:text-[clamp(20px,2vw,25px)] [&_h2]:font-black
-        [&_h2]:tracking-[-.025em] [&_p]:mt-[5px] [&_p]:mb-0 [&_p]:text-[13px]
+        mb-[22px] flex items-start justify-between gap-4 [&_p]:mt-[5px] [&_p]:mb-0 [&_p]:text-[13px]
         [&_p]:text-[#6b7080] max-[760px]:mb-4 max-[760px]:items-stretch
         max-[760px]:flex-col
       ">
         <div>
-          <h2>Bài làm của học viên</h2>
+          <AdminPageTitle title="Bài nộp Writing" />
           <p>Theo dõi nội dung bài viết và kết quả chấm theo tiêu chí.</p>
         </div>
         <div className="flex flex-wrap gap-[5px]">
@@ -193,7 +192,7 @@ export default function AdminWritingSubmissionsPage() {
               <table className="
                 w-full border-collapse text-left text-xs [&_th]:whitespace-nowrap
                 [&_th]:border-b [&_th]:border-[#e4e7ed] [&_th]:bg-[#f1f3f7] [&_th]:px-[14px]
-                [&_th]:py-[11px] [&_th]:text-[10px] [&_th]:font-black
+                [&_th]:py-[11px] [&_th]:text-xs! [&_th]:font-black
                 [&_th]:tracking-[.04em] [&_th]:text-[#6b7080]
                 [&_th:first-child]:rounded-tl-[10px] [&_th:last-child]:rounded-tr-[10px]
                 [&_td]:border-b [&_td]:border-[#e4e7ed] [&_td]:px-[14px] [&_td]:py-3

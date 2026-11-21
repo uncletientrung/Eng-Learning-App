@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, RefreshCw, Save } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getAdminUser, updateAdminUserProfile } from "../../../services/adminApi";
+import AdminPageTitle from "../../../components/admin/AdminPageTitle";
 
 const inputClass = [
   "min-h-10 w-full rounded-[10px] border border-[#e4e7ed] bg-white px-3 py-2",
@@ -71,7 +72,7 @@ export default function AdminUserFormPage() {
   return (
     <div className="mx-auto w-full max-w-[900px]">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div><h2 className="m-0 text-[clamp(20px,2vw,25px)] font-black tracking-[-.025em]">Chỉnh sửa người dùng</h2><p className="mb-0 mt-[5px] text-[13px] text-[#6b7080]">{user ? `Cập nhật thông tin tài khoản #${user.id}.` : "Không tìm thấy người dùng."}</p></div>
+        <div><AdminPageTitle title="Chỉnh sửa người dùng" /><p className="mb-0 mt-[5px] text-[13px] text-[#6b7080]">{user ? `Cập nhật thông tin tài khoản #${user.id}.` : "Không tìm thấy người dùng."}</p></div>
         <Link className="
           inline-flex min-h-[39px] items-center justify-center gap-[7px]
           rounded-[10px] border border-[#e4e7ed] bg-white px-3 py-2 text-[11px]

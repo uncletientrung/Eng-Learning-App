@@ -6,6 +6,7 @@ import {
   getAdminSpeakingSubmissions,
 } from "../../../services/adminApi";
 import { getTopicByModule } from "../../../services/topicAPI";
+import AdminPageTitle from "../../../components/admin/AdminPageTitle";
 
 const typeNames = { INTRODUCTION_INTERVIEW: "Part 1", TOPIC: "Part 2", TOPIC_DISCUSS: "Part 3" };
 const statusNames = { IN_PROGRESS: "Đang làm", SUBMITTED: "Đã nộp", GRADING: "Đang chấm", GRADING_FAILED: "Chấm lỗi", GRADED: "Đã chấm", ABANDONED: "Đã bỏ" };
@@ -93,7 +94,7 @@ export default function AdminSpeakingSubmissionsPage() {
 
   return (
     <div className="mx-auto w-full max-w-[1440px]">
-      <header className="mb-5"><h2 className="m-0 text-2xl font-black">Bài nộp Speaking</h2><p className="mb-0 mt-1 text-sm text-slate-500">Tra cứu lượt làm, trạng thái chấm và điểm của học viên.</p></header>
+      <header className="mb-5"><AdminPageTitle title="Bài nộp Speaking" /><p className="mb-0 mt-1 text-sm text-slate-500">Tra cứu lượt làm, trạng thái chấm và điểm của học viên.</p></header>
       {error && <div className="mb-3 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800" role="alert"><p>{error}</p><button className="rounded-lg border bg-white px-3 py-2 text-xs font-bold" type="button" onClick={() => setRefresh((value) => value + 1)}><RefreshCw size={14} /> Thử lại</button></div>}
       <div className="mb-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         <label className="relative sm:col-span-2"><Search className="absolute left-3 top-3 text-slate-400" size={15} /><input className={`${controlClass} w-full pl-9`} aria-label="Tìm học viên hoặc đề" placeholder="Tên, email học viên hoặc tên đề..." value={filters.search} onChange={(event) => changeFilter("search", event.target.value)} /></label>
@@ -119,7 +120,7 @@ export default function AdminSpeakingSubmissionsPage() {
           <>
             <div className="w-full overflow-x-auto">
               <table className="w-full min-w-[1120px] border-collapse text-left text-xs">
-                <thead className="bg-[#f7f8fa] text-[10px] uppercase tracking-wide text-[#6b7080]"><tr>{["Học viên", "Đề Speaking", "Trạng thái", "Điểm", "Thời gian", ""].map((item, index) => <th className="px-4 py-3" key={`${item}-${index}`}>{item}</th>)}</tr></thead>
+                <thead className="bg-[#f7f8fa] text-[10px] uppercase tracking-wide text-[#6b7080]"><tr>{["Học viên", "Đề Speaking", "Trạng thái", "Điểm", "Thời gian", ""].map((item, index) => <th className="px-4 py-3 text-xs!" key={`${item}-${index}`}>{item}</th>)}</tr></thead>
                 <tbody>
                   {data.items.map((item) => <tr key={item.attemptId}>
                   <td className="px-4 py-3"><strong className="block">{item.userName}</strong><span className="text-[11px] text-slate-500">{item.userEmail}</span></td>

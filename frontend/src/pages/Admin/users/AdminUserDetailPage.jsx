@@ -3,6 +3,7 @@ import { ArrowLeft, CalendarDays, Flame, Mail, Pencil, Phone, RefreshCw, ShieldC
 import { Link, useLocation, useParams } from "react-router-dom";
 import { getCurrentUser } from "../../../services/authApi";
 import { getAdminUser, updateAdminUserStatus } from "../../../services/adminApi";
+import AdminPageTitle from "../../../components/admin/AdminPageTitle";
 
 function formatDate(value) {
   if (!value) return "Chưa ghi nhận";
@@ -106,7 +107,7 @@ export default function AdminUserDetailPage() {
         <>
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="m-0 text-[clamp(20px,2vw,25px)] font-black tracking-[-.025em]">{user.name}</h2>
+              <AdminPageTitle title={user.name} />
               <p className="mb-0 mt-[5px] text-[13px] text-[#6b7080]">Hồ sơ người dùng #{user.id} · @{user.username}</p>
             </div>
             <div className="flex flex-wrap gap-2">
