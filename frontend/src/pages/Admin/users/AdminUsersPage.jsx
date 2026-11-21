@@ -109,7 +109,6 @@ export default function AdminUsersPage() {
       ">
         <div>
           <AdminPageTitle title="Quản lý Users" />
-          <p>Tra cứu hồ sơ, hoạt động học tập và trạng thái tài khoản.</p>
         </div>
         <Link className="
           inline-flex min-h-[39px] shrink-0 items-center justify-center gap-[7px]

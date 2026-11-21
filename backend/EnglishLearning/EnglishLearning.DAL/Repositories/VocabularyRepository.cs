@@ -12,13 +12,13 @@ public sealed class VocabularyRepository(AppDbContext db) : IVocabularyRepositor
 
     public Task<List<Topic>> GetSetsAsync(int userId, bool personal, CancellationToken ct) =>
         db.Topics.AsNoTracking() // read -> no tracking
-            .Where(t => t.ModuleType == "VOCABULARY" &&
+            .Where(t => t.ModuleType == "VOCABULARY" && t.IsActive &&
                 (personal ? t.CreateByUserId == userId : t.CreateByUserId == null))
             .OrderBy(t => t.Id).ToListAsync(ct);
 
     public Task<Topic?> GetSetAsync(int id, int userId, bool ownedOnly, CancellationToken ct) =>
         db.Topics.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id &&
-            t.ModuleType == "VOCABULARY" &&
+            t.ModuleType == "VOCABULARY" && t.IsActive &&
             (t.CreateByUserId == userId || (!ownedOnly && t.CreateByUserId == null)), ct);
 
     public Task<Dictionary<int, int>> GetWordCountsAsync(int[] topicIds, CancellationToken ct) =>

@@ -15,7 +15,7 @@ public sealed class IdiomsController(AppDbContext db) : ControllerBase
     {
         var topics = await (
             from idiom in db.Idioms.AsNoTracking()
-            join topic in db.Topics.AsNoTracking() on idiom.TopicId equals topic.Id
+            join topic in db.Topics.AsNoTracking().Where(t => t.IsActive) on idiom.TopicId equals topic.Id
             group idiom by new { topic.Id, topic.Name, topic.Description, topic.ImageURL } into idiomGroup
             select new
             {

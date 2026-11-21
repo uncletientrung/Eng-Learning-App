@@ -18,6 +18,7 @@ public class TopicRepository : ITopicRepository
     {
         return await _context.Topics
             .AsNoTracking()
+            .Where(t => t.IsActive)
             .OrderBy(t => t.Id)
             .ToListAsync();
     }
@@ -29,7 +30,7 @@ public class TopicRepository : ITopicRepository
 
         return await _context.Topics
             .AsNoTracking()
-            .Where(t => t.ModuleType.ToUpper() == normalizedType)
+            .Where(t => t.IsActive && t.ModuleType.ToUpper() == normalizedType)
             .OrderBy(t => t.Id)
             .ToListAsync();
     }
@@ -38,6 +39,6 @@ public class TopicRepository : ITopicRepository
     {
         return await _context.Topics
             .AsNoTracking()
-            .FirstOrDefaultAsync(t => t.Id == id);
+            .FirstOrDefaultAsync(t => t.Id == id && t.IsActive);
     }
 }

@@ -57,6 +57,10 @@ public class AppDbContext : DbContext
             .Property(u => u.CurrentStreak)
             .HasDefaultValue(0);
 
+        modelBuilder.Entity<Topic>()
+            .Property(t => t.IsActive)
+            .HasDefaultValue(true);
+
         // Writing
         modelBuilder.Entity<WritingExercise>() // Cấu hình entity WritingExercise
             .HasOne(e => e.Topic) // Mỗi bài tập viết liên kết với một Topic

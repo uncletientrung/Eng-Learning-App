@@ -103,7 +103,6 @@ export default function AdminWritingSubmissionsPage() {
       ">
         <div>
           <AdminPageTitle title="Bài nộp Writing" />
-          <p>Theo dõi nội dung bài viết và kết quả chấm theo tiêu chí.</p>
         </div>
         <div className="flex flex-wrap gap-[5px]">
           {exerciseId && <Link className="

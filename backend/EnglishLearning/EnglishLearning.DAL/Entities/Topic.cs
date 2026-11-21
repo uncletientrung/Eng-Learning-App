@@ -31,6 +31,9 @@ namespace EnglishLearning.DAL.Entities
         [Column("create_by_user_id")]
         public int? CreateByUserId { get; set; }
 
+        [Column("is_active")]
+        public bool IsActive { get; set; } = true;
+
         [ForeignKey(nameof(CreateByUserId))]
         public User? Creator { get; set; }
     }

@@ -166,7 +166,7 @@ public sealed class AdminRepository : IAdminRepository
         CancellationToken cancellationToken)
     {
         return _context.Topics.AnyAsync(
-            topic => topic.Id == topicId && topic.ModuleType == "WRITING",
+            topic => topic.Id == topicId && topic.IsActive && topic.ModuleType == "WRITING",
             cancellationToken);
     }
 

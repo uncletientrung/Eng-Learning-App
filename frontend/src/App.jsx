@@ -44,6 +44,9 @@ const AdminUsersPage = lazy(() => import("./pages/admin/users/AdminUsersPage"))
 const AdminUserDetailPage = lazy(() => import("./pages/admin/users/AdminUserDetailPage"))
 const AdminUserFormPage = lazy(() => import("./pages/admin/users/AdminUserFormPage"))
 const AdminUserCreatePage = lazy(() => import("./pages/admin/users/AdminUserCreatePage"))
+const AdminTopicsPage = lazy(() => import("./pages/admin/topics/AdminTopicsPage"))
+const AdminTopicFormPage = lazy(() => import("./pages/admin/topics/AdminTopicFormPage"))
+const AdminTopicDetailPage = lazy(() => import("./pages/admin/topics/AdminTopicDetailPage"))
 
 function App() {
   return (
@@ -80,6 +83,10 @@ function App() {
             <Route path="users/create" element={<AdminUserCreatePage />} />
             <Route path="users/:id/edit" element={<AdminUserFormPage />} />
             <Route path="users/:id" element={<AdminUserDetailPage />} />
+            <Route path="topics" element={<AdminTopicsPage />} />
+            <Route path="topics/create" element={<AdminTopicFormPage />} />
+            <Route path="topics/:id/edit" element={<AdminTopicFormPage />} />
+            <Route path="topics/:id" element={<AdminTopicDetailPage />} />
           </Route>
         </Route>
       </Route>

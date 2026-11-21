@@ -211,7 +211,7 @@ export default function AdminLayout() {
               })}
             </nav>
           )}
-          <div className="mx-auto w-full max-w-[1440px] rounded-3xl border-3 border-[#111] bg-white p-6 max-[760px]:p-4">
+          <div className="mx-auto w-full max-w-[1440px] rounded-2xl border-3 border-[#111] bg-white p-6 max-[760px]:p-4">
             <Outlet />
           </div>
         </main>

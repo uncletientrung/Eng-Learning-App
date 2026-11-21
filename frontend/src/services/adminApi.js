@@ -46,6 +46,18 @@ export const updateAdminUserStatus = (id, isActive) =>
     method: "PATCH",
     body: JSON.stringify({ isActive }),
   });
+export const getAdminTopics = (params) => request(`/topics${queryString(params)}`);
+export const getAdminTopic = (id) => request(`/topics/${id}`);
+export const createAdminTopic = (data) =>
+  request("/topics", { method: "POST", body: JSON.stringify(data) });
+export const updateAdminTopic = (id, data) =>
+  request(`/topics/${id}`, { method: "PUT", body: JSON.stringify(data) });
+export const updateAdminTopicStatus = (id, isActive) =>
+  request(`/topics/${id}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({ isActive }),
+  });
+export const deleteAdminTopic = (id) => request(`/topics/${id}`, { method: "DELETE" });
 export const getAdminVocabularySets = (params) => request(`/vocabulary/sets${queryString(params)}`);
 export const getAdminVocabularySet = (id) => request(`/vocabulary/sets/${id}`);
 export const createAdminVocabularySet = (data) =>

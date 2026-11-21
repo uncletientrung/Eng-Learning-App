@@ -99,7 +99,9 @@ export default function AdminSpeakingExercisesPage() {
   return (
     <div className="mx-auto w-full max-w-[1440px]">
       <header className="mb-5 flex flex-wrap items-start justify-between gap-4">
-        <div><AdminPageTitle title="Quản lý đề Speaking" /><p className="mb-0 mt-1 text-[13px] text-[#6b7080]">Tạo đề, quản lý câu hỏi và trạng thái hoạt động.</p></div>
+        <div>
+          <AdminPageTitle title="Quản lý đề Speaking" />
+        </div>
         <Link to="/admin/speaking/create" className="
           inline-flex min-h-10 items-center gap-2 rounded-[10px] bg-[#4f7cf7] px-4
           text-xs font-extrabold text-white no-underline hover:bg-[#3d68d8]

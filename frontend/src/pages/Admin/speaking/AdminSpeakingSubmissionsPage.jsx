@@ -94,7 +94,9 @@ export default function AdminSpeakingSubmissionsPage() {
 
   return (
     <div className="mx-auto w-full max-w-[1440px]">
-      <header className="mb-5"><AdminPageTitle title="Bài nộp Speaking" /><p className="mb-0 mt-1 text-sm text-slate-500">Tra cứu lượt làm, trạng thái chấm và điểm của học viên.</p></header>
+      <header className="mb-5">
+        <AdminPageTitle title="Bài nộp Speaking" />
+      </header>
       {error && <div className="mb-3 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800" role="alert"><p>{error}</p><button className="rounded-lg border bg-white px-3 py-2 text-xs font-bold" type="button" onClick={() => setRefresh((value) => value + 1)}><RefreshCw size={14} /> Thử lại</button></div>}
       <div className="mb-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         <label className="relative sm:col-span-2"><Search className="absolute left-3 top-3 text-slate-400" size={15} /><input className={`${controlClass} w-full pl-9`} aria-label="Tìm học viên hoặc đề" placeholder="Tên, email học viên hoặc tên đề..." value={filters.search} onChange={(event) => changeFilter("search", event.target.value)} /></label>

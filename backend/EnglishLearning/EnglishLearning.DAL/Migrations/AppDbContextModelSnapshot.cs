@@ -690,6 +690,12 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("image_url");
 
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_active");
+
                     b.Property<string>("ModuleType")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -1137,13 +1143,13 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasColumnName("is_completed");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp")
                         .HasColumnName("updated_at");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
 
                     b.HasKey("Id");
 

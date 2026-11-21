@@ -13,6 +13,7 @@ import {
   PanelLeftOpen,
   Quote,
   Sun,
+  Tags,
   Users,
   X,
 } from "lucide-react";
@@ -25,6 +26,7 @@ const navigation = [
   { label: "Quản lý Writing", to: "/admin/writing", icon: FileText },
   { label: "Quản lý Speaking", to: "/admin/speaking", icon: Mic },
   { label: "Quản lý Vocabulary", to: "/admin/vocabulary", icon: LibraryBig },
+  { label: "Quản lý Topics", to: "/admin/topics", icon: Tags },
   { label: "Quản lý Users", to: "/admin/users", icon: Users },
 ];
 

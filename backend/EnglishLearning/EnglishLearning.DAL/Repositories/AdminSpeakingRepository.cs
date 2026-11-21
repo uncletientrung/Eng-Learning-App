@@ -90,7 +90,7 @@ public sealed class AdminSpeakingRepository : IAdminSpeakingRepository
         CancellationToken cancellationToken)
     {
         return _db.Topics.AnyAsync(
-            topic => topic.Id == topicId &&
+            topic => topic.Id == topicId && topic.IsActive &&
                      topic.ModuleType == "SPEAKING",
             cancellationToken);
     }
