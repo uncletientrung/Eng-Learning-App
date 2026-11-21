@@ -79,6 +79,8 @@ builder.Services.AddScoped<
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IAdminUserService, AdminUserService>();
 builder.Services.AddScoped<IAdminTopicService, AdminTopicService>();
+builder.Services.AddSingleton<TopicImageStorage>();
+builder.Services.AddSingleton<WritingImageStorage>();
 builder.Services.AddScoped<IAdminUserPasswordHasher, AdminUserPasswordHasher>();
 builder.Services.AddScoped<ITopicService, TopicService>();
 builder.Services.AddScoped<IVocabularyService, VocabularyService>();

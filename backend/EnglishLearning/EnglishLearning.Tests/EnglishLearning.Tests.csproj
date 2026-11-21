@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EnglishLearning.API\EnglishLearning.API.csproj" />
     <ProjectReference Include="..\EnglishLearning.BLL\EnglishLearning.BLL.csproj" />
   </ItemGroup>
 

@@ -6,7 +6,7 @@ async function request(path, options = {}) {
   const response = await fetch(`${API_URL}/admin${path}`, {
     ...options,
     headers: {
-      ...(options.body ? { "Content-Type": "application/json" } : {}),
+      ...(options.body && !(options.body instanceof FormData) ? { "Content-Type": "application/json" } : {}),
       Authorization: `Bearer ${token}`,
       ...options.headers,
     },
@@ -52,6 +52,10 @@ export const createAdminTopic = (data) =>
   request("/topics", { method: "POST", body: JSON.stringify(data) });
 export const updateAdminTopic = (id, data) =>
   request(`/topics/${id}`, { method: "PUT", body: JSON.stringify(data) });
+export const createAdminTopicWithImage = (data) =>
+  request("/topics/with-image", { method: "POST", body: data });
+export const updateAdminTopicWithImage = (id, data) =>
+  request(`/topics/${id}/with-image`, { method: "PUT", body: data });
 export const updateAdminTopicStatus = (id, isActive) =>
   request(`/topics/${id}/status`, {
     method: "PATCH",
@@ -80,6 +84,10 @@ export const createAdminWritingExercise = (data) =>
   request("/writing", { method: "POST", body: JSON.stringify(data) });
 export const updateAdminWritingExercise = (id, data) =>
   request(`/writing/${id}`, { method: "PUT", body: JSON.stringify(data) });
+export const createAdminWritingExerciseWithImage = (data) =>
+  request("/writing/with-image", { method: "POST", body: data });
+export const updateAdminWritingExerciseWithImage = (id, data) =>
+  request(`/writing/${id}/with-image`, { method: "PUT", body: data });
 export const updateAdminWritingStatus = (id, status) =>
   request(`/writing/${id}/status`, {
     method: "PATCH",

@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Lock, RefreshCw, Save } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { createAdminTopic, getAdminTopic, updateAdminTopic } from "../../../services/adminApi";
+import { createAdminTopic, createAdminTopicWithImage, getAdminTopic, updateAdminTopic, updateAdminTopicWithImage } from "../../../services/adminApi";
 import { getAdminImageSrc } from "../../../components/admin/adminUtils";
 import AdminPageTitle from "../../../components/admin/AdminPageTitle";
+import AdminImageUpload from "../../../components/admin/AdminImageUpload";
 import { TOPIC_MODULES, getUsageParts, getUsageTotal, moduleLabel, topicButtonClass, topicFieldClass } from "./adminTopicUtils";
 
 const emptyForm = { name: "", description: "", imageURL: "", moduleType: "WRITING" };
-const labelClass = "grid gap-1.5 text-[11px] font-extrabold text-[#424b5a]";
+const labelClass = "flex flex-wrap items-center gap-1.5 text-[11px] font-extrabold text-[#424b5a]";
 
 export default function AdminTopicFormPage() {
   const { id } = useParams();
@@ -19,6 +20,13 @@ export default function AdminTopicFormPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [previewFailed, setPreviewFailed] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const imageInput = useRef(null);
+
+  useEffect(() => () => {
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
+  }, [imagePreview]);
 
   useEffect(() => {
     if (!isEdit) return undefined;
@@ -44,12 +52,26 @@ export default function AdminTopicFormPage() {
   const moduleOptions = TOPIC_MODULES.some((module) => module.value === form.moduleType)
     ? TOPIC_MODULES
     : [...TOPIC_MODULES, { value: form.moduleType, label: moduleLabel(form.moduleType) }];
-  const previewSrc = getAdminImageSrc(form.imageURL.trim());
+  const previewSrc = imagePreview || getAdminImageSrc(form.imageURL.trim());
 
   function updateField(event) {
     const { name, value } = event.target;
-    if (name === "imageURL") setPreviewFailed(false);
     setForm((current) => ({ ...current, [name]: value }));
+  }
+
+  function selectImage(event) {
+    const file = event.target.files?.[0] || null;
+    setImageFile(file);
+    setImagePreview(file ? URL.createObjectURL(file) : "");
+    setPreviewFailed(false);
+  }
+
+  function removeImage() {
+    setImageFile(null);
+    setImagePreview("");
+    setPreviewFailed(false);
+    setForm((current) => ({ ...current, imageURL: "" }));
+    if (imageInput.current) imageInput.current.value = "";
   }
 
   async function submit(event) {
@@ -63,7 +85,17 @@ export default function AdminTopicFormPage() {
         imageURL: form.imageURL.trim() || null,
         moduleType: form.moduleType,
       };
-      const saved = isEdit ? await updateAdminTopic(id, payload) : await createAdminTopic(payload);
+      let saved;
+      if (imageFile) {
+        const data = new FormData();
+        data.append("name", payload.name);
+        data.append("description", payload.description || "");
+        data.append("moduleType", payload.moduleType);
+        data.append("image", imageFile);
+        saved = isEdit ? await updateAdminTopicWithImage(id, data) : await createAdminTopicWithImage(data);
+      } else {
+        saved = isEdit ? await updateAdminTopic(id, payload) : await createAdminTopic(payload);
+      }
       navigate(`/admin/topics/${saved.id}`, {
         replace: true,
         state: { notice: isEdit ? "Đã cập nhật topic." : "Đã tạo topic mới." },
@@ -168,15 +200,8 @@ export default function AdminTopicFormPage() {
             </label>
 
             <label className={labelClass}>
-              Đường dẫn ảnh
-              <input
-                className={topicFieldClass}
-                name="imageURL"
-                value={form.imageURL}
-                onChange={updateField}
-                maxLength={255}
-                placeholder="/assets/topics/tech.webp"
-              />
+              Ảnh topic
+              <AdminImageUpload imageFile={imageFile} imageInput={imageInput} onChange={selectImage} />
             </label>
 
             <label className={`${labelClass} sm:col-span-2`}>
@@ -211,7 +236,7 @@ export default function AdminTopicFormPage() {
               <span className="mb-1.5 block text-[11px] font-extrabold text-[#424b5a]">Xem trước ảnh</span>
               {previewFailed ? (
                 <div className="rounded-xl border border-[#f1c1c5] bg-[#fff4f5] px-3 py-2 text-xs text-[#a63240]">
-                  Không tải được ảnh từ đường dẫn này.
+                  Không tải được ảnh xem trước.
                 </div>
               ) : (
                 <img
@@ -221,6 +246,9 @@ export default function AdminTopicFormPage() {
                   onError={() => setPreviewFailed(true)}
                 />
               )}
+              <button type="button" className={`${topicButtonClass.outline} mt-2`} onClick={removeImage}>
+                Xóa ảnh
+              </button>
             </div>
           )}
 

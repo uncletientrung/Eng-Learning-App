@@ -12,6 +12,8 @@ Trong giai đoạn đầu, tập trung triển khai hai chức năng chính:
 
 Admin Dashboard: Trang tổng quan quản trị hệ thống.
 Writing Management: Quản lý đề bài Writing và bài làm của học viên.
+
+Ảnh đề Writing được upload khi tạo/sửa và lưu tại `frontend/public/assets/writing`; database lưu URL `/assets/writing/...`. Tên file cũ như `writing_1.jpg` vẫn được frontend đọc từ thư mục này. Backend có thể cấu hình thư mục bằng `WritingImages:Directory`; thư mục phải tồn tại, cho phép backend ghi và được web server phục vụ tại `/assets/writing`. Khi triển khai riêng frontend và backend, dùng thư mục lưu trữ bền vững chia sẻ với web server vì ảnh upload sau build không tự xuất hiện trong bản build Vite.
 Yêu cầu quan trọng về giao diện
 
 Trước khi bắt đầu code, Agent bắt buộc phải đọc và phân tích giao diện hiện tại tại:

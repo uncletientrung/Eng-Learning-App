@@ -3,7 +3,6 @@ import { ArrowLeft, Eye, EyeOff, Pencil, RefreshCw, Trash2 } from "lucide-react"
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteAdminTopic, getAdminTopic, updateAdminTopicStatus } from "../../../services/adminApi";
 import { getAdminImageSrc } from "../../../components/admin/adminUtils";
-import AdminPageTitle from "../../../components/admin/AdminPageTitle";
 import TopicStatusBadge from "./TopicStatusBadge";
 import { getUsageParts, getUsageTotal, moduleLabel, topicButtonClass } from "./adminTopicUtils";
 
@@ -128,9 +127,15 @@ export default function AdminTopicDetailPage() {
         <>
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <AdminPageTitle title={topic.name} />
+              <h3
+                className="m-0 text-2xl leading-tight font-black tracking-tight text-[#1e3006] md:text-3xl"
+                style={{ fontFamily: '"Segoe UI Black", "Segoe UI", sans-serif' }}
+              >
+                Topic Name: {' '}
+                <span className="text-brand-dark">{topic.name}</span>
+              </h3>
               <p className="mb-0 mt-1.25 text-[13px] text-[#6b7080]">
-                Topic #{topic.id} · {moduleLabel(topic.moduleType)}
+                Topic #{topic.id} 
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -159,74 +164,62 @@ export default function AdminTopicDetailPage() {
             </div>
           </div>
 
-          <div className="grid gap-3.5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
-            <section className={cardClass}>
-              <h3 className="mb-4 mt-0 text-sm font-black">Thông tin topic</h3>
+          <section className={cardClass}>
+            <h3 className="mb-4 mt-0 text-sm font-black">Thông tin topic</h3>
+            <div className="grid gap-5 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)]">
               {imageSrc ? (
                 <img
-                  className="mb-4 h-40 w-full rounded-xl border border-[#e4e7ed] object-cover"
+                  className="h-auto max-h-150 w-full rounded-xl border border-[#e4e7ed] bg-[#f7f8fb] object-contain"
                   src={imageSrc}
                   alt={topic.name}
                 />
               ) : (
                 <div
                   className="
-                    mb-4 flex h-40 w-full items-center justify-center rounded-xl
-                    bg-[#f7f8fb] text-xs text-[#6b7080]
+                    flex aspect-4/3 w-full items-center justify-center rounded-xl
+                    border border-[#e4e7ed] bg-[#f7f8fb] text-xs text-[#6b7080]
                   "
                 >
                   Chưa có ảnh
                 </div>
               )}
-              <dl className="grid gap-3 text-xs">
+              <dl className="m-0 grid content-start gap-3 text-xs">
                 <div>
-                  <dt className="text-[10px] font-bold text-[#6b7080]">Module</dt>
+                  <dt className="text-[12px] text-sm font-black">Module</dt>
                   <dd className="mt-0.5 font-semibold">{moduleLabel(topic.moduleType)}</dd>
                 </div>
                 <div>
-                  <dt className="text-[10px] font-bold text-[#6b7080]">Trạng thái</dt>
+                  <dt className="text-[12px] text-sm font-black">Trạng thái</dt>
                   <dd className="mt-1"><TopicStatusBadge isActive={topic.isActive} /></dd>
                 </div>
                 <div>
-                  <dt className="text-[10px] font-bold text-[#6b7080]">Người tạo</dt>
+                  <dt className="text-[12px] text-sm font-black">Người tạo</dt>
                   <dd className="mt-0.5 font-semibold">{topic.createBy || "Hệ thống"}</dd>
                 </div>
                 <div>
-                  <dt className="text-[10px] font-bold text-[#6b7080]">Đường dẫn ảnh</dt>
+                  <dt className="text-[12px] text-sm font-black">Đường dẫn ảnh</dt>
                   <dd className="mt-0.5 break-all font-semibold">{topic.imageURL || "—"}</dd>
                 </div>
                 <div>
-                  <dt className="text-[10px] font-bold text-[#6b7080]">Mô tả</dt>
-                  <dd className="mt-0.5 whitespace-pre-wrap font-semibold">{topic.description || "—"}</dd>
+                  <dt className="text-[12px] text-sm font-black">Mô tả</dt>
+                  <dd className="mt-0.5 whitespace-pre-wrap break-words font-semibold">{topic.description || "—"}</dd>
+                </div>
+                <div>
+                  <dt className="text-[12px] text-sm font-black">Nội dung đang dùng topic</dt>
+                  <dd className="mt-0.5 font-semibold">
+                    {usageParts.length > 0
+                      ? usageParts.map((part) => `${part.label}: ${part.count}`).join(" · ")
+                      : "Không có nội dung"}
+                  </dd>
+                  <dd className="mt-1 text-[#6b7080]">
+                    {usageTotal > 0
+                      ? "Topic có nội dung tham chiếu nên không thể xóa hoặc đổi module; hãy ẩn nếu không muốn hiển thị."
+                      : "Chưa có nội dung nào tham chiếu, topic có thể xóa."}
+                  </dd>
                 </div>
               </dl>
-            </section>
-
-            <section className={cardClass}>
-              <h3 className="mb-1 mt-0 text-sm font-black">Nội dung đang dùng topic</h3>
-              <p className="mb-4 mt-0 text-xs text-[#6b7080]">
-                {usageTotal > 0
-                  ? "Topic có nội dung tham chiếu nên không thể xóa hoặc đổi module; hãy ẩn nếu không muốn hiển thị."
-                  : "Chưa có nội dung nào tham chiếu, topic có thể xóa."}
-              </p>
-              {usageParts.length > 0 ? (
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {usageParts.map((part) => (
-                    <div className="rounded-xl border border-[#e4e7ed] bg-[#fbfcfe] p-4" key={part.key}>
-                      <span className="block text-[10px] font-bold text-[#6b7080]">{part.label}</span>
-                      <strong className="mt-1 block text-xl font-black tracking-[-.03em] text-[#1b1d22]">
-                        {part.count}
-                      </strong>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-xl border border-[#e4e7ed] bg-[#fbfcfe] px-4 py-6 text-center text-xs text-[#6b7080]">
-                  Không có nội dung
-                </div>
-              )}
-            </section>
-          </div>
+            </div>
+          </section>
         </>
       )}
     </div>

@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Eye, RefreshCw, Save } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { chartFilters } from "../../../constant/writingConstant";
 import { getAdminImageSrc } from "../../../components/admin/adminUtils";
-import { createAdminWritingExercise, getAdminWritingExercise, updateAdminWritingExercise } from "../../../services/adminApi";
+import { createAdminWritingExercise, createAdminWritingExerciseWithImage, getAdminWritingExercise, updateAdminWritingExercise, updateAdminWritingExerciseWithImage } from "../../../services/adminApi";
 import { getTopicByModule } from "../../../services/topicAPI";
 import AdminPageTitle from "../../../components/admin/AdminPageTitle";
+import AdminImageUpload from "../../../components/admin/AdminImageUpload";
 
 const emptyForm = {
   topicId: "",
@@ -29,6 +30,15 @@ export default function AdminWritingExerciseFormPage() {
   const [error, setError] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
   const [refreshVersion, setRefreshVersion] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const [previewFailed, setPreviewFailed] = useState(false);
+  const imageInput = useRef(null);
+
+  useEffect(() => () => {
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
+  }, [imagePreview]);
 
   useEffect(() => {
     let active = true;
@@ -42,6 +52,7 @@ export default function AdminWritingExerciseFormPage() {
         ]);
         if (!active) return;
         setTopics(Array.isArray(topicData) ? topicData : []);
+        setLoaded(true);
         if (exercise) {
           setForm({
             topicId: String(exercise.topicId),
@@ -75,6 +86,23 @@ export default function AdminWritingExerciseFormPage() {
     setForm((current) => ({ ...current, [name]: value }));
   }
 
+  function selectImage(event) {
+    const file = event.target.files?.[0] || null;
+    setImageFile(file);
+    setImagePreview(file ? URL.createObjectURL(file) : "");
+    setPreviewFailed(false);
+  }
+
+  function removeImage() {
+    setImageFile(null);
+    setImagePreview("");
+    setPreviewFailed(false);
+    setForm((current) => ({ ...current, imageUrl: "" }));
+    if (imageInput.current) imageInput.current.value = "";
+  }
+
+  const previewSrc = imagePreview || getAdminImageSrc(form.imageUrl);
+
   async function submit(event) {
     event.preventDefault();
     setError("");
@@ -98,9 +126,21 @@ export default function AdminWritingExerciseFormPage() {
       referenceAnswer: form.referenceAnswer.trim() || null,
     };
     try {
-      const saved = editing
-        ? await updateAdminWritingExercise(id, payload)
-        : await createAdminWritingExercise(payload);
+      let saved;
+      if (imageFile) {
+        const data = new FormData();
+        Object.entries(payload).forEach(([key, value]) => {
+          if (value !== null) data.append(key, value);
+        });
+        data.append("image", imageFile);
+        saved = editing
+          ? await updateAdminWritingExerciseWithImage(id, data)
+          : await createAdminWritingExerciseWithImage(data);
+      } else {
+        saved = editing
+          ? await updateAdminWritingExercise(id, payload)
+          : await createAdminWritingExercise(payload);
+      }
       navigate(`/admin/writing/${saved.id}`, {
         replace: true,
         state: { notice: editing ? "Đã cập nhật đề Writing." : "Đã tạo đề Writing." },
@@ -118,7 +158,7 @@ export default function AdminWritingExerciseFormPage() {
     px-[15px] py-[35px] text-center text-xs text-[#6b7080] [&_strong]:mb-1
     [&_strong]:block [&_strong]:text-[#1b1d22]
   " role="status">Đang tải dữ liệu đề...</div></div>;
-  if (editing && error) {
+  if (editing && error && !loaded) {
     return (
       <div className="mx-auto w-full max-w-[1440px]">
         <div className="
@@ -247,15 +287,8 @@ export default function AdminWritingExerciseFormPage() {
           </label>
           <label className="
             grid content-start gap-[6px] text-[11px] font-extrabold text-[#1b1d22]
-            [&_select]:w-full [&_span]:text-[10px] [&_span]:font-bold
-            [&_span]:text-[#6b7080]
-          ">Đường dẫn hình ảnh
-            <input className="
-              min-h-10 w-full rounded-[10px] border border-[#e4e7ed] bg-white px-[11px]
-              py-[9px] text-xs text-[#1b1d22] placeholder:text-[#9aa0ad]
-              focus-visible:outline-2 focus-visible:outline-offset-2
-              focus-visible:outline-[#4f7cf7]
-            " name="imageUrl" value={form.imageUrl} onChange={updateField} maxLength={255} placeholder="writing_1.jpg hoặc https://..." />
+          ">Hình ảnh
+            <AdminImageUpload imageFile={imageFile} imageInput={imageInput} onChange={selectImage} />
           </label>
           <label className="
             grid content-start gap-[6px] text-[11px] font-extrabold text-[#1b1d22]
@@ -294,6 +327,17 @@ export default function AdminWritingExerciseFormPage() {
             " name="referenceAnswer" value={form.referenceAnswer} onChange={updateField} />
           </label>
         </div>
+        {previewSrc && (
+          <div className="px-[18px] pb-[18px]">
+            <span className="mb-1.5 block text-[11px] font-extrabold text-[#424b5a]">Xem trước ảnh</span>
+            {previewFailed ? (
+              <p className="text-xs text-[#a63240]" role="alert">Không tải được ảnh xem trước.</p>
+            ) : (
+              <img className="h-32 w-56 rounded-xl border border-[#e4e7ed] object-contain" src={previewSrc} alt="Xem trước ảnh đề Writing" onError={() => setPreviewFailed(true)} />
+            )}
+            <button type="button" className="mt-2 cursor-pointer rounded-[10px] border border-[#e4e7ed] px-3 py-2 text-[11px] font-extrabold hover:bg-[#f1f3f7] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7]" onClick={removeImage}>Xóa ảnh</button>
+          </div>
+        )}
         <div className="flex flex-wrap justify-end gap-2 px-[18px] pb-[18px]">
           <button type="button" className="
             inline-flex min-h-[39px] shrink-0 cursor-pointer items-center justify-center
@@ -339,10 +383,10 @@ export default function AdminWritingExerciseFormPage() {
               disabled:opacity-55 min-h-[30px] px-2 py-[5px] text-[10px] float-right
             " onClick={() => setPreviewOpen(false)}>Đóng</button>
             <h3 id="admin-preview-title">{form.title || "Chưa có tiêu đề"}</h3>
-            {form.imageUrl && <img className="
+            {previewSrc && !previewFailed && <img className="
               my-[10px] block max-h-[280px] max-w-full rounded-xl border border-[#e4e7ed]
               object-contain
-            " src={getAdminImageSrc(form.imageUrl)} alt="Ảnh minh họa đề Writing" />}
+            " src={previewSrc} alt="Ảnh minh họa đề Writing" />}
             <p className="whitespace-pre-wrap break-words text-xs leading-[1.75] text-[#1b1d22]">{form.questionText || "Nội dung đề bài sẽ hiển thị tại đây."}</p>
             {form.instruction && <div className="
               mt-[9px] text-[11px] leading-[1.6] [&_strong]:mb-0.5 [&_strong]:block

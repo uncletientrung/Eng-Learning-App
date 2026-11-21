@@ -236,7 +236,9 @@ Thứ tự: khảo sát (T1) → DB (T2) → DAL (T3) → BLL (T4) → API (T5) 
 | Topic VOCABULARY do người dùng tạo | `CreateByUserId != NULL` là topic cá nhân (xem `VocabularyRepository`). | Admin chỉ quản lý topic hệ thống (`CreateByUserId == NULL`). |
 | Delete behavior `topic_id` | EF snapshot: `Cascade` với Listening/Words; `Restrict` với Writing/Speaking; `reading`/`translation` là FK nullable; `idioms.topic_id` **không có FK** (cột `int` thuần). | Không dựa vào ràng buộc DB: đếm tham chiếu ở cả 7 bảng và chặn xóa/đổi module khi tổng > 0. |
 | Có dùng `is_active` không | Không có sẵn. | Có: migration `AddIsActiveToTopics` (`tinyint(1) NOT NULL DEFAULT 1`). Topic ẩn bị loại khỏi `/api/topics*`, danh sách Idioms/Vocabulary hệ thống, và không cho tạo/sửa đề Writing/Speaking gắn vào. |
-| Upload ảnh hay nhập đường dẫn | Ảnh hiện là file tĩnh `/assets/topics/*`. | Chỉ nhập đường dẫn: `/...` (không `//`, `..`, `\`) hoặc URL `https`, tối đa 255 ký tự; form có xem trước ảnh. |
+| Upload ảnh | Ảnh được lưu trong `frontend/public/assets/topics`, database lưu URL `/assets/topics/...`. | Admin chọn file JPEG, PNG, GIF hoặc WebP tối đa 5 MB; ảnh cũ được giữ khi không chọn file mới. |
+
+Backend dùng `TopicImages:Directory` để cấu hình thư mục lưu ảnh; mặc định trỏ tới `frontend/public/assets/topics` trong repository. Thư mục phải tồn tại, cho phép backend ghi và được web server phục vụ tại `/assets/topics`. Khi triển khai frontend và backend riêng biệt, cần chia sẻ thư mục lưu trữ bền vững này với web server; ảnh upload sau khi build không tự xuất hiện trong bản build Vite.
 
 ## 8. Trạng thái triển khai
 

@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using EnglishLearning.API.Services;
 using EnglishLearning.BLL.Interfaces;
 using EnglishLearning.DAL.ReadModels;
 using Microsoft.AspNetCore.Authorization;
@@ -15,13 +16,16 @@ public sealed class AdminTopicsController : ControllerBase
     private const string NotFoundMessage = "Không tìm thấy topic.";
 
     private readonly IAdminTopicService _service;
+    private readonly TopicImageStorage _imageStorage;
     private readonly ILogger<AdminTopicsController> _logger;
 
     public AdminTopicsController(
         IAdminTopicService service,
+        TopicImageStorage imageStorage,
         ILogger<AdminTopicsController> logger)
     {
         _service = service;
+        _imageStorage = imageStorage;
         _logger = logger;
     }
 
@@ -75,6 +79,58 @@ public sealed class AdminTopicsController : ControllerBase
             return Ok(topic);
         });
 
+    [HttpPost("with-image")]
+    [RequestSizeLimit(6 * 1024 * 1024)]
+    public Task<IActionResult> CreateTopicWithImage(
+        [FromForm] SaveTopicWithImageRequest request,
+        CancellationToken cancellationToken) =>
+        Execute(async () =>
+        {
+            var imageUrl = await _imageStorage.SaveAsync(request.Image, cancellationToken);
+            try
+            {
+                var topic = await _service.CreateTopicAsync(request.ToDto(imageUrl), cancellationToken);
+                _logger.LogInformation("Admin {ActorId} created topic {TopicId}.", ActorId, topic.Id);
+                return CreatedAtAction(nameof(GetTopic), new { id = topic.Id }, topic);
+            }
+            catch
+            {
+                _logger.LogWarning("Topic creation failed after saving image {ImageUrl}; the file may need cleanup.", imageUrl);
+                throw;
+            }
+        });
+
+    [HttpPut("{id:int}/with-image")]
+    [RequestSizeLimit(6 * 1024 * 1024)]
+    public Task<IActionResult> UpdateTopicWithImage(
+        int id,
+        [FromForm] SaveTopicWithImageRequest request,
+        CancellationToken cancellationToken) =>
+        Execute(async () =>
+        {
+            if (await _service.GetTopicAsync(id, cancellationToken) is null)
+                return NotFound(new { message = NotFoundMessage });
+
+            var imageUrl = await _imageStorage.SaveAsync(request.Image, cancellationToken);
+            try
+            {
+                var topic = await _service.UpdateTopicAsync(id, request.ToDto(imageUrl), cancellationToken);
+                if (topic is null)
+                {
+                    _logger.LogWarning("Topic {TopicId} disappeared after saving image {ImageUrl}; the file may need cleanup.", id, imageUrl);
+                    return NotFound(new { message = NotFoundMessage });
+                }
+
+                _logger.LogInformation("Admin {ActorId} updated topic {TopicId}.", ActorId, id);
+                return Ok(topic);
+            }
+            catch
+            {
+                _logger.LogWarning("Topic {TopicId} update failed after saving image {ImageUrl}; the file may need cleanup.", id, imageUrl);
+                throw;
+            }
+        });
+
     [HttpPatch("{id:int}/status")]
     public Task<IActionResult> SetStatus(
         int id,
@@ -110,6 +166,7 @@ public sealed class AdminTopicsController : ControllerBase
         {
             return await action();
         }
+
         catch (ArgumentException exception)
         {
             return BadRequest(new { message = exception.Message });
@@ -125,5 +182,21 @@ public sealed class AdminTopicsController : ControllerBase
                 message = "Dữ liệu đang được sử dụng hoặc đã thay đổi. Vui lòng tải lại và thử lại."
             });
         }
+    }
+
+    public sealed class SaveTopicWithImageRequest
+    {
+        public string Name { get; set; } = "";
+        public string? Description { get; set; }
+        public string ModuleType { get; set; } = "";
+        public required IFormFile Image { get; set; }
+
+        public SaveAdminTopicRequestDto ToDto(string imageUrl) => new()
+        {
+            Name = Name,
+            Description = Description,
+            ModuleType = ModuleType,
+            ImageURL = imageUrl
+        };
     }
 }

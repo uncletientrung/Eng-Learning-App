@@ -124,7 +124,7 @@ public static class TopicSeeder
                 known.Add(key, topic);
             }
 
-            if (TopicImageUrls.TryGetValue(seed.SourceId, out var imageUrl) && topic.ImageURL != imageUrl)
+            if (string.IsNullOrWhiteSpace(topic.ImageURL) && TopicImageUrls.TryGetValue(seed.SourceId, out var imageUrl))
             {
                 topic.ImageURL = imageUrl;
                 imageUpdates++;
