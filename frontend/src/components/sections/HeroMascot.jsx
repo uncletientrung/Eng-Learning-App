@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 
-function HeroMascot({ isMascotSmiling, compact = false, interactive = true }) {
+function HeroMascot({ isMascotSmiling, compact = false, interactive = true, followFaceOnly = false, hovered = false }) {
   const [isMascotHovering, setIsMascotHovering] = useState(false)
   const containerRef = useRef(null)
   const sunRef = useRef(null)
@@ -44,6 +44,9 @@ function HeroMascot({ isMascotSmiling, compact = false, interactive = true }) {
       duration: 0.4,
       ease: 'power3.out',
     })
+    const reducedMotion = followFaceOnly
+      ? window.matchMedia('(prefers-reduced-motion: reduce)')
+      : null
 
     // --------------------------------------------------
     // Mouse movement
@@ -64,10 +67,17 @@ function HeroMascot({ isMascotSmiling, compact = false, interactive = true }) {
       nx = Math.max(-1, Math.min(1, nx))
       ny = Math.max(-1, Math.min(1, ny))
 
-      // Sun
-      moveSunX(nx * 50)
-      moveSunY(ny * 50)
-      rotateSun(nx * 15)
+      if (reducedMotion?.matches) {
+        moveFaceX(0)
+        moveFaceY(0)
+        return
+      }
+
+      if (!followFaceOnly) {
+        moveSunX(nx * 50)
+        moveSunY(ny * 50)
+        rotateSun(nx * 15)
+      }
 
       // Face
       moveFaceX(nx * 5)
@@ -86,7 +96,7 @@ function HeroMascot({ isMascotSmiling, compact = false, interactive = true }) {
       gsap.killTweensOf(sun)
       gsap.killTweensOf(face)
     }
-  }, [interactive])
+  }, [interactive, followFaceOnly])
 
   return (
     <div
@@ -98,7 +108,7 @@ function HeroMascot({ isMascotSmiling, compact = false, interactive = true }) {
           ref={sunRef}
           className={`h-full w-full${compact ? " drop-shadow-xl" : " scale-130 drop-shadow-2xl"}`}
           fill="none"
-          viewBox="0 0 63 63"
+          viewBox={followFaceOnly ? "0 0 63 66" : "0 0 63 63"}
           xmlns="http://www.w3.org/2000/svg"
           
         >
@@ -106,6 +116,7 @@ function HeroMascot({ isMascotSmiling, compact = false, interactive = true }) {
               OUTER BADGE
           ================================================== */}
 
+          <g className="hero-mascot__rays">
           <path
             d="
               M59.6769 32.8159
@@ -176,7 +187,7 @@ function HeroMascot({ isMascotSmiling, compact = false, interactive = true }) {
               C42.6295 57.6065 42.9255 57.4804 43.1833 57.5883L45.4127 58.522
               C45.7 58.6423 46.0257 58.4714 46.09 58.1666L46.5888 55.801
               C46.6464 55.5276 46.9183 55.3556 47.1901 55.4207L49.5398 55.9839
-              C49.8426 56.0565 50.1368 55.5244 50.2638 53.1101
+              C49.85 56.056 50.14 55.835 50.16 55.523L50.2638 53.1101
               C50.2769 52.8309 50.5177 52.6175 50.7964 52.6383L53.2063 52.8175
               C53.5169 52.8406 53.7717 52.5752 53.7361 52.2659L53.4599 49.8652
               C53.4279 49.5876 53.6314 49.3383 53.9098 49.3141L56.3168 49.1044
@@ -192,6 +203,7 @@ function HeroMascot({ isMascotSmiling, compact = false, interactive = true }) {
             transform="translate(0 3)"
             
           />
+          </g>
 
           {/* ==================================================
               CREAM CIRCLE
@@ -258,7 +270,7 @@ function HeroMascot({ isMascotSmiling, compact = false, interactive = true }) {
                   EYES
               -------------------------------- */}
 
-              {isMascotHovering ? (
+              {isMascotHovering || hovered ? (
                 <>
                   {/* Mắt trái: > */}
                   <path
