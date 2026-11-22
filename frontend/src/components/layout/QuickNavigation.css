@@ -64,6 +64,8 @@
 }
 
 .quick-navigation__menu {
+  position: relative;
+  padding-top: 20px;
   width: min(250px, calc(100vw - 32px));
   max-height: calc(100dvh - 120px);
   overflow-y: auto;
@@ -81,6 +83,7 @@
   margin: 0 0 10px;
   font-size: 14px;
   font-weight: 800;
+  text-align: center;
 }
 
 .quick-navigation__links {
@@ -106,6 +109,38 @@
 .quick-navigation__links a[aria-current="page"] {
   background: #ffe4a0;
   color: #24211b;
+}
+
+.quick-navigation__link--wide {
+  grid-column: span 2;
+  justify-content: center;
+}
+
+.quick-navigation__close {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1.5px solid #302b22;
+  border-radius: 50%;
+  background: #ffe4a0;
+  color: #24211b;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.quick-navigation__close:hover {
+  background: #ffc95e;
+}
+
+.quick-navigation__close:focus-visible {
+  outline: 3px solid #315fc5;
+  outline-offset: 3px;
 }
 
 @keyframes quick-sun-float {
