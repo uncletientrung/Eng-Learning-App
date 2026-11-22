@@ -6,6 +6,7 @@ import {
   BookOpen,
   GraduationCap,
   Headphones,
+  Home,
   Languages,
   Mic,
   PenLine,
@@ -22,6 +23,7 @@ const destinations = [
   { path: "/grammar", label: "Grammar", icon: GraduationCap },
   { path: "/reading", label: "Reading", icon: BookOpen },
   { path: "/vocabulary/dashboard", label: "Vocabulary", icon: BookBookmark },
+  { path: "/", label: "Trang chủ", icon: Home },
 ];
 
 export default function QuickNavigation({
@@ -130,11 +132,6 @@ export default function QuickNavigation({
               <Link
                 key={path}
                 to={path}
-                className={
-                  path === "/vocabulary/dashboard"
-                    ? "quick-navigation__link--wide"
-                    : ""
-                }
                 aria-current={
                   location.pathname === path ? "page" : undefined
                 }

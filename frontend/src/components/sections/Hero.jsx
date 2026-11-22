@@ -1,4 +1,5 @@
 import HeroMascot from './HeroMascot'
+import './HeroClouds.css'
 
 function Hero( { isMascotSmiling } ) {
   return (
@@ -122,26 +123,33 @@ function Hero( { isMascotSmiling } ) {
       <div
         className="
           absolute
-          bottom-[-180px]
-          right-[-150px]
+          bottom-[-100px]
+          right-[-100px]
           z-10
 
           w-[500px]
           h-[500px]
 
-          md:bottom-[-250px]
-          md:right-[-180px]
+          md:bottom-[-170px]
+          md:right-[-130px]
           md:w-[700px]
           md:h-[700px]
 
-          lg:bottom-[-350px]
-          lg:right-[-250px]
+          lg:bottom-[-200px]
+          lg:right-[-300px]
           lg:w-[900px]
           lg:h-[900px]
           
         "
       >
         <HeroMascot isMascotSmiling={isMascotSmiling} />
+      </div>
+
+      <div className="hero-clouds" aria-hidden="true">
+        <div className="hero-clouds__layer hero-clouds__layer--back" />
+        <div className="hero-clouds__layer hero-clouds__layer--middle" />
+        <div className="hero-clouds__layer hero-clouds__layer--front" />
+        <div className="hero-clouds__fade" />
       </div>
     </section>
   )

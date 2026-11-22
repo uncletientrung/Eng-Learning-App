@@ -1,0 +1,152 @@
+.hero-clouds {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 20;
+  height: clamp(90px, 10vw, 150px);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-clouds__layer {
+  position: absolute;
+  inset: 0;
+  background-color: white;
+  mask-image: url('/assets/hero-clouds.svg');
+  mask-repeat: repeat-x;
+  mask-position: 0 bottom;
+  mask-size: 480px 100%;
+  animation: hero-cloud-drift 55s linear infinite;
+}
+
+.hero-clouds__layer--back {
+  animation-duration: 85s;
+}
+
+.hero-clouds__layer--middle {
+  background-color: #e2f5ff;
+  mask-size: 480px 78%;
+  animation-duration: 65s;
+  animation-delay: -28s;
+}
+
+.hero-clouds__layer--front {
+  background-color: #bee5fa;
+  mask-size: 480px 60%;
+  animation-delay: -18s;
+}
+
+.hero-clouds__fade {
+  position: absolute;
+  inset: auto 0 0;
+  height: 45%;
+  background: linear-gradient(transparent, #6bb6e8);
+}
+
+.home-sky {
+  background: linear-gradient(#6bb6e8, #8dcaf0);
+}
+
+.home-sky__clouds {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.home-sky__cloud {
+  position: absolute;
+  left: 100%;
+  width: clamp(110px, 12vw, 190px);
+  height: 70px;
+  opacity: 0.65;
+  filter: blur(5px);
+  background:
+    radial-gradient(ellipse at 30% 65%, white 0%, transparent 53%),
+    radial-gradient(ellipse at 52% 43%, white 0%, transparent 55%),
+    radial-gradient(ellipse at 72% 65%, white 0%, transparent 53%);
+  animation: home-sky-drift 55s linear infinite;
+}
+
+.home-sky__cloud--one {
+  top: 4%;
+  animation-delay: -48s;
+}
+
+.home-sky__cloud--two {
+  top: 28%;
+  animation-duration: 65s;
+  animation-delay: -8s;
+}
+
+.home-sky__cloud--three {
+  top: 58%;
+  animation-duration: 72s;
+  animation-delay: -61s;
+}
+
+.home-sky__cloud--four {
+  top: 80%;
+  animation-duration: 60s;
+  animation-delay: -29s;
+}
+
+.home-sky__bird {
+  position: absolute;
+  left: 100%;
+  top: 12px;
+  width: 32px;
+  color: #355a72;
+  animation: home-sky-bird-flight 45s linear 3s infinite;
+}
+
+.home-sky__bird svg {
+  display: block;
+  width: 100%;
+  fill: currentColor;
+  animation: home-sky-bird-flap 0.6s ease-in-out infinite alternate;
+}
+
+.home-sky__bird--2 {
+  top: 25px;
+  width: 25px;
+  animation-duration: 57s;
+  animation-delay: 20s;
+}
+
+@keyframes hero-cloud-drift {
+  to {
+    mask-position: -480px bottom;
+  }
+}
+
+@keyframes home-sky-drift {
+  to {
+    transform: translateX(calc(-100vw - 200px));
+  }
+}
+
+@keyframes home-sky-bird-flight {
+  0% { transform: translateX(0); }
+  40%, 100% { transform: translateX(calc(-100vw - 40px)); }
+}
+
+@keyframes home-sky-bird-flap {
+  from { transform: scaleY(1); }
+  to { transform: scaleY(0.35); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-clouds__layer,
+  .home-sky__cloud {
+    animation: none;
+  }
+
+  .home-sky__cloud--one { left: 3%; }
+  .home-sky__cloud--two { left: 85%; }
+  .home-sky__cloud--three { left: 10%; }
+  .home-sky__cloud--four { left: 75%; }
+
+  .home-sky__bird {
+    display: none;
+  }
+}
