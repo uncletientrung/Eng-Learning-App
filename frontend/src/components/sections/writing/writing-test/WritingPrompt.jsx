@@ -1,10 +1,9 @@
 import { getImageUrl } from "../../../../utils/imageUtils";
-import {normalizeTopic, WRITING_TYPE_CONFIG } from "../../../../constant/writingConstant";
+import { getWritingTypeConfig } from "../../../../constant/writingConstant";
 
 function WritingPrompt({ test }) {
   const imageSrc = getImageUrl(test.imageUrl);
-  const topicKey = normalizeTopic(test.topic.name);
-  const recommend = WRITING_TYPE_CONFIG[topicKey];
+  const recommend = getWritingTypeConfig(test.writingType, test.topic.name);
 
   return (
     <div className="bg-[#fdfcf9] rounded-2xl p-6 shadow-sm border border-[#e5e0d5]">
@@ -17,8 +16,8 @@ function WritingPrompt({ test }) {
         </span>
       </div>  
 
-      <span className="text-[10px] font-bold text-slate-400 tracking-widest block mb-2">
-        PROMPT
+      <span className="text-[14px] font-bold text-slate-400 tracking-widest block mb-2">
+        Đề bài
       </span>
 
       <div className="text-slate-900 leading-relaxed text-[15px] mb-4 font-bold">

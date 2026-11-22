@@ -132,10 +132,15 @@ export default function AdminSpeakingSubmissionsPage() {
                   <td className="px-4 py-3">{new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(item.completedAt || item.startedAt))}</td>
                   <td className="px-4 py-3"><div className="flex items-center gap-1">
                     <Link className="
-                      inline-flex min-h-[30px] shrink-0 items-center gap-1 whitespace-nowrap
-                      rounded-lg border border-[#4f7cf7] bg-[#4f7cf7] px-2 py-1.5 text-[10px]
-                      font-extrabold text-white no-underline hover:bg-[#3d68d8]
-                    " to={`/admin/speaking/submissions/${item.attemptId}`}><ArrowUpRight size={13} />Xem chi tiết</Link>
+                      inline-flex min-h-[39px] shrink-0 cursor-pointer items-center justify-center
+                      gap-[7px] rounded-[10px] border border-[#4f7cf7] bg-[#4f7cf7]
+                      px-2 py-[5px] text-[10px] font-extrabold text-white no-underline
+                      whitespace-nowrap shadow-[0_3px_8px_#315fc52e]
+                      hover:translate-y-[-1px] hover:border-[#3d68d8]
+                      hover:bg-[#3d68d8] hover:shadow-[0_5px_12px_#315fc545]
+                      focus-visible:outline-2 focus-visible:outline-offset-2
+                      focus-visible:outline-[#4f7cf7]
+                    " to={`/admin/speaking/submissions/${item.attemptId}`}>Xem chi tiết <ArrowUpRight size={14} /></Link>
                     {item.status === "GRADED" && <Link className="
                       inline-flex min-h-[30px] shrink-0 items-center gap-1 whitespace-nowrap
                       rounded-lg border border-[#d8e2ff] bg-[#f3f6ff] px-2 py-1.5 text-[10px]

@@ -10,6 +10,7 @@ import WritingEditor from '../../components/sections/writing/writing-test/Writin
 import { getWritingExerciseById } from '../../services/writingAPI.js'
 import { getAccessToken } from '../../services/authApi.js'
 import { getWritingHistoryAttempt } from '../../services/writingGradingApi.js'
+import { getWritingTaskLabel } from '../../constant/writingConstant.js'
 
 function WritingTest() {
   const { id } = useParams()
@@ -20,7 +21,6 @@ function WritingTest() {
   const [test, setTest] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [topicName, setTopicName] = useState('Chưa có topic')
   const [initialAttempt, setInitialAttempt] = useState(null)
 
   useEffect(() => {
@@ -50,7 +50,6 @@ function WritingTest() {
 
         if (cancelled) return
         setTest(data)
-        setTopicName(data.topic != null ? data.topic.name :  'Chưa có topic')
         setInitialAttempt(attempt)
 
       } catch (err) { 
@@ -154,7 +153,9 @@ function WritingTest() {
         </LinkButton>
 
         <WritingTestHeader 
-          topicName = {topicName}
+          writingType={getWritingTaskLabel(test.writingType, test.topic?.name) || 'Chưa xác định'}
+          isHistoryReview={Boolean(initialAttempt)}
+          submittedAt={initialAttempt?.completedAt}
         />
 
         <div

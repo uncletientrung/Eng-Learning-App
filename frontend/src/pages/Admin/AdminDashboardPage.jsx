@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { getAdminDashboard } from "../../services/adminApi";
 import HeroMascot from "../../components/sections/HeroMascot";
 import { getCurrentUser } from "../../services/authApi";
+import { getWritingTaskLabel } from "../../constant/writingConstant";
 
 const numberFormat = new Intl.NumberFormat("vi-VN");
 const dateFormat = new Intl.DateTimeFormat("vi-VN", {
@@ -454,26 +455,24 @@ export default function AdminDashboardPage() {
                         {item.exerciseTitle}
                       </span>
                     </td>
-                    <td>{item.writingType || "—"}</td>
+                    <td>{getWritingTaskLabel(item.writingType) || "—"}</td>
                     <td>{item.submittedAt ? dateFormat.format(new Date(item.submittedAt)) : "—"}</td>
                     <td><StatusBadge status={item.status} /></td>
                     <td>
                       <Link
                         className="
-                          inline-flex min-h-[39px] shrink-0 cursor-pointer
-                          items-center justify-center gap-[7px] rounded-[10px]
-                          border border-[#e4e7ed] bg-white px-3
-                          py-2 text-[11px] font-extrabold text-[#1b1d22]
-                          no-underline hover:bg-[#f1f3f7] focus-visible:outline-2 focus-visible:outline-offset-2
-                          focus-visible:outline-[#4f7cf7] disabled:cursor-not-allowed disabled:opacity-55 !border-[#4f7cf7]
-                          !bg-[#4f7cf7] !text-white hover:!border-[#3d68d8] hover:!bg-[#3d68d8]
-                          min-h-[30px] px-2 py-[5px] text-[10px]
-                          min-w-[104px] whitespace-nowrap shadow-[0_3px_8px_#315fc52e] hover:translate-y-[-1px]
-                          hover:shadow-[0_5px_12px_#315fc545]
+                          inline-flex min-h-[39px] shrink-0 cursor-pointer items-center justify-center
+                          gap-[7px] rounded-[10px] border border-[#4f7cf7] bg-[#4f7cf7]
+                          px-2 py-[5px] text-[10px] font-extrabold text-white no-underline
+                          whitespace-nowrap shadow-[0_3px_8px_#315fc52e]
+                          hover:translate-y-[-1px] hover:border-[#3d68d8]
+                          hover:bg-[#3d68d8] hover:shadow-[0_5px_12px_#315fc545]
+                          focus-visible:outline-2 focus-visible:outline-offset-2
+                          focus-visible:outline-[#4f7cf7]
                         "
                         to={`/admin/writing/submissions/${item.attemptId}`}
                       >
-                        Chi tiết <ArrowUpRight size={14} />
+                        Xem chi tiết <ArrowUpRight size={14} />
                       </Link>
                     </td>
                   </tr>

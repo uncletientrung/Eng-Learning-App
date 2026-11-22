@@ -12,6 +12,8 @@ public class WritingAttemptSummaryDto
 
     public string TopicName { get; set; } = "";
 
+    public string? WritingType { get; set; }
+
     public string? ImageUrl { get; set; }
 
     public string QuestionText { get; set; } = "";

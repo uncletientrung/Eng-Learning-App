@@ -6,6 +6,7 @@ import {
   getAdminWritingSubmissions,
 } from "../../../services/adminApi";
 import AdminPageTitle from "../../../components/admin/AdminPageTitle";
+import { getWritingTaskLabel } from "../../../constant/writingConstant";
 
 const dateFormat = new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium", timeStyle: "short" });
 
@@ -198,7 +199,7 @@ export default function AdminWritingSubmissionsPage() {
                 [&_td]:align-middle [&_tbody_tr:last-child_td]:border-b-0
                 [&_tbody_tr:hover]:bg-[#f7f8fb]
               ">
-                <thead><tr><th>STT</th><th>Học viên</th><th>Đề bài</th><th>Điểm</th><th>Trạng thái</th><th>Thời gian nộp</th><th>Thao tác</th></tr></thead>
+                <thead><tr><th>STT</th><th>Học viên</th><th>Đề bài</th><th>Loại bài</th><th>Điểm</th><th>Trạng thái</th><th>Thời gian nộp</th><th>Thao tác</th></tr></thead>
                 <tbody>
                   {pageData.items.map((item, index) => (
                     <tr key={item.attemptId}>
@@ -211,21 +212,29 @@ export default function AdminWritingSubmissionsPage() {
                         block max-w-[320px] overflow-hidden text-ellipsis whitespace-nowrap
                         font-extrabold text-[#1b1d22]
                       ">{item.exerciseTitle}</span><span className="mt-0.5 block text-[10px] text-[#6b7080]">{item.topicName}</span></td>
+                      <td>
+                        <span className="
+                          inline-flex whitespace-nowrap rounded-full bg-slate-100
+                          px-2.5 py-1 text-[10px] font-bold text-slate-700
+                        ">
+                          {getWritingTaskLabel(item.writingType, item.topicName) || "Chưa xác định"}
+                        </span>
+                      </td>
                       <td><strong>{Number(item.overallScore).toFixed(1)}</strong></td>
                       <td><StatusBadge status={item.status} /></td>
                       <td>{dateFormat.format(new Date(item.completedAt || item.startedAt))}</td>
                       <td><div className="flex items-center gap-1">
                         <Link className="
                           inline-flex min-h-[39px] shrink-0 cursor-pointer items-center justify-center
-                          gap-[7px] rounded-[10px] border border-[#e4e7ed] bg-white px-3 py-2
-                          text-[11px] font-extrabold text-[#1b1d22] no-underline hover:bg-[#f1f3f7]
+                          gap-[7px] rounded-[10px] border border-[#4f7cf7] bg-[#4f7cf7]
+                          px-2 py-[5px] text-[10px] font-extrabold text-white no-underline
+                          whitespace-nowrap shadow-[0_3px_8px_#315fc52e]
+                          hover:translate-y-[-1px] hover:border-[#3d68d8]
+                          hover:bg-[#3d68d8] hover:shadow-[0_5px_12px_#315fc545]
                           focus-visible:outline-2 focus-visible:outline-offset-2
-                          focus-visible:outline-[#4f7cf7] disabled:cursor-not-allowed
-                          disabled:opacity-55 !border-[#4f7cf7] !bg-[#4f7cf7] !text-white
-                          hover:!border-[#3d68d8] hover:!bg-[#3d68d8] min-h-[30px] px-2 py-[5px]
-                          text-[10px] min-w-[104px] whitespace-nowrap shadow-[0_3px_8px_#315fc52e]
-                          hover:translate-y-[-1px] hover:shadow-[0_5px_12px_#315fc545]
-                        " to={`/admin/writing/submissions/${item.attemptId}`}>Xem chi tiết <ArrowUpRight size={14} /></Link>
+                          focus-visible:outline-[#4f7cf7]
+                        " to={`/admin/writing/submissions/${item.attemptId}`}>Xem chi tiết <ArrowUpRight size={14} />
+                        </Link>
                         <Link className="
                           inline-flex min-h-[30px] shrink-0 cursor-pointer items-center justify-center
                           gap-1 rounded-[8px] border border-[#d8e2ff] bg-[#f3f6ff] px-2 py-[5px]

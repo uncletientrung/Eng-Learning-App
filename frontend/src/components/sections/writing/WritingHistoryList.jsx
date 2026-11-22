@@ -1,4 +1,4 @@
-import { getTopicColors } from "../../../constant/writingConstant";
+import { getTopicColors, getWritingTaskLabel } from "../../../constant/writingConstant";
 import { getImageUrl } from "../../../utils/imageUtils";
 
 function formatCompletedAt(value) {
@@ -55,12 +55,19 @@ function WritingHistoryList({
         {attempts.map((attempt) => {
           const imageSrc = getImageUrl(attempt.imageUrl);
           const colors = getTopicColors(attempt.topicName);
+          const writingType = getWritingTaskLabel(attempt.writingType, attempt.topicName);
 
           return (
             <article
               key={attempt.attemptId}
-              className="group flex h-[270px] w-full flex-row overflow-hidden border-2 border-[#111] bg-white text-left shadow-[3px_3px_0_rgba(0,0,0,0.15)] transition-all duration-150 hover:-translate-y-px hover:bg-[#fffdf5] hover:shadow-[4px_4px_0_rgba(0,0,0,0.18)]"
+              className="group relative flex h-[270px] w-full flex-row overflow-hidden border-2 border-[#111] bg-white text-left shadow-[3px_3px_0_rgba(0,0,0,0.15)] transition-all duration-150 hover:-translate-y-px hover:bg-[#fffdf5] hover:shadow-[4px_4px_0_rgba(0,0,0,0.18)]"
             >
+              <button
+                type="button"
+                onClick={() => onAttemptClick(attempt)}
+                aria-label={`Xem bài viết và kết quả: ${attempt.exerciseTitle}, lượt ${attempt.attemptId}`}
+                className="absolute inset-0 z-10 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#ffc926]"
+              />
               <div className="relative flex w-[35%] shrink-0 items-center justify-center overflow-hidden border-r-2 border-slate-200 bg-[#f8f9fa] p-3">
                 {imageSrc ? (
                   <img
@@ -82,15 +89,17 @@ function WritingHistoryList({
                     {attempt.topicName}
                   </div>
                 )}
+                {writingType && (
+                  <div
+                    className={`absolute bottom-0 left-0 max-w-[90%] truncate rounded-tr-lg border-r-2 border-t-2 border-[#111] px-3 py-1 text-[11px] font-bold shadow-sm ${colors.badge}`}
+                  >
+                    {writingType}
+                  </div>
+                )}
               </div>
 
               <div className="flex w-[65%] min-w-0 flex-col justify-start p-4 sm:p-5">
-                <button
-                  type="button"
-                  onClick={() => onAttemptClick(attempt)}
-                  aria-label={`Xem bài viết và kết quả: ${attempt.exerciseTitle}, lượt ${attempt.attemptId}`}
-                  className="flex min-h-0 flex-1 flex-col text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#ffc926]"
-                >
+                <div className="flex min-h-0 flex-1 flex-col text-left">
                   <div className="flex items-start justify-between gap-2">
                     <h3 className="mb-2 line-clamp-2 text-sm font-bold leading-snug text-blue-600 transition-colors group-hover:text-blue-700">
                       {attempt.exerciseTitle}
@@ -108,7 +117,7 @@ function WritingHistoryList({
                   <span className="mt-auto pt-2 text-[11px] font-bold text-indigo-600">
                     Lượt #{attempt.attemptId} · Xem kết quả
                   </span>
-                </button>
+                </div>
 
                 <div className="mt-2 flex flex-wrap items-end justify-between gap-2 border-t border-slate-100 pt-2">
                   <span className="text-[11px] font-medium text-slate-500">
@@ -119,7 +128,7 @@ function WritingHistoryList({
                     disabled={deletingAttemptId !== null}
                     onClick={() => onDeleteAttempt(attempt)}
                     aria-label={`Xóa lượt làm ${attempt.attemptId}`}
-                    className="shrink-0 border-2 border-[#111] px-2.5 py-1 text-[11px] font-bold text-black-700 transition hover:border-rose-400 hover:bg-rose-50 hover:text-rose-700 disabled:cursor-wait disabled:opacity-50"
+                    className="relative z-20 shrink-0 cursor-pointer border-2 border-[#111] px-2.5 py-1 text-[11px] font-bold text-black-700 transition hover:border-rose-400 hover:bg-rose-50 hover:text-rose-700 disabled:cursor-wait disabled:opacity-50"
                   >
                     {deletingAttemptId === attempt.attemptId ? "Đang xóa..." : "Xóa"}
                   </button>

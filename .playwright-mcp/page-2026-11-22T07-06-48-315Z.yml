@@ -1,0 +1,88 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e5]:
+      - link "The IELTS Dictionary Logo The IELTS Dictionary" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - img "The IELTS Dictionary Logo" [ref=e8]
+        - generic [ref=e9]: The IELTS Dictionary
+      - generic [ref=e10]:
+        - button "Thông báo" [ref=e12] [cursor=pointer]
+        - generic [ref=e17]:
+          - link "avatar Đat Huỳnh Online" [ref=e18] [cursor=pointer]:
+            - /url: /vocabulary/dashboard
+            - img "avatar" [ref=e21]
+            - generic [ref=e22]:
+              - generic [ref=e23]: Đat Huỳnh
+              - generic [ref=e24]: Online
+          - generic [ref=e27]:
+            - link "Sổ từ vựng" [ref=e29] [cursor=pointer]:
+              - /url: /vocabulary/dashboard?tab=notebook
+            - link "Lịch sử" [ref=e32] [cursor=pointer]:
+              - /url: /vocabulary/dashboard?tab=history
+        - link "Premium" [ref=e37] [cursor=pointer]:
+          - /url: /premium
+  - main [ref=e42]:
+    - generic [ref=e43]:
+      - link "Trở về" [ref=e44] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e47]:
+        - generic [ref=e48]:
+          - heading "IELTS Writing" [level=1] [ref=e49]
+          - paragraph [ref=e50]: Phát triển kỹ năng Writing-tests với bộ đề thi được mô phỏng bám sát định dạng thực tế.
+        - combobox [ref=e52] [cursor=pointer]:
+          - option "Mọi trạng thái"
+          - option "Chưa làm"
+          - option "Đã luyện" [selected]
+    - generic [ref=e53]:
+      - generic [ref=e54]:
+        - generic [ref=e55]: "Loại bài:"
+        - button "Tất cả" [pressed] [ref=e56]
+        - button "Task 1" [ref=e57]
+        - button "Task 2" [ref=e58]
+      - generic [ref=e59]:
+        - generic [ref=e60]: "Thể loại:"
+        - button "◈ Tất cả" [ref=e61]:
+          - generic [ref=e62]: ◈
+          - text: Tất cả
+        - button "◕ Pie Chart" [ref=e63]:
+          - generic [ref=e64]: ◕
+          - text: Pie Chart
+        - button "▦ Bar chart" [ref=e65]:
+          - generic [ref=e66]: ▦
+          - text: Bar chart
+        - button "〜 Line Graph" [ref=e67]:
+          - generic [ref=e68]: 〜
+          - text: Line Graph
+        - button "⊞ Map" [ref=e69]:
+          - generic [ref=e70]: ⊞
+          - text: Map
+        - button "⋈ Mixed Graph" [ref=e71]:
+          - generic [ref=e72]: ⋈
+          - text: Mixed Graph
+        - button "→ Process" [ref=e73]:
+          - generic [ref=e74]: →
+          - text: Process
+        - button "⊟ Table" [ref=e75]:
+          - generic [ref=e76]: ⊟
+          - text: Table
+        - button "⇆ Discuss Both Views" [ref=e77]:
+          - generic [ref=e78]: ⇆
+          - text: Discuss Both Views
+        - button "✎ Opinion Essay" [ref=e79]:
+          - generic [ref=e80]: ✎
+          - text: Opinion Essay
+        - button "⇅ Advantages & Disadvantages" [ref=e81]:
+          - generic [ref=e82]: ⇅
+          - text: Advantages & Disadvantages
+        - button "⚙ Problem & Solution" [ref=e83]:
+          - generic [ref=e84]: ⚙
+          - text: Problem & Solution
+        - button "? Two-part Question" [ref=e85]:
+          - generic [ref=e86]: "?"
+          - text: Two-part Question
+        - button "◈ test" [ref=e87]:
+          - generic [ref=e88]: ◈
+          - text: test
+    - generic [ref=e89]:
+      - paragraph [ref=e90]: Bạn chưa có bài Writing nào được chấm.
+      - paragraph [ref=e91]: Các lượt làm đã chấm sẽ xuất hiện tại đây.

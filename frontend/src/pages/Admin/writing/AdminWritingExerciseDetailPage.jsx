@@ -3,7 +3,7 @@ import { ArrowLeft, Pencil, RefreshCw, Trash2 } from "lucide-react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteAdminWritingExercise, getAdminWritingExercise, updateAdminWritingStatus } from "../../../services/adminApi";
 import { getAdminImageSrc } from "../../../components/admin/adminUtils";
-import AdminPageTitle from "../../../components/admin/AdminPageTitle";
+import { getWritingTaskLabel } from "../../../constant/writingConstant";
 
 const dateFormat = new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium", timeStyle: "short" });
 const statusNames = { DRAFT: "Bản nháp", PUBLISHED: "Công khai", HIDDEN: "Đã ẩn" };
@@ -92,7 +92,17 @@ export default function AdminWritingExerciseDetailPage() {
         [&_p]:text-[#6b7080] max-[760px]:mb-4 max-[760px]:items-stretch
         max-[760px]:flex-col
       ">
-        <div><AdminPageTitle title={exercise.title} /><p>Đề Writing #{exercise.id} · {exercise.submissionCount} bài nộp</p></div>
+        <div>
+          <h3
+            className="m-0 text-2xl leading-tight font-black tracking-tight text-[#1e3006] md:text-3xl"
+            style={{ fontFamily: '"Segoe UI Black", "Segoe UI", sans-serif' }}
+          >
+            Title: {' '}
+            <span className="text-brand-dark">{exercise.title}</span>
+          </h3>
+          <p>Đề Writing #{exercise.id} · {exercise.submissionCount} bài nộp</p>
+        </div>
+        
         <div className="flex flex-wrap gap-[5px]">
           <Link className="
             inline-flex min-h-[39px] shrink-0 cursor-pointer items-center justify-center
@@ -134,39 +144,7 @@ export default function AdminWritingExerciseDetailPage() {
           min-w-0 rounded-2xl border border-[#e4e7ed] bg-white
           shadow-[0_7px_22px_#17203308] p-4 [&_h3]:mb-3 [&_h3]:mt-0 [&_h3]:text-sm
         ">
-          <h3>Thông tin đề</h3>
-          <dl className="
-            m-0 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-[14px] gap-y-2
-            text-[11px] max-[760px]:grid-cols-1 max-[760px]:gap-y-[3px]
-            [&_dt]:text-[#6b7080] [&_dd]:m-0 [&_dd]:min-w-0
-            [&_dd]:[overflow-wrap:anywhere] [&_dd]:font-extrabold
-          ">
-            <dt>Chủ đề</dt><dd>{exercise.topicName}</dd>
-            <dt>Loại bài</dt><dd>{exercise.writingType || "Chưa xác định"}</dd>
-            <dt>Trạng thái</dt><dd><span className={`
-              inline-flex min-h-[23px] items-center whitespace-nowrap rounded-full px-2
-              py-[3px] text-[9px] font-black ${exercise.status === "PUBLISHED" ? "bg-[#e7f7ee] text-[#188452]" : exercise.status === "DRAFT" ? "bg-[#fff3d8] text-[#a76a00]" : "bg-[#fce9eb] text-[#b63a48]"}
-            `}>{statusNames[exercise.status] || exercise.status}</span></dd>
-            <dt>Ngày tạo</dt><dd>{dateFormat.format(new Date(exercise.createdAt))}</dd>
-            <dt>Cập nhật</dt><dd>{exercise.updatedAt ? dateFormat.format(new Date(exercise.updatedAt)) : "Chưa cập nhật"}</dd>
-            <dt>Số lượt làm</dt><dd>{exercise.submissionCount}</dd>
-            <dt>Trạng thái hiển thị</dt>
-            <dd>
-              <select className="
-                min-h-10 w-auto min-w-[125px] rounded-[10px] border border-[#e4e7ed]
-                bg-white px-[11px] py-[9px] text-xs text-[#1b1d22] focus-visible:outline-2
-                focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7]
-              " value={exercise.status} disabled={savingStatus} onChange={changeStatus} aria-label="Thay đổi trạng thái đề">
-                <option value="DRAFT">Bản nháp</option><option value="PUBLISHED">Công khai</option><option value="HIDDEN">Ẩn</option>
-              </select>
-            </dd>
-          </dl>
-        </section>
-        <section className="
-          min-w-0 rounded-2xl border border-[#e4e7ed] bg-white
-          shadow-[0_7px_22px_#17203308] p-4 [&_h3]:mb-3 [&_h3]:mt-0 [&_h3]:text-sm
-        ">
-          <h3>Nội dung đề</h3>
+          <h3 className="text-sm font-black">Nội dung đề</h3>
           {exercise.imageUrl && <img className="
             my-[10px] block max-h-[280px] max-w-full rounded-xl border border-[#e4e7ed]
             object-contain
@@ -175,15 +153,48 @@ export default function AdminWritingExerciseDetailPage() {
           {exercise.instruction && <div className="
             mt-[9px] text-[11px] leading-[1.6] [&_strong]:mb-0.5 [&_strong]:block
             [&_p]:m-0 [&_p]:whitespace-pre-wrap [&_p]:text-[#6b7080]
-          "><strong>Hướng dẫn</strong><p>{exercise.instruction}</p></div>}
+          "><strong className="text-sm font-black">Hướng dẫn</strong><p>{exercise.instruction}</p></div>}
         </section>
+        <section className="
+          min-w-0 rounded-2xl border border-[#e4e7ed] bg-white
+          shadow-[0_7px_22px_#17203308] p-4 [&_h3]:mb-3 [&_h3]:mt-0 [&_h3]:text-sm
+        ">
+          <h3 className="text-sm font-black">Thông tin đề</h3>
+          <dl className="
+            m-0 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-[14px] gap-y-2
+            text-[11px] max-[760px]:grid-cols-1 max-[760px]:gap-y-[3px]
+            [&_dt]:text-[#6b7080] [&_dd]:m-0 [&_dd]:min-w-0
+            [&_dd]:[overflow-wrap:anywhere] [&_dd]:font-extrabold
+          ">
+            <dt>Chủ đề</dt><dd>{exercise.topicName}</dd>
+            <dt>Loại bài</dt><dd>{getWritingTaskLabel(exercise.writingType, exercise.topicName) || "Chưa xác định"}</dd>
+            <dt>Trạng thái</dt><dd><span className={`
+              inline-flex min-h-[23px] items-center whitespace-nowrap rounded-full px-2
+              py-[3px] text-[9px] font-black ${exercise.status === "PUBLISHED" ? "bg-[#e7f7ee] text-[#188452]" : exercise.status === "DRAFT" ? "bg-[#fff3d8] text-[#a76a00]" : "bg-[#fce9eb] text-[#b63a48]"}
+            `}>{statusNames[exercise.status] || exercise.status}</span></dd>
+            <dt>Ngày tạo</dt><dd>{dateFormat.format(new Date(exercise.createdAt))}</dd>
+            <dt>Cập nhật</dt><dd>{exercise.updatedAt ? dateFormat.format(new Date(exercise.updatedAt)) : "Chưa cập nhật"}</dd>
+            <dt>Số lượt làm</dt><dd>{exercise.submissionCount}</dd>
+            <dt className="mt-2.5">Trạng thái hiển thị</dt>
+            <dd>
+              <select className="
+                min-h-5 w-auto min-w-[125px] rounded-[10px] border border-[#e4e7ed]
+                bg-white px-[11px] py-[9px] text-xs text-[#1b1d22] focus-visible:outline-2
+                focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7]
+              " value={exercise.status} disabled={savingStatus} onChange={changeStatus} aria-label="Thay đổi trạng thái đề">
+                <option value="DRAFT">Bản nháp</option><option value="PUBLISHED">Công khai</option><option value="HIDDEN">Ẩn</option>
+              </select>
+            </dd>
+          </dl>
+        </section>
+
       </div>
       {exercise.referenceAnswer && (
         <section className="
           min-w-0 rounded-2xl border border-[#e4e7ed] bg-white
           shadow-[0_7px_22px_#17203308] p-4 [&_h3]:mb-3 [&_h3]:mt-0 [&_h3]:text-sm
         ">
-          <h3>Bài tham khảo</h3><div className="whitespace-pre-wrap break-words text-xs leading-[1.75] text-[#1b1d22]">{exercise.referenceAnswer}</div>
+          <h3 className="text-sm font-black">Bài tham khảo</h3><div className="whitespace-pre-wrap break-words text-xs leading-[1.75] text-[#1b1d22]">{exercise.referenceAnswer}</div>
         </section>
       )}
       <div className="mt-[14px]">

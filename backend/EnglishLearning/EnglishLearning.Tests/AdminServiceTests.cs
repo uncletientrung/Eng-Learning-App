@@ -106,6 +106,35 @@ public sealed class AdminServiceTests
         Assert.False(deleted);
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData("BAR_CHART")]
+    [InlineData("TASK_3")]
+    public async Task CreateWritingExerciseAsync_RejectsUnsupportedWritingType(
+        string? writingType)
+    {
+        _repository
+            .Setup(repository => repository.TopicIsWritingAsync(
+                1,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        await Assert.ThrowsAsync<ArgumentException>(() =>
+            _service.CreateWritingExerciseAsync(
+                new AdminWritingExerciseRequestDto
+                {
+                    TopicId = 1,
+                    Title = "Writing task",
+                    QuestionText = "Describe the chart.",
+                    WritingType = writingType
+                },
+                CancellationToken.None));
+
+        _repository.Verify(repository => repository.AddWritingExerciseAsync(
+            It.IsAny<EnglishLearning.DAL.Entities.WritingExercise>(),
+            It.IsAny<CancellationToken>()), Times.Never);
+    }
+
     private static List<AdminWritingCriterionUpdateDto> ValidCriteria() =>
     [
         Criterion("TASK_RESPONSE", 6),

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Eye, FilePlus2, Pencil, Plus, RefreshCw, Search, Trash2 } from "lucide-react";
+import { FilePlus2, Pencil, Plus, RefreshCw, Search, Trash2, ArrowUpRight } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { getAdminWritingExercises, updateAdminWritingStatus, deleteAdminWritingExercise } from "../../../services/adminApi";
 import { getTopicByModule } from "../../../services/topicAPI";
 import AdminPageTitle from "../../../components/admin/AdminPageTitle";
+import { getWritingTaskLabel } from "../../../constant/writingConstant";
 
 const dateFormat = new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium" });
 const statusNames = { DRAFT: "Bản nháp", PUBLISHED: "Công khai", HIDDEN: "Đã ẩn" };
@@ -319,6 +320,7 @@ export default function AdminWritingExercisesPage() {
                     <th>ID</th>
                     <th>Tiêu đề</th>
                     <th>Chủ đề</th>
+                    <th>Loại bài</th>
                     <th>Trạng thái</th>
                     <th>Ngày tạo</th>
                     <th>Thao tác</th>
@@ -345,25 +347,33 @@ export default function AdminWritingExercisesPage() {
                         </span>
                       </td>
                       <td>{exercise.topicName}</td>
+                      <td>
+                        <span className="
+                          inline-flex whitespace-nowrap rounded-full bg-slate-100
+                          px-2.5 py-1 text-[10px] font-bold text-slate-700
+                        ">
+                          {getWritingTaskLabel(exercise.writingType, exercise.topicName) || "Chưa xác định"}
+                        </span>
+                      </td>
                       <td><StatusBadge status={exercise.status} /></td>
                       <td>{dateFormat.format(new Date(exercise.createdAt))}</td>
                       <td>
                         <div className="flex items-center gap-1">
                           <Link
                             className="
-                              inline-flex min-h-7.5 shrink-0 cursor-pointer
-                              items-center justify-center gap-1 rounded-lg
-                              border border-[#4f7cf7] bg-[#4f7cf7]
-                              px-2 py-1.25 text-[10px] font-extrabold
-                              text-white no-underline hover:border-[#3d68d8]
-                              hover:bg-[#3d68d8] focus-visible:outline-2
-                              focus-visible:outline-offset-2
+                              inline-flex min-h-[39px] shrink-0 cursor-pointer items-center justify-center
+                              gap-[7px] rounded-[10px] border border-[#4f7cf7] bg-[#4f7cf7]
+                              px-2 py-[5px] text-[10px] font-extrabold text-white no-underline
+                              whitespace-nowrap shadow-[0_3px_8px_#315fc52e]
+                              hover:translate-y-[-1px] hover:border-[#3d68d8]
+                              hover:bg-[#3d68d8] hover:shadow-[0_5px_12px_#315fc545]
+                              focus-visible:outline-2 focus-visible:outline-offset-2
                               focus-visible:outline-[#4f7cf7]
                             "
                             to={`/admin/writing/${exercise.id}`}
                           >
-                            <Eye size={13} />
-                            Xem
+                            Xem chi tiết
+                            <ArrowUpRight size={14} />
                           </Link>
                           <Link
                             className="

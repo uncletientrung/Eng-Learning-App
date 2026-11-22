@@ -98,6 +98,7 @@ public class AdminWritingSubmissionDto
     public int ExerciseId { get; set; }
     public string ExerciseTitle { get; set; } = "";
     public string TopicName { get; set; } = "";
+    public string? WritingType { get; set; }
     public decimal OverallScore { get; set; }
     public string Status { get; set; } = "";
     public DateTime StartedAt { get; set; }

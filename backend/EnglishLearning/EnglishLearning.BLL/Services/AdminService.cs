@@ -9,6 +9,8 @@ public sealed class AdminService : IAdminService
 {
     private static readonly HashSet<string> AllowedStatuses =
         new(StringComparer.Ordinal) { "DRAFT", "PUBLISHED", "HIDDEN" };
+    private static readonly HashSet<string> AllowedWritingTypes =
+        new(StringComparer.Ordinal) { "TASK_1", "TASK_2" };
     private static readonly HashSet<string> WritingCriterionCodes =
         new(StringComparer.Ordinal)
         {
@@ -217,6 +219,9 @@ public sealed class AdminService : IAdminService
         if (request.TopicId <= 0 ||
             !await _repository.TopicIsWritingAsync(request.TopicId, cancellationToken))
             throw new ArgumentException("Chủ đề không hợp lệ hoặc không thuộc Writing.");
+        var writingType = request.WritingType?.Trim().ToUpperInvariant();
+        if (writingType is null || !AllowedWritingTypes.Contains(writingType))
+            throw new ArgumentException("Loại bài Writing phải là Task 1 hoặc Task 2.");
         if (request.ImageUrl?.Trim().Length > 255)
             throw new ArgumentException("Đường dẫn hình ảnh tối đa 255 ký tự.");
         if (request.WritingType?.Trim().Length > 50)
@@ -227,7 +232,7 @@ public sealed class AdminService : IAdminService
             TopicId = request.TopicId,
             Title = title,
             ImageUrl = NormalizeOptional(request.ImageUrl),
-            WritingType = NormalizeOptional(request.WritingType),
+            WritingType = writingType,
             QuestionText = questionText,
             Instruction = NormalizeOptional(request.Instruction),
             ReferenceAnswer = NormalizeOptional(request.ReferenceAnswer),

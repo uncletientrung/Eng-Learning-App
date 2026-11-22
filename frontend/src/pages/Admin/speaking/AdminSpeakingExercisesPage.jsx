@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Eye, Mic, Plus, RefreshCw, Search, ToggleLeft, ToggleRight, Trash2 } from "lucide-react";
+import { ArrowUpRight, Mic, Plus, RefreshCw, Search, ToggleLeft, ToggleRight, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { deleteAdminSpeakingExercise, getAdminSpeakingExercises, updateAdminSpeakingExerciseStatus } from "../../../services/adminApi";
 import { getTopicByModule } from "../../../services/topicAPI";
@@ -162,12 +162,15 @@ export default function AdminSpeakingExercisesPage() {
                     <td>
                     <div className="flex items-center gap-1">
                       <Link className="
-                        inline-flex min-h-[30px] shrink-0 cursor-pointer items-center justify-center
-                        gap-1 rounded-[8px] border border-[#4f7cf7] bg-[#4f7cf7] px-2 py-[5px]
-                        text-[10px] font-extrabold text-white no-underline hover:border-[#3d68d8]
-                        hover:bg-[#3d68d8] focus-visible:outline-2 focus-visible:outline-offset-2
+                        inline-flex min-h-[39px] shrink-0 cursor-pointer items-center justify-center
+                        gap-[7px] rounded-[10px] border border-[#4f7cf7] bg-[#4f7cf7]
+                        px-2 py-[5px] text-[10px] font-extrabold text-white no-underline
+                        whitespace-nowrap shadow-[0_3px_8px_#315fc52e]
+                        hover:translate-y-[-1px] hover:border-[#3d68d8]
+                        hover:bg-[#3d68d8] hover:shadow-[0_5px_12px_#315fc545]
+                        focus-visible:outline-2 focus-visible:outline-offset-2
                         focus-visible:outline-[#4f7cf7]
-                      " to={`/admin/speaking/${exercise.id}`}><Eye size={13} />Chi tiết</Link>
+                      " to={`/admin/speaking/${exercise.id}`}>Xem chi tiết <ArrowUpRight size={14} /></Link>
                       <Link className={`
                         inline-flex min-h-[30px] shrink-0 cursor-pointer items-center justify-center
                         gap-1 rounded-[8px] border border-[#d8e2ff] bg-[#f3f6ff] px-2 py-[5px]

@@ -13,6 +13,30 @@ export const chartFilters = [
   { id: 'TWO_PART_QUESTION', label: 'Two-part Question', icon: '?' },
 ];
 
+export const writingTaskOptions = [
+  { id: 'TASK_1', label: 'Task 1' },
+  { id: 'TASK_2', label: 'Task 2' },
+];
+
+const writingTaskTopicTypes = {
+  TASK_1: new Set([
+    'BAR_CHART',
+    'LINE_GRAPH',
+    'MAP',
+    'MIXED_GRAPH',
+    'PIE_CHART',
+    'PROCESS',
+    'TABLE',
+  ]),
+  TASK_2: new Set([
+    'DISCUSS_BOTH_VIEWS',
+    'OPINION_ESSAY',
+    'ADVANTAGES_AND_DISADVANTAGES',
+    'PROBLEM_AND_SOLUTION',
+    'TWO_PART_QUESTION',
+  ]),
+};
+
 export const chartColors = {
   ALL: {
     border: 'border-slate-800',
@@ -128,6 +152,32 @@ export const getTopicConfig = (topicName) => {
   return chartFilters.find((filter) => filter.id === topicKey);
 };
 
+export const getWritingTaskTypeForTopic = (topicName) => {
+  const topicType = getTopicConfig(topicName)?.id;
+  return writingTaskOptions.find(({ id }) =>
+    writingTaskTopicTypes[id].has(topicType)
+  )?.id ?? null;
+};
+
+export const getWritingTaskType = (writingType, topicName) => {
+  const normalizedType = normalizeTopic(writingType ?? '');
+  if (normalizedType === 'TASK_1' || normalizedType === 'TASK1') return 'TASK_1';
+  if (normalizedType === 'TASK_2' || normalizedType === 'TASK2') return 'TASK_2';
+
+  const taskFromType = writingTaskOptions.find(({ id }) =>
+    writingTaskTopicTypes[id].has(normalizedType)
+  )?.id;
+  if (taskFromType) return taskFromType;
+  if (normalizedType) return null;
+
+  return getWritingTaskTypeForTopic(topicName);
+};
+
+export const getWritingTaskLabel = (writingType, topicName) => {
+  const taskType = getWritingTaskType(writingType, topicName);
+  return writingTaskOptions.find(({ id }) => id === taskType)?.label ?? null;
+};
+
 export const getTopicColors = (topicName) => {
   const config = getTopicConfig(topicName);
   return chartColors[config?.id] || defaultColors;
@@ -135,6 +185,14 @@ export const getTopicColors = (topicName) => {
 
 
 export const WRITING_TYPE_CONFIG = {
+  TASK_1: {
+    minimumWords: 150,
+    suggestedMinutes: 20,
+  },
+  TASK_2: {
+    minimumWords: 250,
+    suggestedMinutes: 40,
+  },
   BAR_CHART: {
     minimumWords: 150,
     suggestedMinutes: 20,
@@ -184,4 +242,10 @@ export const WRITING_TYPE_CONFIG = {
     minimumWords: 250,
     suggestedMinutes: 40,
   },
+};
+
+export const getWritingTypeConfig = (writingType, topicName) => {
+  const taskType = getWritingTaskType(writingType, topicName);
+  return WRITING_TYPE_CONFIG[taskType] ??
+    WRITING_TYPE_CONFIG[normalizeTopic(topicName)];
 };

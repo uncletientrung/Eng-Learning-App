@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Eye, Pencil, Plus, Trash2 } from "lucide-react";
+import { ArrowUpRight, Pencil, Plus, Trash2 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { deleteAdminVocabularySet, getAdminVocabularySets } from "../../../services/adminApi";
 import { useAdminVocabularyData, useAdminVocabularyQuery } from "./useAdminVocabulary";
@@ -39,7 +39,23 @@ export default function AdminVocabularySetsPage() {
             <td><span className="av-description">{set.description || <span className="av-muted">Chưa có mô tả</span>}</span></td>
             <td><span className="av-tag">{set.wordCount} từ</span></td>
             <td><div className="av-row-actions">
-              <Link className="av-icon-button" to={`/admin/vocabulary/${set.id}`} state={{ listUrl }} title="Xem chi tiết" aria-label={`Xem chi tiết ${set.name}`}><Eye size={16} /></Link>
+              <Link
+                className="
+                  inline-flex min-h-[39px] shrink-0 cursor-pointer items-center justify-center
+                  gap-[7px] rounded-[10px] border border-[#4f7cf7] bg-[#4f7cf7]
+                  px-2 py-[5px] text-[10px] font-extrabold text-white no-underline
+                  whitespace-nowrap shadow-[0_3px_8px_#315fc52e]
+                  hover:translate-y-[-1px] hover:border-[#3d68d8]
+                  hover:bg-[#3d68d8] hover:shadow-[0_5px_12px_#315fc545]
+                  focus-visible:outline-2 focus-visible:outline-offset-2
+                  focus-visible:outline-[#4f7cf7]
+                "
+                to={`/admin/vocabulary/${set.id}`}
+                state={{ listUrl }}
+              >
+                Xem chi tiết
+                <ArrowUpRight size={14} />
+              </Link>
               <Link className="av-icon-button" to={`/admin/vocabulary/${set.id}/edit`} state={{ listUrl }} title="Chỉnh sửa" aria-label={`Chỉnh sửa ${set.name}`}><Pencil size={15} /></Link>
               <button type="button" className="av-icon-button av-delete" title="Xóa bộ từ" aria-label={`Xóa ${set.name}`} onClick={() => setDeleting(set)}><Trash2 size={15} /></button>
             </div></td>

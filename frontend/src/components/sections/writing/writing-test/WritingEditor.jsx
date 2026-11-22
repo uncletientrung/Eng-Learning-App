@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import WritingToolbar from "./WritingToolbar";
-import {
-  normalizeTopic,
-  WRITING_TYPE_CONFIG,
-} from "../../../../constant/writingConstant";
+import { getWritingTypeConfig } from "../../../../constant/writingConstant";
 import { gradeWriting } from "../../../../services/writingGradingApi";
 import WritingScoreSummary from "./WritingScoreSummary";
 
@@ -26,8 +23,10 @@ function WritingEditor({
   const [result, setResult] = useState(initialAttempt?.result ?? null);
   const [showEssay, setShowEssay] = useState(false);
 
-  const topicKey = normalizeTopic(test?.topic?.name ?? "");
-  const recommend = WRITING_TYPE_CONFIG[topicKey];
+  const recommend = getWritingTypeConfig(
+    test?.writingType,
+    test?.topic?.name
+  );
 
   const minimumWords = recommend?.minimumWords ?? 50;
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length;

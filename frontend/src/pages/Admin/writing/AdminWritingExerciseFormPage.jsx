@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Eye, RefreshCw, Save } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { chartFilters } from "../../../constant/writingConstant";
+import {
+  getWritingTaskType,
+  writingTaskOptions,
+} from "../../../constant/writingConstant";
 import { getAdminImageSrc } from "../../../components/admin/adminUtils";
 import { createAdminWritingExercise, createAdminWritingExerciseWithImage, getAdminWritingExercise, updateAdminWritingExercise, updateAdminWritingExerciseWithImage } from "../../../services/adminApi";
 import { getTopicByModule } from "../../../services/topicAPI";
@@ -58,7 +61,7 @@ export default function AdminWritingExerciseFormPage() {
             topicId: String(exercise.topicId),
             title: exercise.title || "",
             imageUrl: exercise.imageUrl || "",
-            writingType: exercise.writingType || "",
+            writingType: getWritingTaskType(exercise.writingType, exercise.topicName) || "",
             questionText: exercise.questionText || "",
             instruction: exercise.instruction || "",
             referenceAnswer: exercise.referenceAnswer || "",
@@ -106,8 +109,8 @@ export default function AdminWritingExerciseFormPage() {
   async function submit(event) {
     event.preventDefault();
     setError("");
-    if (!form.topicId || !form.title.trim() || !form.questionText.trim()) {
-      setError("Vui lòng chọn chủ đề và nhập tiêu đề cùng nội dung đề bài.");
+    if (!form.topicId || !form.writingType || !form.title.trim() || !form.questionText.trim()) {
+      setError("Vui lòng chọn chủ đề, loại bài Task 1 hoặc Task 2, tiêu đề và nội dung đề bài.");
       return;
     }
     if (form.title.trim().length > 255 || form.imageUrl.trim().length > 255) {
@@ -267,10 +270,10 @@ export default function AdminWritingExerciseFormPage() {
               bg-white px-[11px] py-[9px] text-xs text-[#1b1d22] focus-visible:outline-2
               focus-visible:outline-offset-2 focus-visible:outline-[#4f7cf7]
             " name="writingType" value={form.writingType} onChange={updateField}>
-              <option value="">Không xác định</option>
-              {chartFilters.map((type) => <option value={type.id} key={type.id}>{type.label}</option>)}
+              <option value="">Chọn Task 1 hoặc Task 2</option>
+              {writingTaskOptions.map((type) => <option value={type.id} key={type.id}>{type.label}</option>)}
             </select>
-            <span>Giữ nguyên mã loại hiện có để tương thích chức năng chấm Writing.</span>
+            <span>Chọn loại IELTS Writing để phân loại đề bài.</span>
           </label>
           <label className="
             grid content-start gap-[6px] text-[11px] font-extrabold text-[#1b1d22]

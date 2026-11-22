@@ -1,10 +1,11 @@
 import {getImageUrl} from '../../../utils/imageUtils.js'
-import { getTopicColors } from '../../../constant/writingConstant.js';
+import { getTopicColors, getWritingTaskLabel } from '../../../constant/writingConstant.js';
 
 
 function WritingTestCard({ test, onClick }) {
   const imageSrc = getImageUrl(test.imageUrl);
   const colors = getTopicColors(test.topic.name);
+  const writingType = getWritingTaskLabel(test.writingType, test.topic.name);
   
   return (
     <button
@@ -77,6 +78,19 @@ function WritingTestCard({ test, onClick }) {
             `}
           >
             {test.topic.name}
+          </div>
+        )}
+        {writingType && (
+          <div
+            className={`
+              absolute bottom-0 left-0 max-w-[90%]
+              truncate rounded-tr-lg border-r-2 border-t-2 border-[#111]
+              px-3 py-1 text-[11px] font-bold
+              shadow-sm
+              ${colors.badge}
+            `}
+          >
+            {writingType}
           </div>
         )}
       </div>
