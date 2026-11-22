@@ -28,10 +28,7 @@ function WritingHeader({ practiceStatus, onPracticeStatusChange }) {
               className="text-4xl md:text-5xl font-black text-[#1e3006] mb-4 tracking-tight leading-tight" 
               style={{ fontFamily: '"Segoe UI Black", "Segoe UI", sans-serif' }}>
                   IELTS {' '}
-                  <span className="text-brand-dark
-                  
-                   "
-                   >
+                  <span className="text-brand-dark">
                     Writing
                   </span>
             </h1>

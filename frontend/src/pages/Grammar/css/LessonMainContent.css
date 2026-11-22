@@ -135,7 +135,12 @@
         .grammar-content {
             @apply text-[0.9375rem];
             line-height: 1.75;
+            overflow-x: auto;
         }
+
+            .grammar-content table {
+                min-width: 32rem;
+            }
 
             .grammar-content h3 {
                 @apply text-2xl;

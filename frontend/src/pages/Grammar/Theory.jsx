@@ -1,61 +1,70 @@
-﻿import { useState, useRef, useEffect } from 'react';
-import Dropdown from './Dropdown'
-import { ArrowLeft } from 'lucide-react'
-import { useLocation } from "react-router-dom";
+import { useEffect, useRef, useState } from 'react';
+import { ArrowLeft, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import MainLayout from '../../components/layout/MainLayout';
-import { getGrammarSections, getGrammarTopics } from '../../services/grammarAPI';
-import './css/LessonMainContent.css'
+import Dropdown from './Dropdown';
+import { getGrammarCategories, getGrammarSections, getGrammarTopics } from '../../services/grammarAPI';
+import './css/LessonMainContent.css';
+
+const selectClass = 'mt-2 w-full cursor-pointer rounded-xl border-2 border-[#222] bg-[#fff7d9] px-3 py-3 text-sm font-bold text-[#222] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#557539] disabled:cursor-not-allowed disabled:opacity-60';
+
 export default function Theory() {
     const location = useLocation();
-    const activeParentId = location.state?.parent_id;
-    const activeParentTitle = location.state?.parent_title;
-    const activeParentDescription = location.state?.parent_description;
+    const [searchParams] = useSearchParams();
+    const categoryId = Number(searchParams.get('category') ?? location.state?.parent_id);
+    const validCategoryId = Number.isSafeInteger(categoryId) && categoryId > 0;
+    const [category, setCategory] = useState(null);
     const [topics, setTopics] = useState([]);
     const [activeTopic, setActiveTopic] = useState(null);
-    const [filteredLessons, setFilteredLessons] = useState([]);
+    const [lessons, setLessons] = useState([]);
     const [activeLesson, setActiveLesson] = useState(null);
     const [topicsLoading, setTopicsLoading] = useState(true);
     const [lessonsLoading, setLessonsLoading] = useState(false);
     const [topicsError, setTopicsError] = useState('');
     const [lessonsError, setLessonsError] = useState('');
-    const lessonRef = useRef(null);
+    const contentRef = useRef(null);
 
     useEffect(() => {
         let cancelled = false;
 
         async function fetchTopics() {
+            setCategory(null);
             setTopics([]);
             setActiveTopic(null);
-            setFilteredLessons([]);
+            setLessons([]);
             setActiveLesson(null);
             setTopicsError('');
 
-            if (!activeParentId) {
+            if (!validCategoryId) {
                 setTopicsError('Không tìm thấy chủ đề ngữ pháp. Vui lòng quay lại và chọn một chủ đề.');
                 setTopicsLoading(false);
                 return;
             }
 
             setTopicsLoading(true);
-
             try {
-                const result = await getGrammarTopics(activeParentId);
+                const [categories, result] = await Promise.all([
+                    getGrammarCategories(),
+                    getGrammarTopics(categoryId),
+                ]);
                 if (cancelled) return;
+                if (!Array.isArray(categories) || !Array.isArray(result)) {
+                    throw new Error('Dữ liệu chủ đề ngữ pháp không hợp lệ.');
+                }
 
-                const fetchedTopics = Array.isArray(result)
-                    ? result.map(topic => ({
-                        id: topic.id,
-                        title: topic.name,
-                        displayOrder: topic.displayOrder
-                    }))
-                    : [];
+                const selectedCategory = categories.find((item) => item.id === categoryId);
+                if (!selectedCategory) {
+                    setTopicsError('Không tìm thấy chủ đề ngữ pháp. Vui lòng quay lại và chọn một chủ đề.');
+                    return;
+                }
 
-                setTopics(fetchedTopics);
-                setActiveTopic(fetchedTopics[0] ?? null);
+                setCategory(selectedCategory);
+                setTopics(result);
+                setActiveTopic(result[0] ?? null);
             } catch (error) {
                 if (!cancelled) {
                     console.error('Lỗi tải chủ đề ngữ pháp:', error);
-                    setTopicsError('Không thể tải danh sách chủ đề ngữ pháp. Vui lòng thử lại sau.');
+                    setTopicsError('Không thể tải chủ đề ngữ pháp. Vui lòng thử lại sau.');
                 }
             } finally {
                 if (!cancelled) setTopicsLoading(false);
@@ -64,40 +73,28 @@ export default function Theory() {
 
         fetchTopics();
         return () => { cancelled = true; };
-    }, [activeParentId]);
+    }, [categoryId, validCategoryId]);
 
     useEffect(() => {
         let cancelled = false;
 
         async function fetchLessons() {
+            setLessons([]);
+            setActiveLesson(null);
             setLessonsError('');
 
             if (!activeTopic?.id) {
-                setFilteredLessons([]);
-                setActiveLesson(null);
                 setLessonsLoading(false);
                 return;
             }
 
             setLessonsLoading(true);
-
             try {
                 const result = await getGrammarSections(activeTopic.id);
-
                 if (cancelled) return;
-
-                const fetchedLessons = Array.isArray(result)
-                    ? result.map(section => ({
-                        id: section.id,
-                        title: section.title,
-                        contentHTML: section.content,
-                        displayOrder: section.displayOrder
-                    }))
-                    : [];
-
-                setFilteredLessons(fetchedLessons);
-                setActiveLesson(fetchedLessons[0] ?? null);
-
+                if (!Array.isArray(result)) throw new Error('Dữ liệu bài học ngữ pháp không hợp lệ.');
+                setLessons(result);
+                setActiveLesson(result[0] ?? null);
             } catch (error) {
                 if (!cancelled) {
                     console.error('Lỗi tải bài học ngữ pháp:', error);
@@ -109,175 +106,126 @@ export default function Theory() {
         }
 
         fetchLessons();
-
-        return () => {
-            cancelled = true;
-        };
+        return () => { cancelled = true; };
     }, [activeTopic?.id]);
 
-    useEffect(() => {
-        lessonRef.current?.scrollTo({
-            top: 0,
-            behavior: "smooth",
-        });
-    }, [activeTopic?.id, activeLesson?.id]);
+    const lessonIndex = lessons.findIndex((lesson) => lesson.id === activeLesson?.id);
+
+    function selectLesson(lesson, scrollToContent = false) {
+        setActiveLesson(lesson);
+        if (scrollToContent) contentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 
     return (
-        <div className="min-h-screen flex flex-col font-sans antialiased text-[#111]" style={{ fontFamily: 'var(--font-nunito), sans-serif' }}>
-            <style>{`
-        @keyframes tidCtaBounce {
-          0%, 60%, 100% { transform: translateY(0) scale(1); }
-          75% { transform: translateY(-8px) scale(1.05); }
-          90% { transform: translateY(0) scale(1); }
-        }
-        .tid-cta { animation: tidCtaBounce 5s ease-in-out infinite; }
-        .tid-cta:hover { animation-play-state: paused; transform: scale(1.06); }
-        .tid-nav { transition: transform .15s, box-shadow .15s, background .15s; }
-        .tid-nav:hover { background: #ffd6e0; transform: translateY(-2px); box-shadow: 3px 3px 0 rgba(0,0,0,0.15); }
-        .tid-press { transition: transform .15s; }
-        .tid-press:hover { transform: translateY(-2px); }
-        .tid-noscroll { scrollbar-width: none; }
-        .tid-noscroll::-webkit-scrollbar { display: none; }
-      `}</style>
-            <MainLayout>
-            <main className="flex-1">
-                <div
-                    className="flex h-[100dvh] flex-col overflow-hidden bg-[#6f8f4b] p-3 pb-24 pt-28"
-                    style={{
-                        backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.18) 1px, transparent 1px)',
-                        backgroundSize: '24px 24px'
-                    }}
-                >
-                    {/* Header */}
-                    <header className="mx-auto mb-4 flex w-full max-w-[1500px] flex-none flex-wrap items-center justify-between gap-3 rounded-[20px] border-4 border-[#111] bg-white px-4 py-3.5 shadow-[8px_8px_0_rgba(0,0,0,0.15)] md:mb-5 md:px-7 md:py-5">
-                        
-                        <div className="flex items-center gap-10 w-full">
-                            <a
-                                className="flex h-9 w-9 flex-none items-center justify-center rounded-xl border-2 border-[#111] bg-[#f4f1e6] text-[#111] transition-transform hover:-translate-y-0.5"
-                                aria-label="Quay lại Grammar"
-                                href="/grammar"
-                            >
-                                <ArrowLeft size={16} />
-                            </a>
-
-                            <div className="flex min-w-0 flex-col flex-1">
-                                <h1 className="font-[family-name:var(--font-quicksand)] text-[17px] font-extrabold leading-tight text-[#111] md:text-[26px]">
-                                    {activeParentTitle}
-                                </h1>
-
-                                <div className="my-1.5 h-px w-full bg-[#dedacd]" />
-
-                                <p className="font-[family-name:var(--font-quicksand)] text-[13px] leading-relaxed text-[#8a8672] md:text-[20px]">
-                                    {activeParentDescription}
-                                </p>
-                            </div>
-
-                        </div>
-
+        <MainLayout>
+            <main
+                className="min-h-screen bg-[#6f8f4b] px-4 pb-16 pt-28 text-[#111] sm:px-6"
+                style={{
+                    backgroundImage: 'linear-gradient(rgba(255,255,255,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.18) 1px, transparent 1px)',
+                    backgroundSize: '24px 24px',
+                }}
+            >
+                <div className="mx-auto max-w-[1400px]">
+                    <header className="mb-5 rounded-[20px] border-4 border-[#111] bg-white p-5 shadow-[6px_6px_0_rgba(0,0,0,0.15)] sm:p-6">
+                        <Link to="/grammar" className="inline-flex items-center gap-2 text-sm font-bold text-[#526b36] hover:underline">
+                            <ArrowLeft size={16} aria-hidden="true" /> Tất cả chủ đề
+                        </Link>
+                        <p className="mt-4 text-xs font-extrabold uppercase tracking-[2px] text-[#7b806b]">Grammar reference</p>
+                        <h1 className="mt-1 text-2xl font-extrabold sm:text-3xl">
+                            {category?.name || 'Ngữ pháp IELTS'}
+                        </h1>
+                        {category?.description && <p className="mt-2 max-w-4xl text-sm leading-6 text-[#555]">{category.description}</p>}
                     </header>
 
-                    {/* Content Layout */}
-                        <div className="mx-auto flex min-h-0 w-full max-w-[1500px] flex-1 items-stretch gap-6 min-h-[600px]">
-                        {/* Sidebar Navigation with Click Handlers */}
-                        <nav className="tid-noscroll h-full overflow-y-auto rounded-[20px] border-4 border-[#111] bg-white p-3.5 shadow-[8px_8px_0_rgba(0,0,0,0.12)] lg:block lg:w-[300px] lg:flex-none hidden">
-                            <div className="border-b border-[#e2e2de] last:border-b-0">
-                                {topicsLoading ? (
-                                    <p className="px-2.5 py-3.5 text-sm text-[#555]" role="status">Đang tải chủ đề...</p>
-                                ) : topicsError ? (
-                                    <p className="px-2.5 py-3.5 text-sm text-[#9b2c2c]" role="alert">{topicsError}</p>
-                                ) : topics.length === 0 ? (
-                                    <p className="px-2.5 py-3.5 text-sm text-[#555]" role="status">Chưa có chủ đề con.</p>
-                                ) : (
-                                    <Dropdown
-                                        options={topics}
-                                        value={activeTopic?.id}
-                                        onChange={setActiveTopic}
-                                    />
-                                )}
-
-                                <div className="flex flex-col gap-0.5 pb-2 pl-2.5 pt-1">
-                                    {lessonsLoading ? (
-                                        <p className="px-3 py-2.5 text-sm text-[#555]" role="status">Đang tải bài học...</p>
-                                    ) : lessonsError ? (
-                                        <p className="px-3 py-2.5 text-sm text-[#9b2c2c]" role="alert">{lessonsError}</p>
-                                    ) : filteredLessons.length === 0 ? (
-                                        <p className="px-3 py-2.5 text-sm text-[#555]" role="status">Chưa có bài học.</p>
-                                    ) : filteredLessons.map((lesson) => {
-                                        const isSelected = activeLesson?.id === lesson.id;
-                                        return (
-                                            <div
-                                                key={lesson.id}
-                                                onClick={() => setActiveLesson(lesson)}
-                                                className={`tid-nav cursor-pointer rounded-lg px-3 py-2.5 ${isSelected ? 'bg-[#e8f0c9]' : 'bg-transparent'}`}
-                                            >
-                                                <div className="text-[13px] font-semibold text-[#222]">{lesson.title}</div>
-                                            </div>
-                                        );
-                                    })}
+                    {topicsLoading ? (
+                        <div className="rounded-[20px] border-4 border-[#111] bg-white p-8 text-center font-semibold" role="status">Đang tải chủ đề ngữ pháp...</div>
+                    ) : topicsError ? (
+                        <div className="rounded-[20px] border-4 border-[#111] bg-white p-8 text-center" role="alert">
+                            <p className="font-semibold text-[#9b2c2c]">{topicsError}</p>
+                            <Link to="/grammar" className="mt-4 inline-flex items-center gap-2 font-bold text-[#526b36] hover:underline">
+                                <ArrowLeft size={16} aria-hidden="true" /> Quay lại danh sách
+                            </Link>
+                        </div>
+                    ) : topics.length === 0 ? (
+                        <div className="rounded-[20px] border-4 border-[#111] bg-white p-8 text-center font-semibold" role="status">Chủ đề này chưa có bài học.</div>
+                    ) : (
+                        <div className="grid items-start gap-5 lg:grid-cols-[300px_minmax(0,1fr)]">
+                            <nav aria-label="Danh sách bài học" className="rounded-[20px] border-4 border-[#111] bg-white p-4 shadow-[6px_6px_0_rgba(0,0,0,0.15)]">
+                                <div className="flex items-center gap-2 text-sm font-extrabold">
+                                    <BookOpen size={18} aria-hidden="true" /> Nội dung học
                                 </div>
-                            </div>
-                        </nav>
+                                <label htmlFor="grammar-topic" className="mt-4 block text-xs font-bold uppercase tracking-wide text-[#74786a]">Chủ đề</label>
+                                <Dropdown
+                                    value={activeTopic?.id ?? ''}
+                                    options={topics}
+                                    onChange={setActiveTopic}
+                                />
 
-                        {/* Main Section */}
-                        <section
-                            ref={lessonRef}
-                            className="tid-noscroll h-full min-w-0 flex-1 overflow-y-auto rounded-[20px] border-4 border-[#111] bg-white p-5 shadow-[8px_8px_0_rgba(0,0,0,0.12)] md:p-8 block">
-                            <div className="mb-6 flex flex-wrap items-end justify-between gap-5">
-                                <div>
-                                    {activeTopic && (
-                                        <div className="mb-1 font-[family-name:var(--font-quicksand)] text-[13px] font-bold uppercase tracking-[0.5px] text-[#8a8672]">{activeTopic.title}</div>
-                                    )}
-                                    <h2 className="font-[family-name:var(--font-quicksand)] text-[20px] font-extrabold text-[#111] md:text-[26px] flex flex-wrap items-center gap-2">
-                                        {activeLesson && <span>{activeLesson.title}</span>}
-                                    </h2>
+                                <label htmlFor="grammar-lesson" className="mt-4 block text-xs font-bold uppercase tracking-wide text-[#74786a] lg:hidden">Bài học</label>
+                                <select
+                                    id="grammar-lesson"
+                                    value={activeLesson?.id ?? ''}
+                                    onChange={(event) => selectLesson(lessons.find((lesson) => lesson.id === Number(event.target.value)) ?? null)}
+                                    disabled={lessonsLoading || lessons.length === 0}
+                                    className={`${selectClass} lg:hidden`}
+                                >
+                                    {lessonsLoading ? <option value="">Đang tải bài học...</option>
+                                        : lessons.length === 0 ? <option value="">Chưa có bài học</option>
+                                            : lessons.map((lesson) => <option key={lesson.id} value={lesson.id}>{lesson.title}</option>)}
+                                </select>
+
+                                <div className="mt-4 hidden lg:block">
+                                    <p className="mb-2 text-xs font-bold uppercase tracking-wide text-[#74786a]">Bài học {lessons.length > 0 && `· ${lessons.length} bài`}</p>
+                                    {lessonsLoading ? <p className="px-3 py-2 text-sm text-[#555]" role="status">Đang tải bài học...</p>
+                                        : lessonsError ? <p className="px-3 py-2 text-sm text-[#9b2c2c]" role="alert">{lessonsError}</p>
+                                            : lessons.length === 0 ? <p className="px-3 py-2 text-sm text-[#555]">Chưa có bài học.</p>
+                                                : <ol className="space-y-1">
+                                                    {lessons.map((lesson, index) => (
+                                                        <li key={lesson.id}>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => selectLesson(lesson, true)}
+                                                                aria-current={activeLesson?.id === lesson.id ? 'true' : undefined}
+                                                                className={`flex w-full cursor-pointer items-start gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#557539] ${activeLesson?.id === lesson.id ? 'bg-[#fff1c2] text-[#5b491c]' : 'text-[#444] hover:bg-[#f5f4ed]'}`}
+                                                            >
+                                                                <span className="shrink-0 text-xs text-[#7b806b]">{String(index + 1).padStart(2, '0')}</span>
+                                                                {lesson.title}
+                                                            </button>
+                                                        </li>
+                                                    ))}
+                                                </ol>}
                                 </div>
+                            </nav>
 
-                                {/* Tab Switch Buttons */}
-                                <div className="flex flex-none flex-wrap items-center gap-2.5">
-                                    <button
-                                        className={`tid-press cursor whitespace-nowrap rounded-xl border-[3px] border-[#111] px-5 py-2.5 font-[family-name:var(--font-quicksand)] text-[13px] font-bold 'bg-[rgb(47,95,168)] text-white' : 'bg-white text-[#111]'
-                                            }`}
-                                    >
-                                        LÝ THUYẾT
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Dynamic Content based on Sidebar Selection and Tab */}
-                            <div className="relative py-10 rounded-xl border-2 border-dashed border-[#111] bg-[#fdfbf7]">
-
-                                {lessonsLoading && (
-                                    <p className="absolute right-4 top-3 text-xs text-gray-500">
-                                        Đang tải...
-                                    </p>
-                                )}
-
+                            <section ref={contentRef} className="min-w-0 scroll-mt-28 rounded-[20px] border-4 border-[#111] bg-white p-5 shadow-[6px_6px_0_rgba(0,0,0,0.15)] sm:p-8" aria-label="Nội dung bài học">
                                 {lessonsError ? (
-                                    <p className="text-center text-[#9b2c2c]" role="alert">
-                                        {lessonsError}
-                                    </p>
-                                ) : activeLesson ? (
-                                    <article
-                                        className="grammar-content"
-                                        dangerouslySetInnerHTML={{
-                                            __html: activeLesson.contentHTML
-                                        }}
-                                    />
+                                    <p className="py-12 text-center font-semibold text-[#9b2c2c]" role="alert">{lessonsError}</p>
                                 ) : lessonsLoading ? (
-                                    <p className="text-center text-[#555]">
-                                        Đang tải nội dung ngữ pháp...
-                                    </p>
+                                    <p className="py-12 text-center font-semibold text-[#555]" role="status">Đang tải nội dung ngữ pháp...</p>
+                                ) : activeLesson ? (
+                                    <>
+                                        <p className="text-xs font-extrabold uppercase tracking-wide text-[#75805f]">{activeTopic?.name} · Bài {lessonIndex + 1}/{lessons.length}</p>
+                                        <h2 className="mt-2 text-xl font-extrabold leading-snug sm:text-2xl">{activeLesson.title}</h2>
+                                        <div className="mt-6 rounded-xl border-2 border-[#e4e6d9] bg-[#fdfbf7] px-4 py-6 sm:px-7 sm:py-8">
+                                            <article className="grammar-content" dangerouslySetInnerHTML={{ __html: activeLesson.content }} />
+                                        </div>
+                                        <div className="mt-6 flex items-center justify-between gap-3 border-t border-[#e6e8df] pt-5">
+                                            <button type="button" disabled={lessonIndex <= 0} onClick={() => selectLesson(lessons[lessonIndex - 1], true)} className="inline-flex cursor-pointer items-center gap-2 rounded-xl border-2 border-[#222] px-3 py-2.5 text-sm font-bold hover:bg-[#f4f1e6] disabled:cursor-not-allowed disabled:opacity-40">
+                                                <ChevronLeft size={17} aria-hidden="true" /> Bài trước
+                                            </button>
+                                            <button type="button" disabled={lessonIndex < 0 || lessonIndex >= lessons.length - 1} onClick={() => selectLesson(lessons[lessonIndex + 1], true)} className="inline-flex cursor-pointer items-center gap-2 rounded-xl border-2 border-[#222] bg-[#ffc926] px-3 py-2.5 text-sm font-bold hover:bg-[#f2b917] disabled:cursor-not-allowed disabled:opacity-40">
+                                                Bài tiếp <ChevronRight size={17} aria-hidden="true" />
+                                            </button>
+                                        </div>
+                                    </>
                                 ) : (
-                                    <p className="text-center text-[#555]">
-                                        Chưa có nội dung ngữ pháp.
-                                    </p>
+                                    <p className="py-12 text-center font-semibold text-[#555]">Chưa có nội dung ngữ pháp.</p>
                                 )}
-                            </div>
-                        </section>
-                    </div>
+                            </section>
+                        </div>
+                    )}
                 </div>
             </main>
-            </MainLayout>
-        </div>
+        </MainLayout>
     );
 }
