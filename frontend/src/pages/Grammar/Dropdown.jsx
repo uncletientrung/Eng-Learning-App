@@ -13,7 +13,7 @@ export default function Dropdown({ options, value, onChange }) {
     const listRef = useRef(null);
     const searchRef = useRef(null);
     const selected = options.find((option) => option.id === value);
-    const showSearch = options.length > 7;
+    const showSearch = options.length >= 5;
     const filteredOptions = options.filter((option) => normalizeSearch(option.name).includes(normalizeSearch(search.trim())));
     const focusableOptionId = filteredOptions.find((option) => option.id === value)?.id ?? filteredOptions[0]?.id;
 
