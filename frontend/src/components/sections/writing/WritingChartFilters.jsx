@@ -9,7 +9,7 @@ function WritingChartFilters({
   topics = [],
   activeTaskFilter,
   onTaskFilterChange,
-  activeChartFilter,
+  activeChartFilters,
   onChartFilterChange,
 }) {
   const displayFilters = [
@@ -77,9 +77,9 @@ function WritingChartFilters({
           Thể loại:
         </span>
         {displayFilters.map((filter) => {
-          const isActive =
-            Number(activeChartFilter) === Number(filter.id) ||
-            activeChartFilter === filter.id;
+          const isActive = filter.id === 'ALL'
+            ? activeChartFilters.length === 0
+            : activeChartFilters.includes(Number(filter.id));
 
           const colors =
             chartColors[filter.colorKey || filter.id] ||
@@ -89,6 +89,7 @@ function WritingChartFilters({
             <button
               key={filter.id}
               type="button"
+              aria-pressed={isActive}
               onClick={() => onChartFilterChange(filter.id)}
               className={`
                 inline-flex items-center gap-1.5 whitespace-nowrap
@@ -96,7 +97,7 @@ function WritingChartFilters({
                 text-sm font-bold transition-all
                 ${colors.border}
                 ${colors.text}
-                ${isActive ? colors.active : colors.hover}
+                ${isActive ? `${colors.active} ring-2 ring-current ring-offset-1` : colors.hover}
               `}
             >
               <span className="text-xs">{filter.icon}</span>

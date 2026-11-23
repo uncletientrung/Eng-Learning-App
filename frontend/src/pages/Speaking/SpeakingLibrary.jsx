@@ -20,7 +20,7 @@ import { getAuthenticatedToken } from '../../services/authApi.js'
 const PAGE_SIZE = 6
 
 function SpeakingLibrary() {
-  const [activeTopicGroup, setActiveTopicGroup] = useState('ALL')
+  const [activeTopicGroups, setActiveTopicGroups] = useState([])
   const [activePart, setActivePart] = useState('ALL')
   const [currentPage, setCurrentPage] = useState(1)
   const [searchParams, setSearchParams] = useSearchParams()
@@ -115,9 +115,9 @@ function SpeakingLibrary() {
   const filteredTests = useMemo(() => {
     let result = tests
 
-    if (activeTopicGroup !== 'ALL') {
+    if (activeTopicGroups.length > 0) {
       result = result.filter(
-        (test) => Number(test.topicId) === Number(activeTopicGroup)
+        (test) => activeTopicGroups.includes(Number(test.topicId))
       )
     }
 
@@ -134,20 +134,20 @@ function SpeakingLibrary() {
     }
 
     return result
-  }, [activeTopicGroup, activePart, attemptedExerciseIds, practiceStatus, tests])
+  }, [activeTopicGroups, activePart, attemptedExerciseIds, practiceStatus, tests])
 
   const filteredHistory = useMemo(
     () =>
       history.filter((attempt) => {
         if (
-          activeTopicGroup !== 'ALL' &&
-          Number(attempt.topicId) !== Number(activeTopicGroup)
+          activeTopicGroups.length > 0 &&
+          !activeTopicGroups.includes(Number(attempt.topicId))
         ) {
           return false
         }
         return activePart === 'ALL' || attempt.speakingType === activePart
       }),
-    [activePart, activeTopicGroup, history]
+    [activePart, activeTopicGroups, history]
   )
 
   const displayedItems =
@@ -170,7 +170,13 @@ function SpeakingLibrary() {
   }, [displayedItems, currentPage])
 
   const handleTopicGroupChange = (group) => {
-    setActiveTopicGroup(group)
+    setActiveTopicGroups((selected) => {
+      if (group === 'ALL') return []
+      const topicId = Number(group)
+      return selected.includes(topicId)
+        ? selected.filter((id) => id !== topicId)
+        : [...selected, topicId]
+    })
     setCurrentPage(1)
   }
 
@@ -277,7 +283,7 @@ function SpeakingLibrary() {
             topics={topics}
             activePart={activePart}
             onPartChange={handlePartChange}
-            activeTopicGroup={activeTopicGroup}
+            activeTopicGroups={activeTopicGroups}
             onTopicGroupChange={handleTopicGroupChange}
           />
           {loading ? (

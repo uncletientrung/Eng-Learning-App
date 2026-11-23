@@ -11,10 +11,10 @@ function SpeakingTopicFilters({
   topics = [],
   activePart,
   onPartChange,
-  activeTopicGroup,
+  activeTopicGroups,
   onTopicGroupChange,
 }) {
-  const isAllActive = activeTopicGroup === 'ALL';
+  const isAllActive = activeTopicGroups.length === 0;
   const baseClass = `
     inline-flex shrink-0 items-center gap-1.5
     border-2 border-[#111] px-3.5 py-2
@@ -94,7 +94,7 @@ function SpeakingTopicFilters({
           </button>
 
           {topics.map((topic) => {
-            const isActive = Number(activeTopicGroup) === Number(topic.id);
+            const isActive = activeTopicGroups.includes(Number(topic.id));
 
             return (
               <button

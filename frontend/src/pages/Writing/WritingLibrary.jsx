@@ -23,7 +23,7 @@ import {
 
 function WritingLibrary() {
   const [activeTaskFilter, setActiveTaskFilter] = useState('ALL')
-  const [activeChartFilter, setActiveChartFilter] =useState('ALL')
+  const [activeChartFilters, setActiveChartFilters] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [searchParams] = useSearchParams()
   const requestedStatus = searchParams.get('status')
@@ -145,13 +145,13 @@ function WritingLibrary() {
       const matchesTask = activeTaskFilter === 'ALL' ||
         (getWritingTaskType(test.writingType, test.topic?.name) === activeTaskFilter &&
           topicTaskType === activeTaskFilter)
-      const matchesTopic = activeChartFilter === 'ALL' ||
-        Number(test.topicId) === Number(activeChartFilter)
+      const matchesTopic = activeChartFilters.length === 0 ||
+        activeChartFilters.includes(Number(test.topicId))
       const matchesStatus = practiceStatus !== 'NOT_STARTED' ||
         unattemptedExerciseIds.includes(Number(test.id))
       return matchesTask && matchesTopic && matchesStatus
     })
-  }, [tests, unattemptedExerciseIds, activeTaskFilter, activeChartFilter, practiceStatus])
+  }, [tests, unattemptedExerciseIds, activeTaskFilter, activeChartFilters, practiceStatus])
 
   const filteredHistory = useMemo(() => {
     return history.filter((attempt) => {
@@ -159,21 +159,27 @@ function WritingLibrary() {
       const matchesTask = activeTaskFilter === 'ALL' ||
         (getWritingTaskType(attempt.writingType, attempt.topicName) === activeTaskFilter &&
           topicTaskType === activeTaskFilter)
-      const matchesTopic = activeChartFilter === 'ALL' ||
-        Number(attempt.topicId) === Number(activeChartFilter)
+      const matchesTopic = activeChartFilters.length === 0 ||
+        activeChartFilters.includes(Number(attempt.topicId))
       return matchesTask && matchesTopic
     })
-  }, [history, activeTaskFilter, activeChartFilter])
+  }, [history, activeTaskFilter, activeChartFilters])
 
   const handleTaskFilterChange = (filter) => {
     setActiveTaskFilter(filter)
-    setActiveChartFilter('ALL')
+    setActiveChartFilters([])
     setCurrentPage(1)
   }
 
 
   const handleChartFilterChange = (filter) => {
-    setActiveChartFilter(filter)
+    setActiveChartFilters((selected) => {
+      if (filter === 'ALL') return []
+      const topicId = Number(filter)
+      return selected.includes(topicId)
+        ? selected.filter((id) => id !== topicId)
+        : [...selected, topicId]
+    })
     setCurrentPage(1)
   }
 
@@ -270,7 +276,7 @@ function WritingLibrary() {
             topics={visibleTopics}
             activeTaskFilter={activeTaskFilter}
             onTaskFilterChange={handleTaskFilterChange}
-            activeChartFilter={activeChartFilter}
+            activeChartFilters={activeChartFilters}
             onChartFilterChange={handleChartFilterChange}
           />
 
