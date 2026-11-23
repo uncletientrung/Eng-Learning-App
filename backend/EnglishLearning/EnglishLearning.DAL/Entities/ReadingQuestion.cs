@@ -25,13 +25,18 @@ namespace EnglishLearning.DAL.Entities
         [Required, Column("question_text", TypeName = "text")]
         public string QuestionText { get; set; } = string.Empty;
 
-        [Required, Column("correct_answer", TypeName = "text")]
-        public string CorrectAnswer { get; set; } = string.Empty;
+        
 
         [Required, Column(TypeName = "text")]
         public string Explanation { get; set; } = string.Empty;
 
         [ForeignKey(nameof(ExerciseId))]
         public ReadingExercise Exercise { get; set; } = null!;
+
+        public ICollection<ReadingQuestionOption> ReadingQuestionOptions { get; set; } =
+            new List<ReadingQuestionOption>();
+        public ICollection<ReadingFillBlankAnswer>? FillinBlanksAnswers { get; set; } = new List<ReadingFillBlankAnswer>();
+
+
     }
 }

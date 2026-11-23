@@ -15,8 +15,8 @@ namespace EnglishLearning.DAL.Entities
         [Column("user_id")]
         public int UserId { get; set; }
 
-        [Column("exercise_id")]
-        public int ExerciseId { get; set; }
+        [Column("readingtest_id")]
+        public int TestId { get; set; }
 
         [Column(TypeName = "tinyint")]
         public byte Score { get; set; }
@@ -35,8 +35,8 @@ namespace EnglishLearning.DAL.Entities
 
         [ForeignKey(nameof(UserId))]
         public User User { get; set; } = null!;
+        
+        public ICollection<UserReadingAnswer> UserReadingAnswers { get; set; } = new List<UserReadingAnswer>();
 
-        [ForeignKey(nameof(ExerciseId))]
-        public ReadingExercise Exercise { get; set; } = null!;
     }
 }

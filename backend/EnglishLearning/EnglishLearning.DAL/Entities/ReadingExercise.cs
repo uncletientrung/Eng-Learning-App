@@ -37,8 +37,12 @@ namespace EnglishLearning.DAL.Entities
 
         [ForeignKey(nameof(TopicId))]
         public Topic? Topic { get; set; } = null!;
-
+        
         [ForeignKey(nameof(ReadingTestId))] 
         public ReadingTest ReadingTest { get; set; } = null!;
+        
+        public ICollection<ReadingQuestion> ReadingQuestions { get; set; } = new List<ReadingQuestion>();
+
+        
     }
 }

@@ -1,11 +1,19 @@
 const QUESTION_TYPES = [
-    'True/False/Not Given', 'Yes/No/Not Given', 'Multiple Choice',
-     'Short Answer', 'Sentence Completion',
+    'True-False', 'Yes-No', 'Multiple-Choice',
+     'Fill-in-Blank'
 ];
 
-const QuestionTypeFilter = () => {
+const QuestionTypeFilter = ({selectedTypes,
+                                setSelectedTypes}) => {
+    const handleSelect = (type) => {
+        setSelectedTypes(prev =>
+            prev.includes(type)
+                ? prev.filter(t => t !== type)
+                : [...prev, type]
+        );
+    };
     return (
-        <div id="reading-qtype-filter" className="bg-white border border-slate-100 rounded-2xl p-5 mb-6 scroll-mt-24">
+        <div id="reading-qtype-filter" className="bg-white border border-slate-100 rounded-2xl p-5 mb-6 scroll-mt-24 ">
             <button className="w-full flex items-center justify-between text-xs font-black text-slate-500 uppercase tracking-widest hover:text-[#5a6d38] transition-colors focus:outline-none">
         <span className="flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-funnel w-3.5 h-3.5" aria-hidden="true">
@@ -24,7 +32,12 @@ const QuestionTypeFilter = () => {
                     </div>
                     <div className="flex flex-wrap gap-2">
                         {QUESTION_TYPES.map((type) => (
-                            <button key={type} className="px-3 py-1.5 rounded-full text-xs font-black border transition-all bg-white text-slate-600 border-slate-200 hover:border-slate-400">
+                            <button key={type} onClick={() => handleSelect(type)}    className={`px-3 py-1.5 rounded-full text-xs font-black border transition-all
+            ${
+                                selectedTypes.includes(type)
+                                    ? "bg-[#5a6d38] text-white border-[#5a6d38]"
+                                    : "bg-white text-slate-600 border-slate-200"
+                            }`}>
                                 {type}
                             </button>
                         ))}

@@ -71,7 +71,10 @@ builder.Services.AddScoped<IAdminSpeakingRepository, AdminSpeakingRepository>();
 builder.Services.AddScoped<IGrammarRepository, GrammarRepository>();
 builder.Services.AddScoped<IReadingTestRepository, ReadingTestRepository>();
 builder.Services.AddScoped<IReadingExerciseRepository, ReadingExerciseRepository>();
-
+builder.Services.AddScoped<IReadingQuestionRepository,ReadingQuestionRepository>();
+builder.Services.AddScoped<IReadingQuestionOptionRepository, ReadingQuestionOptionRepository>();
+builder.Services.AddScoped<IReadingFillBlankRepository, ReadingFillBlankRepository>();
+builder.Services.AddScoped<IUserReadingAttemptRepository, UserReadingAttemptRepository>();
 // Đăng ký Service
 builder.Services.AddScoped<
     IWritingExerciseService,
@@ -91,6 +94,11 @@ builder.Services.AddScoped<IReadingTestService, ReadingTestService>();
 builder.Services.AddScoped<IReadingExerciseService, ReadingExerciseService>();
 builder.Services.AddScoped<IWritingGradingService, WritingGradingService>();
 builder.Services.AddScoped<IGrammarService, GrammarService>();
+builder.Services.AddScoped<iReadingQuestionService, ReadingQuestionService>();
+builder.Services.AddScoped<IReadingQuestionOptionService, ReadingQuestionOptionService>();
+builder.Services.AddScoped<IReadingFillBlankService, ReadingFillBlankService>();
+builder.Services.AddScoped<IUserReadingAttemptService, UserReadingAttemptService>();
+
 
 var geminiTimeoutSeconds = builder.Configuration.GetValue(
     "Gemini:TimeoutSeconds",

@@ -32,7 +32,10 @@ namespace EnglishLearning.DAL.Entities
         [Required, Column(TypeName = "text")]
         public string Explanation { get; set; } = string.Empty;
 
-        [ForeignKey(nameof(ExerciseId))]
-        public ListeningExercise Exercise { get; set; } = null!;
+        [ForeignKey(nameof(ExerciseId))] public ListeningExercise Exercise { get; set; } = null!;
+        
+        public ICollection<ListeningQuestionOption> ListeningQuestionOptions { get; set; } =
+            new List<ListeningQuestionOption>();
+        public ICollection<ListeningFillBlankAnswer>? FillinBlanksAnswers { get; set; } = new List<ListeningFillBlankAnswer>();
     }
 }

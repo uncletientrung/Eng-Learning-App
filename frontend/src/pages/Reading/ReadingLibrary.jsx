@@ -1,13 +1,51 @@
 import Navbar from '../../components/layout/Navbar.jsx';
-import StatsGrid from '../../components/sections/reading/StatsGrid.jsx';
 import QuestionTypeFilter from '../../components/sections/reading/QuestionTypeFilter';
 import QuestionTabs from '../../components/sections/reading/QuestionTabs.jsx';
 import TestCard from '../../components/sections/reading/TestCard.jsx';
 import Pagination from '../../components/layout/Pagination.jsx';
-import { readingTests } from '../../data/readingTests.js';
+
 import {Link} from "react-router-dom";
+import {useEffect, useState} from "react";
 
 const ReadingLibrary = () => {
+    const [readingtests, setReadingtests] = useState([]);
+    const [selectivetypes, setselectivetypes] = useState([]);
+    const [search,setSearch] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 6; // Mỗi trang 6 bài Reading
+    useEffect(() => {
+       const fetchdata = async () =>{
+           const response = await fetch("http://localhost:5167/api/reading-tests");
+           const data = await response.json();
+           setReadingtests(data);
+       }
+       fetchdata();
+    }, []);
+    useEffect(() => {
+        console.log(readingtests);
+    },[readingtests]);
+    const filteredReadingTest = readingtests.filter(readingtest => {
+        return (
+            (
+                selectivetypes.length === 0 ||
+                readingtest.readingExercises?.some(exercise =>
+                    exercise.readingQuestions?.some(question =>
+                        selectivetypes.includes(question.questionType)
+                    )
+                )
+            )
+            &&
+            (
+                !search.trim() ||
+                readingtest.title?.toLowerCase()
+                    .includes(search.trim().toLowerCase())
+            )
+        );
+    });
+    const paginatedReadingTests = filteredReadingTest.slice(
+        (currentPage - 1) * pageSize,
+        currentPage * pageSize
+    );
     return (
         <div className="min-h-screen bg-[#fafbfc] relative flex flex-col font-sans overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#6a8042]/5 to-transparent pointer-events-none"></div>
@@ -43,16 +81,31 @@ const ReadingLibrary = () => {
                     </div>
                 </header>
 
-                <QuestionTypeFilter />
-                <QuestionTabs />
+                <QuestionTypeFilter selectedTypes={selectivetypes}
+                                    setSelectedTypes={setselectivetypes}/>
+                <div className="flex flex-col md:flex-row gap-4 mb-8">
+                    <div className="relative w-full md:w-72 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" aria-hidden="true">
+                            <path d="m21 21-4.34-4.34" /><circle cx="11" cy="11" r="8" />
+                        </svg>
+                        <input type="text" placeholder="Tìm bài reading..." value={search} onChange={(e)=> setSearch(e.target.value)}
+                               className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-100 rounded-xl text-sm font-medium text-slate-700 placeholder:text-slate-300 focus:outline-none focus:border-[#d1d590] focus:ring-2 focus:ring-[#fffadd] transition-all" />
+                    </div>
+                </div>
+
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {readingTests.map((test) => (
-                        <TestCard key={test.id} cam={test.cam} testNumber={test.testNumber} passages={test.passages} />
+                    {paginatedReadingTests.map((test) => (
+                        <TestCard testId={test.id} title={test.title}  level={test.level} readingExercise={test.readingExercises} />
                     ))}
                 </div>
 
-                <Pagination />
+                <Pagination
+                    currentPage={currentPage}
+                    totalItems={filteredReadingTest.length}
+                    pageSize={pageSize}
+                    onPageChange={setCurrentPage}
+                />
             </main>
         </div>
     );

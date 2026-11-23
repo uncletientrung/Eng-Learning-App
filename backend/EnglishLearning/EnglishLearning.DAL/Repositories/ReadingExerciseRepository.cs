@@ -20,14 +20,18 @@ public class ReadingExerciseRepository: IReadingExerciseRepository
             .AsNoTracking()
             .Where(a => a.ReadingTestId ==id )
             .OrderBy(a => a.Passage)
+            .Include(a => a.Topic)
+            .Include(a => a.ReadingQuestions)
             .ToListAsync();
     }
 
-   public Task<ReadingExercise?> GetByIdAsync(int id)
+   public Task<ReadingExercise?> GetByIdAsync( int exerciseId)
    {
        return _context.ReadingExercises
            .AsNoTracking()
-           .FirstOrDefaultAsync(e => e.ReadingTestId == id);
+           .Include(a => a.Topic)
+           .Include(a => a.ReadingQuestions)
+           .FirstOrDefaultAsync(e => e.Id == exerciseId);
    }
 
    public async Task<ReadingExercise> AddAsync(ReadingExercise readingExercise)
@@ -36,4 +40,38 @@ public class ReadingExerciseRepository: IReadingExerciseRepository
        await _context.SaveChangesAsync();
        return readingExercise;
    }
+
+   public async Task<ReadingExercise> UpdateAsync(int id, ReadingExercise readingExercise)
+   {
+       var result = await _context.ReadingExercises.FindAsync(id);
+       if (result == null)
+       {
+           return null;
+       }
+       
+           result.Title=readingExercise.Title;
+           result.Level=readingExercise.Level;
+           result.TopicId=readingExercise.TopicId;
+           result.Passage=readingExercise.Passage;
+           result.ImageUrl = readingExercise.ImageUrl;
+           result.Content = readingExercise.Content;
+        
+           _context.ReadingExercises.Update(result);
+           await _context.SaveChangesAsync();
+           return result;
+
+   }
+
+   public async Task<ReadingExercise> DeleteAsync(int id)
+   {
+       var result = await _context.ReadingExercises.FindAsync(id);
+       if (result == null)
+       {
+           return null;
+       }
+       _context.ReadingExercises.Remove(result);
+       await _context.SaveChangesAsync();
+       return result;
+   }
+   
 }

@@ -178,6 +178,14 @@ namespace EnglishLearning.DAL.Migrations
                         .HasMaxLength(2)
                         .HasColumnType("varchar(2)");
 
+                    b.Property<int>("ListeningTestId")
+                        .HasColumnType("int")
+                        .HasColumnName("ListeningTest_id");
+
+                    b.Property<string>("Passage")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -192,6 +200,8 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ListeningTestId");
 
                     b.HasIndex("TopicId");
 
@@ -303,6 +313,34 @@ namespace EnglishLearning.DAL.Migrations
                     b.HasIndex("QuestionId");
 
                     b.ToTable("listening_question_options");
+                });
+
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.ListeningTest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Level")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("varchar(2)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)")
+                        .HasColumnName("Listening_Test_title");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Listening_Test");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ReadingExercise", b =>
@@ -429,11 +467,6 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CorrectAnswer")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("correct_answer");
 
                     b.Property<int>("ExerciseId")
                         .HasColumnType("int")
@@ -890,16 +923,16 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnType("tinyint")
                         .HasColumnName("correct_answers_num");
 
-                    b.Property<int>("ExerciseId")
-                        .HasColumnType("int")
-                        .HasColumnName("exercise_id");
-
                     b.Property<sbyte>("Score")
                         .HasColumnType("tinyint");
 
                     b.Property<DateTime>("StartedAt")
                         .HasColumnType("timestamp")
                         .HasColumnName("started_at");
+
+                    b.Property<int>("TestId")
+                        .HasColumnType("int")
+                        .HasColumnName("listeningtest_id");
 
                     b.Property<sbyte>("TotalQuestions")
                         .HasColumnType("tinyint")
@@ -910,8 +943,6 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ExerciseId");
 
                     b.HasIndex("UserId");
 
@@ -968,16 +999,16 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnType("tinyint")
                         .HasColumnName("correct_answers_num");
 
-                    b.Property<int>("ExerciseId")
-                        .HasColumnType("int")
-                        .HasColumnName("exercise_id");
-
                     b.Property<sbyte>("Score")
                         .HasColumnType("tinyint");
 
                     b.Property<DateTime>("StartedAt")
                         .HasColumnType("timestamp")
                         .HasColumnName("started_at");
+
+                    b.Property<int>("TestId")
+                        .HasColumnType("int")
+                        .HasColumnName("readingtest_id");
 
                     b.Property<sbyte>("TotalQuestions")
                         .HasColumnType("tinyint")
@@ -988,8 +1019,6 @@ namespace EnglishLearning.DAL.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ExerciseId");
 
                     b.HasIndex("UserId");
 
@@ -1428,6 +1457,12 @@ namespace EnglishLearning.DAL.Migrations
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ListeningExercise", b =>
                 {
+                    b.HasOne("EnglishLearning.DAL.Entities.ListeningTest", null)
+                        .WithMany("ListeningExercises")
+                        .HasForeignKey("ListeningTestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EnglishLearning.DAL.Entities.Topic", "Topic")
                         .WithMany()
                         .HasForeignKey("TopicId")
@@ -1440,7 +1475,7 @@ namespace EnglishLearning.DAL.Migrations
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ListeningFillBlankAnswer", b =>
                 {
                     b.HasOne("EnglishLearning.DAL.Entities.ListeningQuestion", "Question")
-                        .WithMany()
+                        .WithMany("FillinBlanksAnswers")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1451,7 +1486,7 @@ namespace EnglishLearning.DAL.Migrations
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ListeningQuestion", b =>
                 {
                     b.HasOne("EnglishLearning.DAL.Entities.ListeningExercise", "Exercise")
-                        .WithMany()
+                        .WithMany("ListeningQuestions")
                         .HasForeignKey("ExerciseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1462,7 +1497,7 @@ namespace EnglishLearning.DAL.Migrations
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ListeningQuestionOption", b =>
                 {
                     b.HasOne("EnglishLearning.DAL.Entities.ListeningQuestion", "Question")
-                        .WithMany()
+                        .WithMany("ListeningQuestionOptions")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1473,7 +1508,7 @@ namespace EnglishLearning.DAL.Migrations
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ReadingExercise", b =>
                 {
                     b.HasOne("EnglishLearning.DAL.Entities.ReadingTest", "ReadingTest")
-                        .WithMany()
+                        .WithMany("ReadingExercises")
                         .HasForeignKey("ReadingTestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1490,7 +1525,7 @@ namespace EnglishLearning.DAL.Migrations
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ReadingFillBlankAnswer", b =>
                 {
                     b.HasOne("EnglishLearning.DAL.Entities.ReadingQuestion", "Question")
-                        .WithMany()
+                        .WithMany("FillinBlanksAnswers")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1501,7 +1536,7 @@ namespace EnglishLearning.DAL.Migrations
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ReadingQuestion", b =>
                 {
                     b.HasOne("EnglishLearning.DAL.Entities.ReadingExercise", "Exercise")
-                        .WithMany()
+                        .WithMany("ReadingQuestions")
                         .HasForeignKey("ExerciseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1512,7 +1547,7 @@ namespace EnglishLearning.DAL.Migrations
             modelBuilder.Entity("EnglishLearning.DAL.Entities.ReadingQuestionOption", b =>
                 {
                     b.HasOne("EnglishLearning.DAL.Entities.ReadingQuestion", "Question")
-                        .WithMany()
+                        .WithMany("ReadingQuestionOptions")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1589,7 +1624,7 @@ namespace EnglishLearning.DAL.Migrations
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserListeningAnswer", b =>
                 {
                     b.HasOne("EnglishLearning.DAL.Entities.UserListeningAttempt", "Attempt")
-                        .WithMany()
+                        .WithMany("UserListeningAnswers")
                         .HasForeignKey("AttemptId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1607,19 +1642,11 @@ namespace EnglishLearning.DAL.Migrations
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserListeningAttempt", b =>
                 {
-                    b.HasOne("EnglishLearning.DAL.Entities.ListeningExercise", "Exercise")
-                        .WithMany()
-                        .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EnglishLearning.DAL.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Exercise");
 
                     b.Navigation("User");
                 });
@@ -1627,7 +1654,7 @@ namespace EnglishLearning.DAL.Migrations
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserReadingAnswer", b =>
                 {
                     b.HasOne("EnglishLearning.DAL.Entities.UserReadingAttempt", "Attempt")
-                        .WithMany()
+                        .WithMany("UserReadingAnswers")
                         .HasForeignKey("AttemptId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1645,19 +1672,11 @@ namespace EnglishLearning.DAL.Migrations
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserReadingAttempt", b =>
                 {
-                    b.HasOne("EnglishLearning.DAL.Entities.ReadingExercise", "Exercise")
-                        .WithMany()
-                        .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("EnglishLearning.DAL.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Exercise");
 
                     b.Navigation("User");
                 });
@@ -1821,6 +1840,40 @@ namespace EnglishLearning.DAL.Migrations
                     b.Navigation("Children");
                 });
 
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.ListeningExercise", b =>
+                {
+                    b.Navigation("ListeningQuestions");
+                });
+
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.ListeningQuestion", b =>
+                {
+                    b.Navigation("FillinBlanksAnswers");
+
+                    b.Navigation("ListeningQuestionOptions");
+                });
+
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.ListeningTest", b =>
+                {
+                    b.Navigation("ListeningExercises");
+                });
+
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.ReadingExercise", b =>
+                {
+                    b.Navigation("ReadingQuestions");
+                });
+
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.ReadingQuestion", b =>
+                {
+                    b.Navigation("FillinBlanksAnswers");
+
+                    b.Navigation("ReadingQuestionOptions");
+                });
+
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.ReadingTest", b =>
+                {
+                    b.Navigation("ReadingExercises");
+                });
+
             modelBuilder.Entity("EnglishLearning.DAL.Entities.SpeakingExercise", b =>
                 {
                     b.Navigation("Questions");
@@ -1831,6 +1884,16 @@ namespace EnglishLearning.DAL.Migrations
                     b.Navigation("Children");
 
                     b.Navigation("Contents");
+                });
+
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.UserListeningAttempt", b =>
+                {
+                    b.Navigation("UserListeningAnswers");
+                });
+
+            modelBuilder.Entity("EnglishLearning.DAL.Entities.UserReadingAttempt", b =>
+                {
+                    b.Navigation("UserReadingAnswers");
                 });
 
             modelBuilder.Entity("EnglishLearning.DAL.Entities.UserSpeakingAttempt", b =>

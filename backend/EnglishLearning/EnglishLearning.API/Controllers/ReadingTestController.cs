@@ -39,4 +39,25 @@ public class ReadingTestController : ControllerBase
         var result = await _readingTestService.AddAsync(request);
         return Created("", result);
     }
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateAsync( int id, [FromBody] ReadingTestDTO request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        var result = await _readingTestService.UpdateAsync(id, request);
+        return Ok(result);
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteAsync(int id)
+    {
+        var result = await _readingTestService.DeleteAsync(id);
+        if (result == null)
+        {
+            return NotFound();
+        }
+        return Ok(result);
+    }
 }

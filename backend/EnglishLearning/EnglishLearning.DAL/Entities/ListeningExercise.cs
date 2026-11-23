@@ -14,17 +14,22 @@ namespace EnglishLearning.DAL.Entities
 
         [Column("topic_id")]
         public int TopicId { get; set; }
-
+        
+        [Column("ListeningTest_id")]
+        public int ListeningTestId{ get; set; }
         [Required, StringLength(2)]
         public string Level { get; set; } = string.Empty;
 
         [Required, StringLength(255)]
         public string Title { get; set; } = string.Empty;
-
+        
+        [Required, Column(TypeName = "text")]
+        public string Passage { get; set; } = string.Empty;
         [Required, StringLength(255)]
         [Column("image_url")]
         public string ImageUrl { get; set; } = string.Empty;
-
+        
+        
         [Required, StringLength(255)]
         [Column("audio_type")]
         public string AudioType { get; set; } = string.Empty;
@@ -41,5 +46,9 @@ namespace EnglishLearning.DAL.Entities
 
         [ForeignKey(nameof(TopicId))]
         public Topic Topic { get; set; } = null!;
+        
+        
+        public ICollection<ListeningQuestion> ListeningQuestions { get; set; } = new List<ListeningQuestion>();
+
     }
 }
