@@ -101,12 +101,13 @@ function App() {
         <Route path="/reading" element={<ReadingLibrary />} />
         <Route path="/listening" element={<ListeningLibrary />} />
         <Route path="/translation" element={<TranslationLandingPage />}/>
+        <Route element={<TranslationPageLayout />}>
+          <Route path="/translation/:parentId" element={<TranslationExerciseListPage />} />
+        </Route>
       </Route>
       
       <Route path="/writing/:id" element={<WritingTest />} />
-      <Route element={<TranslationPageLayout />}>
-        <Route path="/translation/:parentId" element={<TranslationExerciseListPage />} />
-      </Route>
+      
       <Route path="/translation/:parentId/exercises/:exerciseId" element={<TranslationPracticePage />} />
       <Route path="/speaking/p1/:id" element={<SpeakingPart1 />} />
       <Route path="/speaking/p2/:id" element={<SpeakingPart2 />} />

@@ -133,7 +133,7 @@ export default function QuickNavigation({
                 key={path}
                 to={path}
                 aria-current={
-                  location.pathname === path ? "page" : undefined
+                  location.pathname === path || (path !== "/" && location.pathname.startsWith(path + "/")) ? "page" : undefined
                 }
                 onClick={() => setOpen(false)}
               >
