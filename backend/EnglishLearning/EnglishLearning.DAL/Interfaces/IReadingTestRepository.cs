@@ -10,5 +10,9 @@ public interface IReadingTestRepository
     
     Task<ReadingTest> AddAsync(ReadingTest readingTest);
     
+    Task<ReadingTest> UpdateAsync(int id,ReadingTest readingTest);
+    
+    Task<ReadingTest> DeleteAsync(int id);
+    
     
 }

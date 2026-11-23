@@ -15,4 +15,8 @@ public class ListeningTest
     
     [Required, Column("created_at", TypeName = "timestamp")]
     public DateTime CreatedAt { get; set; }
+    
+    public ICollection<ListeningExercise> ListeningExercises { get; set; } = new List<ListeningExercise>();
+    
+
 }

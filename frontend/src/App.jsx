@@ -17,7 +17,6 @@ import Theory from './pages/Grammar/Theory'
 import ReadingLibrary from "./pages/Reading/ReadingLibrary.jsx";
 import LoginPage from "./pages/Login/LoginPage.jsx";
 import ListeningLibrary from "./pages/Listening/ListeningLibrary.jsx";
-import ExamPage from "./components/sections/reading/reading-test/ExamPage.jsx";
 import {ReadingResultPage} from "./components/sections/reading/Result/index.js";
 import ReviewPage from "./pages/Reading/ReviewPage.jsx";
 import RequireAuth from './components/layout/RequireAuth';
@@ -25,6 +24,7 @@ import ListeningResultPage from "./components/sections/listening/Result/Listenin
 import ListeningExamPage from "./pages/Listening/ListeningExamPage.jsx";
 import RequireAdmin from "./components/layout/RequireAdmin";
 import QuickNavigation from "./components/layout/QuickNavigation";
+import ReadingExamPage from "./pages/Reading/ReadingExamPage.jsx";
 
 const VocabularyDashboard = lazy(() => import('./pages/Vocabulary/VocabularyDashboard'))
 const AdminLayout = lazy(() => import("./components/admin/AdminLayout"))
@@ -50,7 +50,7 @@ const AdminUserCreatePage = lazy(() => import("./pages/admin/users/AdminUserCrea
 const AdminTopicsPage = lazy(() => import("./pages/admin/topics/AdminTopicsPage"))
 const AdminTopicFormPage = lazy(() => import("./pages/admin/topics/AdminTopicFormPage"))
 const AdminTopicDetailPage = lazy(() => import("./pages/admin/topics/AdminTopicDetailPage"))
-
+const AdminReadingPage = lazy(() => import("./pages/admin/reading/AdminReadingExercisePage"))
 function App() {
   return (
     <Routes>
@@ -90,6 +90,7 @@ function App() {
             <Route path="topics/create" element={<AdminTopicFormPage />} />
             <Route path="topics/:id/edit" element={<AdminTopicFormPage />} />
             <Route path="topics/:id" element={<AdminTopicDetailPage />} />
+            <Route path="reading" element={<AdminReadingPage />} />
           </Route>
         </Route>
       </Route>
@@ -119,9 +120,11 @@ function App() {
 
       <Route path="/grammar/theory" element={<Theory />} />
 
-      <Route path="/reading/exam" element={<ExamPage />} />
-      <Route path="/reading/exam/result" element={<ReadingResultPage />} />
-      <Route path="/reading/exam/result/review" element={<ReviewPage />} />
+        <Route path="/reading/exam/:examid" element={<ReadingExamPage />} />
+
+        <Route path="/reading/result/:submissionid" element={<ReadingResultPage />} />
+
+        <Route path="/reading/result/:submissionid/review" element={<ReviewPage />} />
 
       <Route path="/listening/exam/:examid" element={<ListeningExamPage />} />
 

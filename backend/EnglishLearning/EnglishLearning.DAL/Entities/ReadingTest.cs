@@ -17,6 +17,8 @@ public class ReadingTest
     [Required, Column("created_at", TypeName = "timestamp")]
     public DateTime CreatedAt { get; set; }
     
+    public ICollection<ReadingExercise> ReadingExercises { get; set; } = new List<ReadingExercise>();
+    
 
     
 }

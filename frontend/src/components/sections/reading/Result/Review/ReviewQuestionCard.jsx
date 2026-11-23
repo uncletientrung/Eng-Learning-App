@@ -18,16 +18,16 @@ import { IconCircleX, IconCircleCheck } from "./icons.jsx";
  * }
  */
 
-const ExplanationItem = ({ item }) => (
+const ExplanationItem = ({ explanation }) => (
     <li className="flex gap-2 text-blue-900 text-sm font-medium leading-relaxed">
         <span className="shrink-0 text-blue-400" aria-hidden="true">–</span>
         <span className="min-w-0">
-      {typeof item === "string" ? (
-          <span>{item}</span>
+      {typeof explanation === "string" ? (
+          <span>{explanation}</span>
       ) : (
           <>
-              <strong className="font-bold">{item.bold}</strong>
-              <span>{item.text}</span>
+              <strong className="font-bold">{explanation.bold}</strong>
+              <span>{explanation.text}</span>
           </>
       )}
     </span>
@@ -35,7 +35,7 @@ const ExplanationItem = ({ item }) => (
 );
 
 const ReviewQuestionCard = ({ question }) => {
-    const { id, prompt, yourAnswer, correctAnswer, explanation = [], isCorrect = false } = question;
+    const { id, questionText, userAnswer, correctAnswer, explanation = [], isCorrect = false } = question;
 
     return (
         <div
@@ -46,9 +46,9 @@ const ReviewQuestionCard = ({ question }) => {
             <div className="flex items-start justify-between mb-4">
                 <p className="font-bold text-slate-800 text-lg">
           <span className="inline-flex items-center justify-center bg-slate-100 text-slate-600 px-3 h-7 rounded-full text-sm mr-3 whitespace-nowrap">
-            {id}
+            {question.questionNumber}
           </span>
-                    {prompt}
+                    {questionText}
                 </p>
                 {isCorrect ? <IconCircleCheck /> : <IconCircleX />}
             </div>
@@ -59,8 +59,8 @@ const ReviewQuestionCard = ({ question }) => {
             Câu Trả Lời Của Bạn
           </span>
                     <span className={`font-medium ${isCorrect ? "text-emerald-700" : "text-red-600"}`}>
-            {yourAnswer ? (
-                yourAnswer
+            {userAnswer ? (
+                userAnswer
             ) : (
                 <em className="text-slate-400">Không có câu trả lời</em>
             )}
@@ -70,7 +70,7 @@ const ReviewQuestionCard = ({ question }) => {
           <span className="text-xs font-bold text-emerald-600 uppercase block mb-1">
             Đáp Án Đúng
           </span>
-                    <span className="font-bold text-emerald-800">{correctAnswer}</span>
+                    <span className="font-bold text-emerald-800">{question.questionType=== "Fill-in-Blank"? question.readingFillBlankAnswerDtos[0].correctAnswer: correctAnswer}</span>
                 </div>
             </div>
 
@@ -80,9 +80,8 @@ const ReviewQuestionCard = ({ question }) => {
             Giải Thích
           </span>
                     <ul className="space-y-1.5">
-                        {explanation.map((item, i) => (
-                            <ExplanationItem key={i} item={item} />
-                        ))}
+                            <ExplanationItem explanation={explanation} />
+
                     </ul>
                 </div>
             )}

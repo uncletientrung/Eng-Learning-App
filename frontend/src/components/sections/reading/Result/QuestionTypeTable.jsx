@@ -31,7 +31,6 @@ const QuestionTypeTable = ({ rows }) => (
                         <th className="px-1 sm:px-3 py-3 text-center font-black">Số câu</th>
                         <th className="px-1 sm:px-3 py-3 text-center font-black text-emerald-700">Đúng</th>
                         <th className="px-1 sm:px-3 py-3 text-center font-black text-red-600">Sai</th>
-                        <th className="pl-1 pr-3 sm:px-3 py-3 text-center font-black text-amber-700">Bỏ qua</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -49,9 +48,7 @@ const QuestionTypeTable = ({ rows }) => (
                             <td className="px-1 sm:px-3 py-3 text-center">
                                 <TypePill variant={r.wrong ? "wrong" : "ok"} value={r.wrong} />
                             </td>
-                            <td className="pl-1 pr-3 sm:px-3 py-3 text-center">
-                                <TypePill variant={r.skipped ? "skipped" : "ok"} value={r.skipped} />
-                            </td>
+
                         </tr>
                     ))}
                     </tbody>

@@ -17,6 +17,7 @@ public class AppDbContext : DbContext
     public DbSet<GrammarCategory> GrammarCategories => Set<GrammarCategory>();
     public DbSet<GrammarSection> GrammarSections => Set<GrammarSection>();
     public DbSet<Idiom> Idioms => Set<Idiom>();
+    public DbSet<ListeningTest> ListeningTests => Set<ListeningTest>();
     public DbSet<ListeningExercise> ListeningExercises => Set<ListeningExercise>();
     public DbSet<ListeningFillBlankAnswer> ListeningFillBlankAnswers => Set<ListeningFillBlankAnswer>();
     public DbSet<ListeningQuestion> ListeningQuestions => Set<ListeningQuestion>();
@@ -188,6 +189,8 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<UserSpeakingAnswer>()
             .HasIndex(a => new { a.AttemptId, a.QuestionId })
             .IsUnique();
+        
+        
 
         // SpeakingQuestion: lưu danh sách cues dưới dạng JSON
         var cuesProperty = modelBuilder.Entity<SpeakingQuestion>() // Chuyển đổi qua lại giữa List<string> trong C# và chuỗi JSON trong DB.

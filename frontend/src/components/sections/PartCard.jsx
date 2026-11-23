@@ -47,7 +47,7 @@ const PartCard = ({ partNumber, title, questionRange, questionCount, theme = 'am
                 {title}
             </p>
             <p className="text-slate-400 text-[11px] font-medium mt-auto pt-2">
-                Q {questionRange} · {questionCount} câu
+                {/*Q {questionRange} · {questionCount} câu*/}
             </p>
             <IconChevronRight className={`absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 ${t.text} opacity-40 group-hover:opacity-80 group-hover:translate-x-1 transition-all`} />
         </button>
