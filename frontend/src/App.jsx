@@ -5,7 +5,9 @@ import Home from './pages/Home'
 import WritingLibrary from './pages/Writing/WritingLibrary'
 import WritingTest from './pages/Writing/WritingTest'
 import TranslationLandingPage from './pages/Translation/TranslationLandingPage'
-import TranslationExercisePage from './pages/Translation/TranslationExercisePage'
+import TranslationExerciseListPage from './pages/Translation/TranslationExerciseListPage'
+import TranslationPracticePage from './pages/Translation/TranslationPracticePage'
+import TranslationPageLayout from './components/layout/TranslationPageLayout'
 import SpeakingLibrary from './pages/Speaking/SpeakingLibrary'
 import SpeakingPart1 from './pages/Speaking/SpeakingPart1'
 import SpeakingPart2 from './pages/Speaking/SpeakingPart2'
@@ -101,8 +103,10 @@ function App() {
       </Route>
       
       <Route path="/writing/:id" element={<WritingTest />} />
-      <Route path="/translation/:parentId" element={<TranslationExercisePage />} />
-      <Route path="/translation/:parentId/exercises/:exerciseId" element={<TranslationExercisePage />} />
+      <Route element={<TranslationPageLayout />}>
+        <Route path="/translation/:parentId" element={<TranslationExerciseListPage />} />
+      </Route>
+      <Route path="/translation/:parentId/exercises/:exerciseId" element={<TranslationPracticePage />} />
       <Route path="/speaking/p1/:id" element={<SpeakingPart1 />} />
       <Route path="/speaking/p2/:id" element={<SpeakingPart2 />} />
       <Route path="/speaking/p3/:id" element={<SpeakingPart3 />} />

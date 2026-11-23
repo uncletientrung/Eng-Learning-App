@@ -2,7 +2,7 @@ import Navbar from './Navbar'
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
-function MainLayout({ children, transparentNavbar = false  }) {
+function MainLayout({ children, transparentNavbar = false, showNavbar = true }) {
   const location = useLocation()
   useEffect(() => {
     window.scrollTo({
@@ -14,9 +14,7 @@ function MainLayout({ children, transparentNavbar = false  }) {
 
   return (
     <div className="min-h-screen">
-      <Navbar
-        transparentOnTop={transparentNavbar}
-      />
+      {showNavbar && <Navbar transparentOnTop={transparentNavbar} />}
 
       {children}
     </div>
