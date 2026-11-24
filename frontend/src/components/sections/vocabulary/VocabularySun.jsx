@@ -23,9 +23,10 @@ export default function VocabularySun() {
       const nx = clamp((event.clientX - bounds.left - bounds.width / 2) / (bounds.width / 2 || 1));
       const ny = clamp((event.clientY - bounds.top - bounds.height / 2) / (bounds.height / 2 || 1));
       if (!reducedMotion.matches) {
-        moveX(nx * 50);
-        moveY(ny * 50);
-        rotate(nx * 15);
+        // Keep the sun tucked below the panel, with only a gentle pointer response.
+        moveX(nx * 8);
+        moveY(ny * 5);
+        rotate(nx * 1.5);
         faceX(nx * 2);
         faceY(ny * 1.5);
       }
