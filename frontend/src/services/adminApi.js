@@ -68,6 +68,10 @@ export const createAdminVocabularySet = (data) =>
   request("/vocabulary/sets", { method: "POST", body: JSON.stringify(data) });
 export const updateAdminVocabularySet = (id, data) =>
   request(`/vocabulary/sets/${id}`, { method: "PUT", body: JSON.stringify(data) });
+export const createAdminVocabularySetWithImage = (data) =>
+  request("/vocabulary/sets/with-image", { method: "POST", body: data });
+export const updateAdminVocabularySetWithImage = (id, data) =>
+  request(`/vocabulary/sets/${id}/with-image`, { method: "PUT", body: data });
 export const deleteAdminVocabularySet = (id) => request(`/vocabulary/sets/${id}`, { method: "DELETE" });
 export const getAdminVocabularyWords = (id, params) => request(`/vocabulary/sets/${id}/words${queryString(params)}`);
 export const getAdminVocabularyWord = (id, wordId) => request(`/vocabulary/sets/${id}/words/${wordId}`);

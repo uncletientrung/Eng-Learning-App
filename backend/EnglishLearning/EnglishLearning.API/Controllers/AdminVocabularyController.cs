@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using EnglishLearning.API.Services;
 using EnglishLearning.BLL.Interfaces;
 using EnglishLearning.DAL.ReadModels;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +11,10 @@ namespace EnglishLearning.API.Controllers;
 [ApiController]
 [Authorize(Roles = "ADMIN")]
 [Route("api/admin/vocabulary/sets")]
-public sealed class AdminVocabularyController(IAdminVocabularyService service) : ControllerBase
+public sealed class AdminVocabularyController(
+    IAdminVocabularyService service,
+    TopicImageStorage imageStorage,
+    ILogger<AdminVocabularyController> logger) : ControllerBase
 {
     [HttpGet]
     public Task<IActionResult> GetSets([FromQuery] AdminVocabularyQuery query, CancellationToken ct) =>
@@ -38,6 +43,24 @@ public sealed class AdminVocabularyController(IAdminVocabularyService service) :
     public Task<IActionResult> UpdateSet(int id, AdminVocabularySetRequest request, CancellationToken ct) =>
         ExecuteAsync(async () => Ok(await service.SaveSetAsync(id, request, ct)));
 
+    [HttpPost("with-image")]
+    [Consumes("multipart/form-data")]
+    [RequestSizeLimit(6 * 1024 * 1024)]
+    public Task<IActionResult> CreateSetWithImage(
+        [FromForm] SaveSetWithImageRequest request, 
+        CancellationToken ct) =>
+        ExecuteAsync(async () =>
+        {
+            var result = await SaveSetWithImageAsync(null, request, ct);
+            return CreatedAtAction(nameof(GetSet), new { id = result.Id }, result);
+        });
+
+    [HttpPut("{id:int}/with-image")]
+    [Consumes("multipart/form-data")]
+    [RequestSizeLimit(6 * 1024 * 1024)]
+    public Task<IActionResult> UpdateSetWithImage(int id, [FromForm] SaveSetWithImageRequest request, CancellationToken ct) =>
+        ExecuteAsync(async () => Ok(await SaveSetWithImageAsync(id, request, ct)));
+
     [HttpDelete("{id:int}")]
     public Task<IActionResult> DeleteSet(int id, CancellationToken ct) => ExecuteAsync(async () =>
     {
@@ -63,6 +86,33 @@ public sealed class AdminVocabularyController(IAdminVocabularyService service) :
         return NoContent();
     });
 
+    private async Task<AdminVocabularySetDto> SaveSetWithImageAsync(
+        int? id, SaveSetWithImageRequest request, CancellationToken ct)
+    {
+        if (id.HasValue)
+            await service.GetSetAsync(id.Value, ct);
+
+        var imageUrl = await imageStorage.SaveAsync(request.Image, ct);
+        try
+        {
+            return await service.SaveSetAsync(id, new AdminVocabularySetRequest
+            {
+                Name = request.Name,
+                Description = request.Description,
+                ImageURL = imageUrl
+            }, ct);
+        }
+        catch
+        {
+            try { imageStorage.DeleteGeneratedImage(imageUrl); }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                logger.LogWarning(ex, "Unable to remove image {ImageUrl} after vocabulary set save failed.", imageUrl);
+            }
+            throw;
+        }
+    }
+
     private async Task<IActionResult> ExecuteAsync(Func<Task<IActionResult>> action)
     {
         try { return await action(); }
@@ -70,5 +120,15 @@ public sealed class AdminVocabularyController(IAdminVocabularyService service) :
         catch (ArgumentException ex) { return BadRequest(new { message = ex.Message }); }
         catch (InvalidOperationException ex) { return Conflict(new { message = ex.Message }); }
         catch (DbUpdateException) { return Conflict(new { message = "Dữ liệu đang được sử dụng hoặc đã thay đổi. Vui lòng tải lại và thử lại." }); }
+    }
+
+    public sealed class SaveSetWithImageRequest
+    {
+        [Required, StringLength(255)]
+        public string Name { get; set; } = "";
+        [StringLength(10000)]
+        public string? Description { get; set; }
+        [Required]
+        public IFormFile Image { get; set; } = null!;
     }
 }

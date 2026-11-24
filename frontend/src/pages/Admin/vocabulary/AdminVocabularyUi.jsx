@@ -1,13 +1,17 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { AlertCircle, BookOpen, ChevronLeft, ChevronRight, LoaderCircle, Search, TriangleAlert, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import AdminPageTitle from "../../../components/admin/AdminPageTitle";
 import "./AdminVocabulary.css";
 
-export function VocabularyPageHeader({ title, links = [], children }) {
+export function VocabularyPageHeader({ title, highlight, titleActions, description, links = [], children }) {
   return (
     <div className="av-page-header">
       <div>
-        <h2>{title}</h2>
+        <div className="av-page-heading">
+          <AdminPageTitle title={title} highlight={highlight} />
+          {titleActions}
+        </div>
         <nav aria-label="Breadcrumb" className="av-breadcrumb">
           <Link to="/admin">Trang chủ</Link><span>/</span>
           {links.map((link, index) => <span className="av-breadcrumb-item" key={`${link.label}-${index}`}>
@@ -15,6 +19,7 @@ export function VocabularyPageHeader({ title, links = [], children }) {
             {index < links.length - 1 && <span>/</span>}
           </span>)}
         </nav>
+        {description && <p className="av-page-description">{description}</p>}
       </div>
       {children && <div className="av-actions">{children}</div>}
     </div>

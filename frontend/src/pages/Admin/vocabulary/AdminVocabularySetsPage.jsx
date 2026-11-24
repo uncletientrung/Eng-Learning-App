@@ -20,14 +20,13 @@ export default function AdminVocabularySetsPage() {
     reload();
   };
   return <section className="av-page">
-    <VocabularyPageHeader title="Quản lý bộ từ vựng" links={[{ label: "Vocabulary" }]}>
+    <VocabularyPageHeader title="Quản lý Vocabulary" links={[{ label: "Vocabulary" }]}>
       <Link className="av-button av-primary" to="/admin/vocabulary/create" state={{ listUrl }}><Plus size={17} />Thêm bộ từ</Link>
     </VocabularyPageHeader>
     <VocabularyNotice message={notice} onClose={() => setNotice("")} />
     <div className="av-card">
       <div className="av-table-toolbar">
         <VocabularySearch key={search} value={search} placeholder="Tìm tên hoặc mô tả bộ từ" onSearch={(value) => update({ search: value, page: 1 })} />
-        <span className="av-muted">Bộ từ hệ thống</span>
       </div>
       <VocabularyLoadState loading={loading} error={error} onRetry={reload} />
       {data && <>

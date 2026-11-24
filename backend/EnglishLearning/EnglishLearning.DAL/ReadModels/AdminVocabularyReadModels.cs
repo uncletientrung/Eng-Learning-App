@@ -14,7 +14,7 @@ public sealed class AdminVocabularyQuery
     public string? PartOfSpeech { get; set; }
 }
 
-public sealed record AdminVocabularySetDto(int Id, string Name, string? Description, int WordCount);
+public sealed record AdminVocabularySetDto(int Id, string Name, string? Description, int WordCount, string? ImageURL = null);
 public sealed record AdminVocabularyWordDto(
     int Id, int TopicId, string Word, string Meaning, string Phonetic, string PartOfSpeech, string Example);
 public sealed record AdminVocabularyWordsDto(
@@ -26,6 +26,8 @@ public sealed class AdminVocabularySetRequest
     public string Name { get; set; } = "";
     [StringLength(10000)]
     public string? Description { get; set; }
+    [StringLength(255)]
+    public string? ImageURL { get; set; }
 }
 
 public sealed class AdminVocabularyWordRequest

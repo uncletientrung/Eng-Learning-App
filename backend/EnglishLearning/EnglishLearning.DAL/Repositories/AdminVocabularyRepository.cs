@@ -22,14 +22,14 @@ public sealed class AdminVocabularyRepository(AppDbContext db) : IAdminVocabular
         var total = await sets.CountAsync(ct);
         var page = ClampPage(query.Page, query.PageSize, total);
         var items = await sets.OrderBy(t => t.Id).Skip((page - 1) * query.PageSize).Take(query.PageSize)
-            .Select(t => new AdminVocabularySetDto(t.Id, t.Name, t.Description, db.Words.Count(w => w.TopicId == t.Id)))
+            .Select(t => new AdminVocabularySetDto(t.Id, t.Name, t.Description, db.Words.Count(w => w.TopicId == t.Id), t.ImageURL))
             .ToListAsync(ct);
         return new() { Items = items, Page = page, PageSize = query.PageSize, TotalCount = total };
     }
 
     public Task<AdminVocabularySetDto?> GetSetAsync(int id, CancellationToken ct) => SystemSets.AsNoTracking()
         .Where(t => t.Id == id)
-        .Select(t => new AdminVocabularySetDto(t.Id, t.Name, t.Description, db.Words.Count(w => w.TopicId == t.Id)))
+        .Select(t => new AdminVocabularySetDto(t.Id, t.Name, t.Description, db.Words.Count(w => w.TopicId == t.Id), t.ImageURL))
         .SingleOrDefaultAsync(ct);
 
     public async Task<AdminVocabularyWordsDto?> GetWordsAsync(int id, AdminVocabularyQuery query, CancellationToken ct)
@@ -67,11 +67,12 @@ public sealed class AdminVocabularyRepository(AppDbContext db) : IAdminVocabular
             throw new InvalidOperationException("Tên bộ từ này đã tồn tại.");
         topic.Name = values.Name;
         topic.Description = values.Description;
+        topic.ImageURL = values.ImageURL;
         if (!id.HasValue) db.Topics.Add(topic);
         await db.SaveChangesAsync(ct);
         var count = await db.Words.CountAsync(w => w.TopicId == topic.Id, ct);
         await transaction.CommitAsync(ct);
-        return new(topic.Id, topic.Name, topic.Description, count);
+        return new(topic.Id, topic.Name, topic.Description, count, topic.ImageURL);
     }
 
     public async Task<AdminVocabularyWordDto> SaveWordAsync(int id, int? wordId, Word values, CancellationToken ct)

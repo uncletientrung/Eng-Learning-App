@@ -1,5 +1,6 @@
 import {
   Book,
+  BookOpen,
   FileText,
   LayoutDashboard,
   LogOut,
@@ -19,13 +20,12 @@ const navigation = [
   { label: "Quản lý Writing", to: "/admin/writing", icon: FileText },
   { label: "Quản lý Speaking", to: "/admin/speaking", icon: Mic },
   { label: "Quản lý Reading", to: "/admin/reading", icon: Book },
-
+  { label: "Quản lý Vocabulary", to: "/admin/vocabulary", icon: BookOpen },
 ];
 
 const comingSoon = [
   "Quản lý Reading",
   "Quản lý Listening",
-  "Quản lý Vocabulary",
   "Quản lý Grammar",
   "Quản lý Idioms",
   "Quản lý Users",

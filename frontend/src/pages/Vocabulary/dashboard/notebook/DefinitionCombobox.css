@@ -1,0 +1,112 @@
+.vd-definition-combo .vd-definition-trigger {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 54px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--d-line);
+  border-radius: 13px;
+  background: var(--d-surf);
+  color: var(--d-ink);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.vd-definition-combo .vd-definition-trigger>svg {
+  flex-shrink: 0;
+  color: var(--d-mute);
+  transition: transform .15s;
+}
+
+.vd-definition-combo .vd-definition-trigger.is-open {
+  border-color: var(--d-accent);
+}
+
+.vd-definition-combo .vd-definition-trigger.is-open>svg {
+  transform: rotate(180deg);
+}
+
+.vd-definition-combo .vd-definition-trigger:disabled {
+  background: var(--d-surf2);
+  cursor: default;
+}
+
+.vd-definition-combo .vd-definition-placeholder {
+  color: var(--d-mute);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.vd-definition-combo .vd-definition-value {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.vd-definition-combo .vd-definition-value>span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.vd-definition-combo .vd-definition-options {
+  max-height: 260px;
+  margin: 7px 0 0;
+  padding: 5px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--d-line) transparent;
+  border: 1px solid var(--d-line);
+  border-radius: 14px;
+  background: var(--d-surf);
+  box-shadow: 0 10px 30px -16px #0005;
+  list-style: none;
+}
+
+.vd-definition-combo .vd-definition-options>li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.vd-definition-combo .vd-definition-options>li[data-active="true"],
+.vd-definition-combo .vd-definition-options>li[aria-selected="true"] {
+  background: var(--d-surf2);
+}
+
+.vd-definition-combo .vd-definition-option-text {
+  min-width: 0;
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.vd-definition-combo .vd-definition-options>li>svg {
+  flex-shrink: 0;
+  margin-top: 4px;
+  color: var(--d-accent);
+}
+
+@media (max-width: 540px) {
+  .vd-definition-combo .vd-definition-options>li {
+    flex-wrap: wrap;
+  }
+
+  .vd-definition-combo .vd-definition-option-text {
+    flex-basis: 100%;
+  }
+}

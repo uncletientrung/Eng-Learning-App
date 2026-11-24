@@ -1,4 +1,4 @@
-.vocabulary-dashboard .vd-pos-badge {
+:is(.vocabulary-dashboard, .vd-definition-combo) .vd-pos-badge {
     --pos-fg: #616779;
     --pos-dark: #c4c8d0;
     --pos-bg: #8d93a024;
@@ -17,54 +17,55 @@
     text-transform: uppercase;
 }
 
-.vocabulary-dashboard .dark .vd-pos-badge {
+.vocabulary-dashboard .dark .vd-pos-badge,
+.admin-layout.is-dark .vd-definition-combo .vd-pos-badge {
     color: var(--pos-dark);
 }
 
-.vocabulary-dashboard .vd-pos-noun {
+:is(.vocabulary-dashboard, .vd-definition-combo) .vd-pos-noun {
     --pos-fg: #a3660d;
     --pos-dark: #eeb16c;
     --pos-bg: #e990002b;
 }
 
-.vocabulary-dashboard .vd-pos-verb {
+:is(.vocabulary-dashboard, .vd-definition-combo) .vd-pos-verb {
     --pos-fg: #7651bd;
     --pos-dark: #c8a4ff;
     --pos-bg: #9b5de526;
 }
 
-.vocabulary-dashboard .vd-pos-adjective {
+:is(.vocabulary-dashboard, .vd-definition-combo) .vd-pos-adjective {
     --pos-fg: #16805e;
     --pos-dark: #77d7b9;
     --pos-bg: #20b48624;
 }
 
-.vocabulary-dashboard .vd-pos-adverb {
+:is(.vocabulary-dashboard, .vd-definition-combo) .vd-pos-adverb {
     --pos-fg: #3864c4;
     --pos-dark: #94b5ff;
     --pos-bg: #4f7cf724;
 }
 
-.vocabulary-dashboard .vd-pos-pronoun {
+:is(.vocabulary-dashboard, .vd-definition-combo) .vd-pos-pronoun {
     --pos-fg: #ae4a77;
     --pos-dark: #f6a5ca;
     --pos-bg: #de7fac24;
 }
 
-.vocabulary-dashboard .vd-pos-preposition {
+:is(.vocabulary-dashboard, .vd-definition-combo) .vd-pos-preposition {
     --pos-fg: #237b89;
     --pos-dark: #8ad1dd;
     --pos-bg: #36a0b124;
 }
 
-.vocabulary-dashboard .vd-pos-conjunction {
+:is(.vocabulary-dashboard, .vd-definition-combo) .vd-pos-conjunction {
     --pos-fg: #a85a22;
     --pos-dark: #ffb38a;
     --pos-bg: #ff8a5c24;
 }
 
-.vocabulary-dashboard .vd-pos-interjection,
-.vocabulary-dashboard .vd-pos-exclamation {
+:is(.vocabulary-dashboard, .vd-definition-combo) .vd-pos-interjection,
+:is(.vocabulary-dashboard, .vd-definition-combo) .vd-pos-exclamation {
     --pos-fg: #ae4858;
     --pos-dark: #ff9dac;
     --pos-bg: #e5566b24;

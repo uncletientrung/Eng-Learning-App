@@ -107,7 +107,7 @@ export default function AdminUserDetailPage() {
         <>
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <AdminPageTitle title={user.name} />
+              <AdminPageTitle title={user.name} highlight={false} />
               <p className="mb-0 mt-[5px] text-[13px] text-[#6b7080]">Hồ sơ người dùng #{user.id} · @{user.username}</p>
             </div>
             <div className="flex flex-wrap gap-2">

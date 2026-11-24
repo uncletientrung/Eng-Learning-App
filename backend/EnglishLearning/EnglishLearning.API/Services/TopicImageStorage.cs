@@ -48,6 +48,22 @@ public abstract class PublicImageStorage
         return $"/assets/{_folder}/{fileName}";
     }
 
+    public void DeleteGeneratedImage(string imageUrl)
+    {
+        var prefix = $"/assets/{_folder}/";
+        if (!imageUrl.StartsWith(prefix, StringComparison.Ordinal))
+            throw new ArgumentException("Đường dẫn ảnh không hợp lệ.");
+
+        var fileName = imageUrl[prefix.Length..];
+        var extension = Path.GetExtension(fileName);
+        if (fileName.Contains('/') || fileName.Contains('\\')
+            || !Guid.TryParseExact(Path.GetFileNameWithoutExtension(fileName), "N", out _)
+            || extension is not (".jpg" or ".png" or ".gif" or ".webp"))
+            throw new ArgumentException("Đường dẫn ảnh không hợp lệ.");
+
+        File.Delete(Path.Combine(_directory, fileName));
+    }
+
     private static string? GetExtension(ReadOnlySpan<byte> header)
     {
         if (header.StartsWith((ReadOnlySpan<byte>)[0xff, 0xd8, 0xff])) return ".jpg";

@@ -25,20 +25,25 @@ export default function AdminVocabularySetDetailPage() {
     setNotice("Đã xóa từ vựng.");
     reload();
   };
-  return <section className="av-page">
-    <VocabularyPageHeader title={data?.set.name || "Chi tiết bộ từ vựng"} links={[{ label: "Vocabulary", to: listUrl }, { label: data?.set.name || "Chi tiết bộ từ" }]}>
-      <Link className="av-button" to={listUrl}><ArrowLeft size={16} />Danh sách</Link>
-      {data && <Link className="av-button av-primary" to={`/admin/vocabulary/${id}/edit`} state={routeState}><Pencil size={16} />Chỉnh sửa bộ từ</Link>}
+  return <section className="av-page av-set-detail">
+    <div className="av-back-row">
+      <Link className="av-button" to={listUrl}><ArrowLeft size={16} />Danh sách bộ từ</Link>
+    </div>
+    <VocabularyPageHeader
+      title={data?.set.name || "Chi tiết bộ từ vựng"}
+      highlight={!data?.set?.name}
+      titleActions={data && <>
+        <span className="av-tag av-set-count">{data.set.wordCount} từ</span>
+        <Link className="av-button av-secondary" to={`/admin/vocabulary/${id}/edit`} state={routeState}><Pencil size={16} />Sửa bộ từ</Link>
+      </>}
+      description={data?.set.description?.trim()}
+      links={[{ label: "Vocabulary", to: listUrl }, { label: data?.set.name || "Chi tiết bộ từ" }]}
+    >
+      {data && <Link className="av-button av-primary" to={`/admin/vocabulary/${id}/words/create`} state={routeState}><Plus size={17} />Thêm từ vựng</Link>}
     </VocabularyPageHeader>
     <VocabularyNotice message={notice} onClose={() => setNotice("")} />
     {loading || error ? <div className="av-card"><VocabularyLoadState loading={loading} error={error} onRetry={reload} /></div> : data && <>
-      <div className="av-card av-info-card">
-        <h3>Thông tin bộ từ</h3>
-        <dl className="av-info-grid"><div><dt>Mã bộ từ</dt><dd>#{data.set.id}</dd></div><div><dt>Số lượng từ</dt><dd><span className="av-tag">{data.set.wordCount} từ</span></dd></div><div><dt>Phạm vi</dt><dd>Bộ từ hệ thống</dd></div><div className="av-info-description"><dt>Mô tả</dt><dd>{data.set.description || <span className="av-muted">Chưa có mô tả</span>}</dd></div></dl>
-      </div>
       <div className="av-card">
-        <div className="av-card-heading"><h3>Danh sách từ vựng <span className="av-heading-count">({data.set.wordCount})</span></h3>
-          <Link className="av-button av-primary" to={`/admin/vocabulary/${id}/words/create`} state={routeState}><Plus size={17} />Thêm từ vựng</Link></div>
         <div className="av-table-toolbar">
           <VocabularySearch key={search} value={search} placeholder="Tìm từ vựng, nghĩa hoặc ví dụ" onSearch={(value) => update({ search: value, page: 1 })} />
           <select className="av-filter" aria-label="Lọc từ loại" value={partOfSpeech} onChange={(event) => update({ partOfSpeech: event.target.value, page: 1 })}>
@@ -47,8 +52,9 @@ export default function AdminVocabularySetDetailPage() {
             {data.partOfSpeechOptions.map((part) => <option key={part} value={part}>{part}</option>)}
           </select>
           {(search || partOfSpeech) && <button type="button" className="av-reset" onClick={() => update({ search: "", partOfSpeech: "", page: 1 })}>Đặt lại bộ lọc</button>}
+          <span className="av-muted" id="av-word-list-heading">Danh sách từ vựng</span>
         </div>
-        <div className="av-table-scroll"><table className="av-table av-words-table">
+        <div className="av-table-scroll"><table className="av-table av-words-table" aria-labelledby="av-word-list-heading">
           <thead><tr><th scope="col">STT</th><th scope="col">Từ vựng</th><th scope="col">Phiên âm</th><th scope="col">Từ loại</th><th scope="col">Nghĩa</th><th scope="col">Ví dụ</th><th scope="col">Thao tác</th></tr></thead>
           <tbody>{data.words.items.map((word, index) => <tr key={word.id}>
             <td className="av-muted">{(data.words.page - 1) * data.words.pageSize + index + 1}</td><td><strong className="av-word">{word.word}</strong><small className="av-word-id">#{word.id}</small></td>

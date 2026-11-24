@@ -32,9 +32,13 @@ public sealed class AdminVocabularyService(IAdminVocabularyRepository repository
     public Task<AdminVocabularySetDto> SaveSetAsync(int? id, AdminVocabularySetRequest request, CancellationToken ct)
     {
         Validate(request);
+        var imageUrl = string.IsNullOrWhiteSpace(request.ImageURL) ? null : request.ImageURL.Trim();
+        if (imageUrl is not null && !IsValidImageUrl(imageUrl))
+            throw new ArgumentException("Ảnh phải là đường dẫn bắt đầu bằng \"/\" hoặc URL https, tối đa 255 ký tự.");
         return repository.SaveSetAsync(id, new Topic
         {
             Name = Normalize(request.Name), Description = request.Description?.Trim(),
+            ImageURL = imageUrl,
             ModuleType = "VOCABULARY", CreateBy = "ADMIN", CreateByUserId = null
         }, ct);
     }
@@ -54,6 +58,15 @@ public sealed class AdminVocabularyService(IAdminVocabularyRepository repository
     public Task DeleteWordAsync(int id, int wordId, CancellationToken ct) => repository.DeleteWordAsync(id, wordId, ct);
 
     private static string Normalize(string value) => string.Join(' ', value.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+    private static bool IsValidImageUrl(string imageUrl)
+    {
+        if (imageUrl.Length > 255 || imageUrl.Contains('\\') || imageUrl.Contains(".."))
+            return false;
+        if (imageUrl.StartsWith('/'))
+            return !imageUrl.StartsWith("//");
+        return Uri.TryCreate(imageUrl, UriKind.Absolute, out var uri) && uri.Scheme == Uri.UriSchemeHttps;
+    }
+
     private static void Validate(object value)
     {
         var errors = new List<ValidationResult>();
