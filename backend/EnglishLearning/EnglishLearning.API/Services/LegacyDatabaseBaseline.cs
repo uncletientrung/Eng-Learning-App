@@ -8,33 +8,6 @@ public static class LegacyDatabaseBaseline
 {
     private const string InitialMigration = "20261018061907_InitialCreate";
     private const string ProductVersion = "9.0.0";
-    private static readonly string[] BaselineMigrations =
-    [
-        InitialMigration,
-        "20261018061907_InitialCreate.cs",
-        "20261019192042_SyncModelChanges.cs",
-        "20261019195403_SyncLatestEntityChanges.cs",
-        "20261021021405_SyncTopicEntityChanges.cs",
-        "20261021081621_MoveSpeakingTypeToExercise.cs",
-        "20261021095510_UpdateSpeakingWritingConfig.cs",
-        "20261024030952_AddSpeakingQuestionsRelationship.cs",
-        "20261024035621_AddSpeakingQuestionsRelationship2.cs",
-        "20261025121926_AddSpeakingQuestionCuesAndClosing.cs",
-        "20261031152213_AddSpeakingAssessmentFields.cs",
-        "20261031162254_SpeakingResultsOnAttempts.cs",
-        "20261102093000_AddWritingAdminMetadata.cs",
-        "20261103070511_SyncCurrentModel.cs",
-        "20261103091212_AdminSpeakingLifecycle.cs",
-        "20261105032313_AddGrammarCategoryDescription.cs",
-        "20261113155631_RenameExampleColToexample_enAndAddedexample_vi.cs",
-        "20261117044357_AddedTopicIdToIdioms.cs",
-        "20261117064542_AddedImageURLToTopics.cs",
-        "20261117080232_AddTranslationExerciseParentRecords.cs",
-        "20261117110925_TranslationsRedesigned.cs",
-        "20261118031244_RenamedExerciseIdToContentId.cs",
-        "20261118190000_AddUserTranslationContentProgress.cs",
-    ];
-
     public static async Task ApplyAsync(
         AppDbContext context,
         CancellationToken cancellationToken = default)
@@ -42,12 +15,12 @@ public static class LegacyDatabaseBaseline
         var appliedMigrations = await context.Database
             .GetAppliedMigrationsAsync(cancellationToken);
         var currentInitialMigration = context.Database.GetMigrations().FirstOrDefault();
-        if (appliedMigrations.Contains(InitialMigration, StringComparer.Ordinal) ||
-            (currentInitialMigration is not null &&
-                appliedMigrations.Contains(currentInitialMigration, StringComparer.Ordinal)))
+        if (currentInitialMigration is null ||
+            appliedMigrations.Contains(currentInitialMigration, StringComparer.Ordinal))
             return;
 
-        if (appliedMigrations.Any())
+        if (appliedMigrations.Any() &&
+            !appliedMigrations.Contains(InitialMigration, StringComparer.Ordinal))
         {
             throw new InvalidOperationException(
                 "Database có lịch sử migration nhưng thiếu migration khởi tạo. " +
@@ -83,7 +56,7 @@ public static class LegacyDatabaseBaseline
 
         await VerifyExistingSeedDataAsync(context, cancellationToken);
         await VerifyExistingColumnsAsync(context, cancellationToken);
-        await CreateMigrationHistoryAsync(context, cancellationToken);
+        await CreateMigrationHistoryAsync(context, currentInitialMigration, cancellationToken);
     }
 
     private static async Task<HashSet<string>> GetExistingTablesAsync(
@@ -180,6 +153,7 @@ public static class LegacyDatabaseBaseline
 
     private static async Task CreateMigrationHistoryAsync(
         AppDbContext context,
+        string currentInitialMigration,
         CancellationToken cancellationToken)
     {
         await context.Database.ExecuteSqlRawAsync(
@@ -193,14 +167,11 @@ public static class LegacyDatabaseBaseline
             cancellationToken);
 
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
-        foreach (var migrationId in BaselineMigrations)
-        {
-            await context.Database.ExecuteSqlRawAsync(
-                "INSERT IGNORE INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`) " +
-                "VALUES ({0}, {1})",
-                [migrationId, ProductVersion],
-                cancellationToken);
-        }
+        await context.Database.ExecuteSqlRawAsync(
+            "INSERT IGNORE INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`) " +
+            "VALUES ({0}, {1})",
+            [currentInitialMigration, ProductVersion],
+            cancellationToken);
 
         await transaction.CommitAsync(cancellationToken);
     }
