@@ -7,15 +7,30 @@ import {
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { getCurrentUser, subscribeAuth } from '../../services/authApi'
 import { useDueFolders, dueFolderLink } from '../../pages/Vocabulary/dashboard/flashcard/useDueFolders'
 
+function AccountAvatar({ initial }) {
+  return (
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white bg-[#71a534] text-[20px] leading-none font-semibold text-white" aria-hidden="true">
+      {initial}
+    </span>
+  )
+}
+
 function Navbar({ transparentOnTop = false }) {
+  const [user, setUser] = useState(getCurrentUser)
+  const displayName = user?.name?.trim() || user?.email || 'Khách'
+  const avatarInitial = displayName.charAt(0).toLocaleUpperCase('vi-VN')
+  const accountLink = user ? '/vocabulary/dashboard' : '/login'
   const { folders: dueFolders } = useDueFolders()
   const dueWordCount = dueFolders.reduce((count, folder) => count + folder.dueWords.length, 0)
   const [isScrolled, setIsScrolled] = useState(false)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const notificationsRef = useRef(null)
   const notificationButtonRef = useRef(null)
+
+  useEffect(() => subscribeAuth(() => setUser(getCurrentUser())), [])
 
   useEffect(() => {
     if (!notificationsOpen) return
@@ -159,53 +174,35 @@ function Navbar({ transparentOnTop = false }) {
                 'var(--font-nunito), var(--font-inter), sans-serif',
             }}
           >
-            <div className="flex items-center transition-all duration-300 rounded-full backdrop-blur-sm border border-transparent hover:border-slate-100 bg-white/30">
+            <div className="flex items-center rounded-full border border-white/20 bg-white/30 backdrop-blur-sm transition-colors duration-300 hover:bg-white/40">
 
               {/* Desktop user */}
               <Link
-                className="hidden lg:flex items-center gap-2.5 px-3 py-1.5 cursor-pointer"
-                to="/vocabulary/dashboard"
+                className="hidden lg:flex items-center gap-3 py-2 pl-2 pr-4 cursor-pointer"
+                to={accountLink}
               >
-                <div className="relative flex-shrink-0">
-                  <div className="w-8 h-8 rounded-full bg-herb-100 flex items-center justify-center text-herb-600 font-bold overflow-hidden shadow-inner border border-herb-50">
-                    <img
-                      alt="avatar"
-                      className="w-full h-full object-cover"
-                      src="https://lh3.googleusercontent.com/a/ACg8ocKMvzLOPUcVLFPfwsLTjhBKrOfuXrCCz9PtzMGWsn1e_Ar8JA=s96-c"
-                    />
-                  </div>
-                </div>
+                <AccountAvatar initial={avatarInitial} />
 
-                <div className="hidden md:flex flex-col items-start leading-none gap-1">
-                  <span className="font-black text-[14px] tracking-tight text-slate-900">
-                    Đat Huỳnh
+                <div className="flex min-w-0 flex-col items-center gap-0.5 text-center">
+                  <span className="block max-w-36 truncate text-[14px] leading-[18px] font-extrabold tracking-tight text-[#243528]" title={displayName}>
+                    {displayName}
                   </span>
 
-                  <div className="flex items-center gap-1.5 opacity-60">
-                    <div className="w-1.5 h-1.5 rounded-full bg-herb-500" />
-
-                    <span className="text-[10px] font-black uppercase tracking-wider">
-                      Online
-                    </span>
-                  </div>
+                  <span className="inline-flex items-center justify-center gap-1.5 text-[10px] leading-3 font-bold tracking-[0.08em] text-slate-800 uppercase opacity-60">
+                    <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${user ? 'bg-[#6a8042]' : 'bg-slate-400'}`} aria-hidden="true" />
+                    {user ? 'Online' : 'Chưa đăng nhập'}
+                  </span>
                 </div>
               </Link>
 
               {/* Mobile user */}
-              <button
-                className="flex lg:hidden items-center gap-2.5 px-3 py-1.5"
-                aria-label="Tài khoản"
+              <Link
+                className="flex lg:hidden items-center p-2"
+                to={accountLink}
+                aria-label={user ? `Tài khoản ${displayName}` : 'Đăng nhập'}
               >
-                <div className="relative flex-shrink-0">
-                  <div className="w-8 h-8 rounded-full bg-herb-100 flex items-center justify-center text-herb-600 font-bold overflow-hidden shadow-inner border border-herb-50">
-                    <img
-                      alt="avatar"
-                      className="w-full h-full object-cover"
-                      src="https://lh3.googleusercontent.com/a/ACg8ocKMvzLOPUcVLFPfwsLTjhBKrOfuXrCCz9PtzMGWsn1e_Ar8JA=s96-c"
-                    />
-                  </div>
-                </div>
-              </button>
+                <AccountAvatar initial={avatarInitial} />
+              </Link>
 
               {/* User menu */}
               <div className="hidden lg:flex items-center pr-2">
