@@ -1,95 +1,58 @@
-function SkillCard({ skill, EventOnClick, onMouseEnter,onMouseLeave}) {
+import { useId } from 'react'
+import SkillCardDecorations from './SkillCardDecorations'
+
+function SkillCard({ skill, EventOnClick, onMouseEnter, onMouseLeave }) {
   const Icon = skill.icon
+  const kind = skill.id
+  const artwork = skill.artwork
+  const id = useId().replace(/:/g, '')
+  const gradientId = `skill-background-${id}`
+  const mascotClipId = `skill-mascot-${id}`
 
   return (
-    <div
+    <button
+      type="button"
       onClick={() => EventOnClick(skill)}
-      onMouseEnter={() => onMouseEnter(true)}
-      onMouseLeave={() => onMouseLeave(false)}
-      className="
-        group relative block h-[320px]
-        overflow-hidden rounded-[6px]
-        border-[4px] border-black
-        bg-white
-        shadow-[9px_9px_0_rgba(0,0,0,1)]
-        transition-all duration-300 ease-out
-        hover:-translate-y-1.5
-        hover:shadow-[12px_12px_0_rgba(0,0,0,1)]
-        md:h-[400px]
-        cursor-pointer
-      "
+      onMouseEnter={() => onMouseEnter?.(true)}
+      onMouseLeave={() => onMouseLeave?.(false)}
+      onFocus={() => onMouseEnter?.(true)}
+      onBlur={() => onMouseLeave?.(false)}
+      aria-label={`${skill.title}: ${skill.description} ${skill.badge}`}
+      style={{ '--skill-card-accent': artwork.background[0] }}
+      className="skill-card relative block aspect-[12/25] w-full cursor-pointer overflow-hidden rounded-[6px] border-4 border-black bg-white p-0 text-left shadow-[9px_9px_0_#000] transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[12px_12px_0_#000] focus-visible:-translate-y-1.5 focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-white"
     >
-      {/* Background image */}
-      <img
-        src={skill.image}
-        alt={skill.title}
-        className="
-          absolute inset-0
-          h-full w-full
-          object-cover
-          transition-transform duration-500
-          group-hover:scale-105
-        "
-      />
-
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/10" />
-
-      {/* Content */}
-      <div className="absolute inset-0 flex flex-col p-3">
-        {/* Icon */}
-        <div
-          className="
-            mt-2 flex h-12 w-12
-            items-center justify-center
-            rounded-[10px]
-            bg-white/90
-            text-slate-600
-            shadow-sm
-          "
-        >
-          <Icon className="h-6 w-6" />
-        </div>
-
-        {/* Title */}
-        <h3
-          className="
-            mt-5 whitespace-pre-line
-            text-[24px] font-extrabold
-            leading-[1.05] text-white
-            drop-shadow-sm
-          "
-        >
-          {skill.title}
-        </h3>
-
-        {/* Description */}
-        <p
-          className="
-            mt-2 whitespace-normal
-            text-[12px] font-semibold
-            leading-[1.6] text-white/90
-          "
-        >
-          {skill.description}
-        </p>
-
-        {/* Badge */}
-        <div className="mt-auto mb-2 flex justify-center">
-          <span
-            className="
-              translate-y-[5px]
-              text-[16px] font-black
-              tracking-[1px]
-              text-white
-              drop-shadow-sm
-            "
-          >
-            {skill.badge}
-          </span>
-        </div>
-      </div>
-    </div>
+      <svg className="block h-full w-full" viewBox="0 0 240 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
+            <stop stopColor={artwork.background[0]} />
+            <stop offset="1" stopColor={artwork.background[1]} />
+          </linearGradient>
+          {/* The clip follows the original artwork; no regenerated mascot assets. */}
+          <clipPath id={mascotClipId}><path d={artwork.mascotOutline} /></clipPath>
+        </defs>
+        {/* Artwork and copy share one coordinate system so labels stay aligned. */}
+        <g className="skill-card__scene">
+          <rect width="240" height="500" fill={`url(#${gradientId})`} />
+          <SkillCardDecorations kind={kind} />
+          <g transform="translate(0 70)">
+            <image href={skill.image} width="240" height="430" preserveAspectRatio="none" clipPath={`url(#${mascotClipId})`} />
+          </g>
+          <foreignObject x="18" y="26" width="48" height="48">
+            <div className="flex h-full w-full items-center justify-center rounded-[10px] bg-white/90 text-slate-600 shadow-sm">
+              <Icon size={28} strokeWidth={1.8} />
+            </div>
+          </foreignObject>
+          <text x="18" y="135" fill="white" fontSize="30" fontWeight="800" letterSpacing="-.6">{skill.title}</text>
+          <foreignObject x="18" y="150" width="204" height="100">
+            <p style={{ margin: 0, fontSize: 15, fontWeight: 650, lineHeight: 1.6, color: 'rgba(255,255,255,.92)' }}>{skill.description}</p>
+          </foreignObject>
+          <g className="skill-card__badge">
+            <rect x="46" y="449" width="148" height="42" rx="21" fill={artwork.badge} />
+            <text x="120" y="470" textAnchor="middle" dominantBaseline="central" fill="white" fontSize="21" fontWeight="800" letterSpacing=".8">{skill.badge}</text>
+          </g>
+        </g>
+      </svg>
+    </button>
   )
 }
 

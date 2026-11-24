@@ -1,0 +1,104 @@
+.skill-card__decorations { pointer-events: none; }
+
+.skill-card__sound-wave,
+.skill-card__music-note,
+.skill-card__speech-main,
+.skill-card__pen-motion,
+.skill-card__letter-tile,
+.skill-card__hexagon {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.skill-card__sound-wave { opacity: .3; }
+.skill-card:is(:hover, :focus-visible) .skill-card__sound-wave--near { animation: skill-sound-out 1.5s ease-out infinite; }
+.skill-card:is(:hover, :focus-visible) .skill-card__sound-wave--far { animation: skill-sound-out 1.5s ease-out .25s infinite; }
+.skill-card:is(:hover, :focus-visible) .skill-card__music-note { animation: skill-note-float 2s ease-in-out infinite; }
+
+.skill-card__hello-bubble {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  transform: translateY(12px) scale(.8);
+  transition: opacity 250ms ease, transform 420ms cubic-bezier(.2, 1.4, .4, 1);
+}
+.skill-card:is(:hover, :focus-visible) .skill-card__hello-bubble { opacity: 1; transform: translateY(0) scale(1); }
+.skill-card:is(:hover, :focus-visible) .skill-card__speech-main { animation: skill-icon-float 2.4s ease-in-out infinite; }
+
+.skill-card__book,
+.skill-card__book-cover,
+.skill-card__book-pages,
+.skill-card__book-page {
+  transform-box: view-box;
+  transform-origin: 0 62px;
+  transition: transform 750ms cubic-bezier(.2, .65, .3, 1), opacity 450ms ease;
+}
+.skill-card__book { transform: translateX(-44px); }
+.skill-card__book-cover { transform: scaleX(1); }
+.skill-card__book-pages { transform: scaleX(.01); opacity: 0; }
+.skill-card__book-page { transform: scaleX(.02); opacity: 0; }
+.skill-card__book-cover-title { transition: opacity 150ms ease 250ms; }
+.skill-card__book-back { transition: opacity 400ms ease; }
+.skill-card:is(:hover, :focus-visible) .skill-card__book { transform: translateX(4px); }
+.skill-card:is(:hover, :focus-visible) .skill-card__book-cover { transform: scaleX(-1); }
+.skill-card:is(:hover, :focus-visible) .skill-card__book-pages { transform: scaleX(1); opacity: 1; transition-delay: 100ms; }
+.skill-card:is(:hover, :focus-visible) .skill-card__book-page { transform: scaleX(-.85); opacity: .7; transition-delay: 250ms; }
+.skill-card:is(:hover, :focus-visible) .skill-card__book-cover-title { opacity: 0; transition-delay: 0ms; }
+.skill-card:is(:hover, :focus-visible) .skill-card__book-back { opacity: 0; }
+
+/* One shared progress value keeps the pen tip exactly on the revealed path. */
+@property --skill-write-progress {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+.skill-card__writing { --skill-write-progress: 0; }
+.skill-card__written-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--skill-write-progress));
+  opacity: clamp(0, calc(var(--skill-write-progress) * 100), 1);
+}
+.skill-card__pen-motion {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  offset-position: 0 0;
+  offset-anchor: 0 0;
+  offset-rotate: 0deg;
+  offset-distance: calc(var(--skill-write-progress) * 100%);
+}
+.skill-card:is(:hover, :focus-visible) .skill-card__writing { animation: skill-write 2.4s linear forwards; }
+.skill-card:is(:hover, :focus-visible) .skill-card__letter-tile--one { animation: skill-note-float 2.5s ease-in-out infinite; }
+.skill-card:is(:hover, :focus-visible) .skill-card__letter-tile--two { animation: skill-icon-float 2.5s ease-in-out .15s infinite; }
+.skill-card__hexagon { transition: transform 800ms ease; }
+.skill-card:is(:hover, :focus-visible) .skill-card__hexagon--outer { transform: rotate(12deg); }
+.skill-card:is(:hover, :focus-visible) .skill-card__hexagon--inner { transform: rotate(-18deg); }
+
+@keyframes skill-sound-out {
+  0% { opacity: .1; transform: scale(.92); }
+  35% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.16); }
+}
+@keyframes skill-note-float {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-7px) rotate(7deg); }
+}
+@keyframes skill-icon-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes skill-write {
+  0%, 8% { --skill-write-progress: 0; }
+  92%, 100% { --skill-write-progress: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skill-card,
+  .skill-card__decorations *,
+  .skill-card:is(:hover, :focus-visible),
+  .skill-card:is(:hover, :focus-visible) .skill-card__decorations * {
+    animation: none !important;
+    transition: none !important;
+  }
+  .skill-card:is(:hover, :focus-visible) { transform: none !important; }
+  .skill-card__hello-bubble { opacity: 1; }
+  .skill-card:is(:hover, :focus-visible) .skill-card__writing { --skill-write-progress: 1; }
+}
