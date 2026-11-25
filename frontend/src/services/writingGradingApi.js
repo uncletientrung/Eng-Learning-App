@@ -21,7 +21,7 @@ async function authorizedRequest(url, options, fallbackMessage) {
   return data;
 }
 
-export async function gradeWriting(exerciseId, userResponse, token) {
+export async function gradeWriting(exerciseId, writingType, userResponse, token) {
   return authorizedRequest(`${API_URL}/writing-grading`, {
     method: "POST",
     headers: {
@@ -30,6 +30,7 @@ export async function gradeWriting(exerciseId, userResponse, token) {
     },
     body: JSON.stringify({
       exerciseId,
+      writingType,
       userResponse,
     }),
   }, "Không thể chấm bài");

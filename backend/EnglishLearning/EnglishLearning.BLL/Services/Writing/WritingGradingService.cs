@@ -44,6 +44,26 @@ public class WritingGradingService : IWritingGradingService
             throw new KeyNotFoundException(
                 "Không tìm thấy đề Writing.");
 
+        if (string.IsNullOrWhiteSpace(request.WritingType))
+            throw new ArgumentException(
+                "Loại bài Writing phải là Task 1 hoặc Task 2.");
+
+        var requestedWritingType = request.WritingType.Trim().ToUpperInvariant();
+        var exerciseWritingType = exercise.WritingType?.Trim().ToUpperInvariant();
+
+        if (requestedWritingType is not ("TASK_1" or "TASK_2"))
+            throw new ArgumentException(
+                "Loại bài Writing phải là Task 1 hoặc Task 2.");
+
+        if (!string.Equals(
+                requestedWritingType,
+                exerciseWritingType,
+                StringComparison.Ordinal))
+        {
+            throw new ArgumentException(
+                "Loại bài gửi lên không khớp với đề Writing.");
+        }
+
         var userResponse = request.UserResponse.Trim();
 
         // Gọi Gemini chấm bài.
@@ -51,7 +71,7 @@ public class WritingGradingService : IWritingGradingService
             exercise.Title,
             exercise.QuestionText,
             exercise.Instruction,
-            exercise.WritingType,
+            requestedWritingType,
             userResponse,
             cancellationToken);
 

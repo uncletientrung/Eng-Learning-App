@@ -89,7 +89,8 @@ public class WritingGradingController : ControllerBase
             if (ex.StatusCode == HttpStatusCode.ServiceUnavailable)
             {
                 _logger.LogWarning(
-                    "Gemini is temporarily unavailable after retrying.");
+                    "Gemini is temporarily unavailable after retrying. Provider response: {ProviderResponse}",
+                    ex.Message);
 
                 return StatusCode(503, new
                 {

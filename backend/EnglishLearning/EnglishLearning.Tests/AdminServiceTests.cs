@@ -59,6 +59,47 @@ public sealed class AdminServiceTests
     }
 
     [Fact]
+    public async Task UpdateWritingSubmissionAsync_AcceptsTaskAchievementCriterion()
+    {
+        var criteria = new List<AdminWritingCriterionUpdateDto>
+        {
+            Criterion("TASK_ACHIEVEMENT", 6),
+            Criterion("COHERENCE_COHESION", 6.5m),
+            Criterion("LEXICAL_RESOURCE", 7),
+            Criterion("GRAMMAR", 7.5m)
+        };
+        _repository
+            .Setup(repository => repository.UpdateWritingSubmissionAsync(
+                12,
+                7,
+                It.IsAny<List<AdminWritingCriterionUpdateDto>>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+        _repository
+            .Setup(repository => repository.GetWritingSubmissionAsync(
+                12,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AdminWritingSubmissionDetailDto
+            {
+                AttemptId = 12,
+                OverallScore = 7
+            });
+
+        var result = await _service.UpdateWritingSubmissionAsync(
+            12,
+            new AdminWritingSubmissionUpdateDto { Criteria = criteria },
+            CancellationToken.None);
+
+        Assert.NotNull(result);
+        _repository.Verify(repository => repository.UpdateWritingSubmissionAsync(
+            12,
+            7,
+            It.Is<List<AdminWritingCriterionUpdateDto>>(items =>
+                items[0].CriterionCode == "TASK_ACHIEVEMENT"),
+            It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
     public async Task UpdateWritingSubmissionAsync_RejectsInvalidCriterionScore()
     {
         var criteria = ValidCriteria();

@@ -11,6 +11,7 @@ import AdminPageTitle from "../../../components/admin/AdminPageTitle";
 
 const dateFormat = new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium", timeStyle: "short" });
 const criterionNames = {
+  TASK_ACHIEVEMENT: "Task Achievement",
   TASK_RESPONSE: "Task Response",
   COHERENCE_COHESION: "Coherence and Cohesion",
   LEXICAL_RESOURCE: "Lexical Resource",
@@ -31,7 +32,20 @@ function makeDraftCriteria(submission) {
   const savedCriteria = new Map(
     (submission.criteria || []).map((criterion) => [criterion.criterionCode, criterion]),
   );
-  return Object.keys(criterionNames).map((criterionCode) => {
+  const taskCriterionCode = submission.writingType === "TASK_1"
+    ? "TASK_ACHIEVEMENT"
+    : "TASK_RESPONSE";
+  const savedTaskCriterionCode = savedCriteria.has(taskCriterionCode)
+    ? taskCriterionCode
+    : submission.writingType === "TASK_1" && savedCriteria.has("TASK_RESPONSE")
+      ? "TASK_RESPONSE"
+      : taskCriterionCode;
+  return [
+    savedTaskCriterionCode,
+    "COHERENCE_COHESION",
+    "LEXICAL_RESOURCE",
+    "GRAMMAR",
+  ].map((criterionCode) => {
     const saved = savedCriteria.get(criterionCode);
     return {
       criterionCode,

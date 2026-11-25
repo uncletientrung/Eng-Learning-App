@@ -1,4 +1,5 @@
 const CRITERION_LABELS = {
+  TASK_ACHIEVEMENT: "Task Achievement",
   TASK_RESPONSE: "Task Response",
   COHERENCE_COHESION: "Coherence & Cohesion",
   LEXICAL_RESOURCE: "Lexical Resource",

@@ -11,10 +11,15 @@ public sealed class AdminService : IAdminService
         new(StringComparer.Ordinal) { "DRAFT", "PUBLISHED", "HIDDEN" };
     private static readonly HashSet<string> AllowedWritingTypes =
         new(StringComparer.Ordinal) { "TASK_1", "TASK_2" };
-    private static readonly HashSet<string> WritingCriterionCodes =
+    private static readonly HashSet<string> WritingTaskCriterionCodes =
         new(StringComparer.Ordinal)
         {
+            "TASK_ACHIEVEMENT",
             "TASK_RESPONSE",
+        };
+    private static readonly HashSet<string> SharedWritingCriterionCodes =
+        new(StringComparer.Ordinal)
+        {
             "COHERENCE_COHESION",
             "LEXICAL_RESOURCE",
             "GRAMMAR"
@@ -145,7 +150,7 @@ public sealed class AdminService : IAdminService
         if (attemptId <= 0)
             throw new ArgumentException("ID bài nộp không hợp lệ.");
         if (request.Criteria is null ||
-            request.Criteria.Count != WritingCriterionCodes.Count ||
+            request.Criteria.Count != 4 ||
             request.Criteria.Any(criterion => criterion is null))
             throw new ArgumentException("Bài chấm phải có đủ bốn tiêu chí Writing.");
 
@@ -161,11 +166,18 @@ public sealed class AdminService : IAdminService
             })
             .ToList();
 
-        if (criteria.Any(criterion =>
-                !WritingCriterionCodes.Contains(criterion.CriterionCode)) ||
-            !criteria.Select(criterion => criterion.CriterionCode)
+        var criterionCodes = criteria
+            .Select(criterion => criterion.CriterionCode)
+            .ToHashSet(StringComparer.Ordinal);
+        var taskCriterionCount = criterionCodes.Count(
+            WritingTaskCriterionCodes.Contains);
+
+        if (criterionCodes.Count != 4 ||
+            taskCriterionCount != 1 ||
+            !criterionCodes
+                .Where(code => !WritingTaskCriterionCodes.Contains(code))
                 .ToHashSet(StringComparer.Ordinal)
-                .SetEquals(WritingCriterionCodes))
+                .SetEquals(SharedWritingCriterionCodes))
         {
             throw new ArgumentException("Mã tiêu chí không hợp lệ hoặc bị trùng.");
         }

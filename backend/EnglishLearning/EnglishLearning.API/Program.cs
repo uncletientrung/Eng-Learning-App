@@ -109,7 +109,7 @@ if (geminiTimeoutSeconds <= 0)
         "Gemini:TimeoutSeconds phải lớn hơn 0.");
 }
 
-builder.Services.AddHttpClient<ILlmGradingService, GeminiGradingService>(
+builder.Services.AddHttpClient<ILlmGradingService, GeminiWritingGradingService>(
     client => client.Timeout = TimeSpan.FromSeconds(geminiTimeoutSeconds));
 builder.Services.AddScoped<IWritingGradingRepository, WritingGradingRepository>();
 
@@ -119,7 +119,7 @@ builder.Services.AddScoped<
     SpeakingAssessmentRepository>();
 builder.Services.AddHttpClient<
     ISpeakingGradingLlmService,
-    GeminiGradingSpeakingService>(
+    GeminiSpeakingGradingService>(
     client => client.Timeout = TimeSpan.FromSeconds(geminiTimeoutSeconds));
 builder.Services.AddHttpClient<ITranslationGradingService, GeminiTranslationGradingService>(
     client => client.Timeout = TimeSpan.FromSeconds(geminiTimeoutSeconds));

@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import WritingToolbar from "./WritingToolbar";
-import { getWritingTypeConfig } from "../../../../constant/writingConstant";
+import {
+  getWritingTaskType,
+  getWritingTypeConfig,
+} from "../../../../constant/writingConstant";
 import { gradeWriting } from "../../../../services/writingGradingApi";
 import WritingScoreSummary from "./WritingScoreSummary";
 
@@ -27,6 +30,10 @@ function WritingEditor({
     test?.writingType,
     test?.topic?.name
   );
+  const taskType = getWritingTaskType(
+    test?.writingType,
+    test?.topic?.name
+  );
 
   const minimumWords = recommend?.minimumWords ?? 50;
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
@@ -45,6 +52,11 @@ function WritingEditor({
       return;
     }
 
+    if (!taskType) {
+      setError("Không xác định được đề là Task 1 hay Task 2.");
+      return;
+    }
+
     if (!token) {
       setError("Bạn cần đăng nhập để sử dụng chức năng chấm bài.");
       return;
@@ -58,6 +70,7 @@ function WritingEditor({
     try {
       const data = await gradeWriting(
         test.id,
+        taskType,
         content.trim(),
         token
       );
