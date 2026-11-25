@@ -105,6 +105,33 @@ public sealed class GeminiWritingGradingServiceTests
             Assert.Contains($"Band {band}:", systemInstruction);
     }
 
+    [Fact]
+    public async Task GradeAsync_DoesNotRetryWhenGeminiIsUnavailable()
+    {
+        var handler = new CapturingHandler(
+            """{"error":{"message":"temporarily unavailable"}}""",
+            HttpStatusCode.ServiceUnavailable);
+        using var httpClient = new HttpClient(handler);
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Gemini:ApiKey"] = "test-key",
+                ["Gemini:Model"] = "test-model"
+            })
+            .Build();
+        var service = new GeminiWritingGradingService(httpClient, configuration);
+
+        await Assert.ThrowsAsync<HttpRequestException>(() =>
+            service.GradeAsync(
+                "Writing exercise",
+                "Describe or discuss the question.",
+                null,
+                "TASK_1",
+                "Student response"));
+
+        Assert.Equal(1, handler.RequestCount);
+    }
+
     private static CriterionResultDto Criterion(string code) =>
         new()
         {
@@ -113,17 +140,21 @@ public sealed class GeminiWritingGradingServiceTests
             Issues = []
         };
 
-    private sealed class CapturingHandler(string responseBody) : HttpMessageHandler
+    private sealed class CapturingHandler(
+        string responseBody,
+        HttpStatusCode statusCode = HttpStatusCode.OK) : HttpMessageHandler
     {
         public string? RequestBody { get; private set; }
+        public int RequestCount { get; private set; }
 
         protected override async Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
+            RequestCount++;
             RequestBody = await request.Content!.ReadAsStringAsync(
                 cancellationToken);
-            return new HttpResponseMessage(HttpStatusCode.OK)
+            return new HttpResponseMessage(statusCode)
             {
                 Content = new StringContent(
                     responseBody,

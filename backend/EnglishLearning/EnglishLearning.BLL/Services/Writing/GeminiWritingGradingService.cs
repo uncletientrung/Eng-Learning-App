@@ -195,7 +195,7 @@ public class GeminiWritingGradingService : ILlmGradingService
             cancellationToken);
         timeoutCts.CancelAfter(_httpClient.Timeout);
 
-        using var response = await SendWithRetryAsync(
+        using var response = await SendToGeminiAsync(
             apiKey,
             model,
             input,
@@ -304,91 +304,50 @@ public class GeminiWritingGradingService : ILlmGradingService
             instructions. Follow the provided JSON response schema.
             """;
 
-    private async Task<HttpResponseMessage> SendWithRetryAsync(
+    private async Task<HttpResponseMessage> SendToGeminiAsync(
         string apiKey,
         string model,
         string input,
         string systemInstruction,
         CancellationToken cancellationToken)
     {
-        const int maxAttempts = 3;
-
-        for (var attempt = 1; attempt <= maxAttempts; attempt++)
+        using var request = new HttpRequestMessage(
+            HttpMethod.Post,
+            $"https://generativelanguage.googleapis.com/v1beta/models/" +
+            $"{Uri.EscapeDataString(model)}:generateContent");
+        request.Headers.Add("x-goog-api-key", apiKey);
+        request.Content = JsonContent.Create(new
         {
-            using var request = new HttpRequestMessage(
-                HttpMethod.Post,
-                $"https://generativelanguage.googleapis.com/v1beta/models/" +
-                $"{Uri.EscapeDataString(model)}:generateContent");
-            request.Headers.Add("x-goog-api-key", apiKey);
-            request.Content = JsonContent.Create(new
+            contents = new[]
             {
-                contents = new[]
-                {
-                    new
-                    {
-                        parts = new[]
-                        {
-                            new { text = input }
-                        }
-                    }
-                },
-                systemInstruction = new
+                new
                 {
                     parts = new[]
                     {
-                        new { text = systemInstruction }
-                    }
-                },
-                generationConfig = new
-                {
-                    responseMimeType = "application/json",
-                    responseSchema = GradingResponseSchema,
-                    maxOutputTokens = 3072,
-                    thinkingConfig = new
-                    {
-                        thinkingLevel = "low"
+                        new { text = input }
                     }
                 }
-            });
-
-            var response = await _httpClient.SendAsync(
-                request,
-                cancellationToken);
-
-            if (response.IsSuccessStatusCode ||
-                response.StatusCode is not (
-                    System.Net.HttpStatusCode.ServiceUnavailable or
-                    System.Net.HttpStatusCode.TooManyRequests) ||
-                attempt == maxAttempts)
+            },
+            systemInstruction = new
             {
-                return response;
+                parts = new[]
+                {
+                    new { text = systemInstruction }
+                }
+            },
+            generationConfig = new
+            {
+                responseMimeType = "application/json",
+                responseSchema = GradingResponseSchema,
+                maxOutputTokens = 3072,
+                thinkingConfig = new
+                {
+                    thinkingLevel = "low"
+                }
             }
+        });
 
-            var delay = GetRetryDelay(response, attempt);
-            response.Dispose();
-            await Task.Delay(delay, cancellationToken);
-        }
-
-        throw new InvalidOperationException(
-            "Không thể gửi request chấm bài tới Gemini.");
-    }
-
-    private static TimeSpan GetRetryDelay(
-        HttpResponseMessage response,
-        int attempt)
-    {
-        var retryAfter = response.Headers.RetryAfter;
-        var requestedDelay = retryAfter?.Delta
-            ?? (retryAfter?.Date is DateTimeOffset retryDate
-                ? retryDate - DateTimeOffset.UtcNow
-                : TimeSpan.FromSeconds(attempt));
-        var maximumDelay = TimeSpan.FromSeconds(15);
-
-        return requestedDelay <= TimeSpan.Zero
-            ? TimeSpan.FromSeconds(attempt)
-            : requestedDelay > maximumDelay
-                ? maximumDelay
-                : requestedDelay;
+        return await _httpClient.SendAsync(request, cancellationToken);
     }
 
     private static string? ReadProviderErrorMessage(string responseBody)
