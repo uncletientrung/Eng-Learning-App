@@ -9,7 +9,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Sun,
-  X,
+  X, Tags, Users
 } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
 import { getCurrentUser } from "../../services/authApi";
@@ -21,14 +21,13 @@ const navigation = [
   { label: "Quản lý Speaking", to: "/admin/speaking", icon: Mic },
   { label: "Quản lý Reading", to: "/admin/reading", icon: Book },
   { label: "Quản lý Vocabulary", to: "/admin/vocabulary", icon: BookOpen },
+  { label: "Quản lý Topics", to: "/admin/topics", icon: Tags },
+  { label: "Quản lý Users", to: "/admin/users", icon: Users },
 ];
 
 const comingSoon = [
-  "Quản lý Reading",
   "Quản lý Listening",
-  "Quản lý Grammar",
   "Quản lý Idioms",
-  "Quản lý Users",
 ];
 
 function AdminThemeButton({ dark, onToggle }) {

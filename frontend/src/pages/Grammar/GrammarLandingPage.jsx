@@ -49,7 +49,7 @@ export default function GrammarReferencePage() {
                         Trở về
                     </LinkButton>
                     <h1 
-                        className="mt-5 text-4xl md:text-5xl font-black text-[#1e3006] mb-4 tracking-tight leading-tight" 
+                        className="mt-5 text-4xl md:text-5xl font-black text-brand-dark mb-4 tracking-tight leading-tight" 
                         style={{ fontFamily: '"Segoe UI Black", "Segoe UI", sans-serif' }}>
                         GRAMMAR REFERENCE {' '}
                     </h1>

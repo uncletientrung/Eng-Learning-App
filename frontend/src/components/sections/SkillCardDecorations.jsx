@@ -12,8 +12,31 @@ function Listening() {
         <g className="skill-card__sound-wave skill-card__sound-wave--near"><path d="M36 279q-16 21 0 43M204 279q16 21 0 43" /></g>
         <g className="skill-card__sound-wave skill-card__sound-wave--far"><path d="M23 266q-26 34 0 68M217 266q26 34 0 68" /></g>
       </g>
-      <path className="skill-card__music-note" d="M159 207v29a9 7 0 1 1-6-7v-31l23-6v11Z" />
+      <g transform="translate(45 0)"><path className="skill-card__music-note" d="M159 207v29a9 7 0 1 1-6-7v-31l23-6v11Z" /></g>
     </>
+  )
+}
+
+// Positions/colors measured from the original card artwork (viewBox 240x500).
+const sparkles = {
+  listening: [[195, 126, 6.6, '#e0bb78'], [203, 243, 5.9, '#e0bb78'], [189, 328, 6.9, '#e0bb78']],
+  reading: [[109, 134, 2.5, '#e6f7ab'], [211, 211, 11.2, '#6bcd78'], [188, 257, 6.6, '#74c573'], [75, 299, 13.1, '#d7f794'], [25, 359, 9.7, '#e8c240']],
+  writing: [[186, 142, 11.2, '#f9d234'], [194, 298, 11.9, '#fad336'], [212, 325, 7.8, '#f8d239'], [32, 347, 7.8, '#fed13d']],
+  speaking: [[174, 149, 9.4, '#ffbf67'], [72, 307, 9.7, '#fec468'], [201, 307, 7.2, '#ffc867']],
+  vocabulary: [[167, 111, 5.6, '#dcaa44'], [201, 136, 7.8, '#dfac40'], [190, 323, 9.4, '#daa943'], [38, 349, 9.4, '#dbac48'], [213, 358, 6.9, '#dcaa4c']],
+  grammar: [[63, 134, 9.7, '#edc139'], [202, 155, 6.6, '#f4c644'], [185, 171, 9.4, '#f2c43c'], [57, 234, 6.2, '#efc33c'], [39, 249, 9.4, '#f4c640'], [136, 265, 6.2, '#f3c53a'], [190, 304, 9.4, '#f4c83e'], [83, 318, 8.8, '#f4c637']],
+}
+
+function Sparkle({ x, y, r, fill }) {
+  return <path transform={`translate(${x} ${y})`} fill={fill} d={`M0 ${-r}Q1 -1 ${r} 0Q1 1 0 ${r}Q-1 1 ${-r} 0Q-1 -1 0 ${-r}Z`} />
+}
+
+function Sun({ x, y }) {
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <circle r="3.2" fill="#f4b942" />
+      <path d="M0 -4.8v-2.2M0 4.8v2.2M-4.8 0h-2.2M4.8 0h2.2M-3.4 -3.4l-1.6 -1.6M3.4 3.4l1.6 1.6M-3.4 3.4l-1.6 1.6M3.4 -3.4l1.6 -1.6" stroke="#f6dc8a" strokeWidth=".9" strokeLinecap="round" />
+    </g>
   )
 }
 
@@ -122,5 +145,13 @@ const decorations = { listening: Listening, reading: Reading, writing: Writing, 
 export default function SkillCardDecorations({ kind }) {
   const Decoration = decorations[kind]
   if (!Decoration) return null
-  return <g className={`skill-card__decorations skill-card__decorations--${kind}`} fill="currentColor" color="white" opacity=".45"><Decoration /></g>
+  return (
+    <>
+      <g className="skill-card__sparkles">
+        {sparkles[kind]?.map(([x, y, r, fill]) => <Sparkle key={`${x}-${y}`} x={x} y={y} r={r} fill={fill} />)}
+        {kind === 'reading' && <Sun x={190} y={147} />}
+      </g>
+      <g className={`skill-card__decorations skill-card__decorations--${kind}`} fill="currentColor" color="white" opacity=".45"><Decoration /></g>
+    </>
+  )
 }
